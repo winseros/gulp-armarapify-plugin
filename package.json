@@ -1,0 +1,55 @@
+{
+    "name": "gulp-armarapify-plugin",
+    "version": "0.1.0",
+    "description": "The plugin for Gulp which allows to rapify (binarize) ArmA *.hpp/*.ext files",
+    "main": "dist/main.js",
+    "scripts": {
+        "test": "./node_modules/.bin/gulp test",
+        "assemble": "./node_modules/.bin/gulp assemble"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/winseros/gulp-armarapify-plugin.git"
+    },
+    "keywords": [
+        "gulpplugin",
+        "arma",
+        "arma2",
+        "arma3",
+        "gulp",
+        "rapify",
+        "rap",
+        "binarize"
+    ],
+    "author": "winse",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/winseros/gulp-armarapify-plugin/issues"
+    },
+    "homepage": "https://github.com/winseros/gulp-armarapify-plugin#readme",
+    "dependencies": {
+        "vinyl": "^2.0.1"
+    },
+    "devDependencies": {
+        "babel-core": "^6.20.0",
+        "babel-preset-es2015": "^6.18.0",
+        "del": "^2.2.2",
+        "gulp": "^3.9.1",
+        "gulp-sourcemaps": "^1.9.1",
+        "gulp-tslint": "^7.0.1",
+        "gulp-typescript": "^3.1.3",
+        "jasmine": "^2.5.2",
+        "jasmine-node": "^1.14.5",
+        "karma": "^1.3.0",
+        "merge-stream": "^1.0.1",
+        "tslint": "^4.0.2",
+        "typescript": "^2.0.10",
+        "typings": "^2.0.0",
+        "vinyl": "^2.0.1"
+    },
+    "files": [
+        "dist/**/*.js",
+        "dist/**/*.js.map",
+        "!**/test/"
+    ]
+}
