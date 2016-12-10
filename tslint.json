@@ -18,6 +18,7 @@
         "no-duplicate-variable": true,
         "no-empty": true,
         "no-eval": true,
+        "no-default-export": true,
         "no-invalid-this": true,
         "no-shadowed-variable": true,
         "no-string-literal": true,

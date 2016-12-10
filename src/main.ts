@@ -4,4 +4,4 @@ const transform = () => {
     return new RapifyStream();
 };
 
-export default transform;
+export = transform;
