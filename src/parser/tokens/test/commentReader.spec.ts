@@ -53,8 +53,7 @@ describe('parser/tokens/commentReader', () => {
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
 
-            expect(iterator.moveNext()).toEqual(true);
-            expect(iterator.current).toEqual('s');
+            expect(iterator.current).toEqual('\r');
         });
 
         it('should read a single-line comment ending with \n', () => {
@@ -71,8 +70,7 @@ describe('parser/tokens/commentReader', () => {
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
 
-            expect(iterator.moveNext()).toEqual(true);
-            expect(iterator.current).toEqual('s');
+            expect(iterator.current).toEqual('\n');
         });
 
         it('should read a multiline comment ending the reader', () => {
@@ -106,7 +104,6 @@ describe('parser/tokens/commentReader', () => {
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
 
-            expect(iterator.moveNext()).toEqual(true);
             expect(iterator.current).toEqual('s');
         });
 

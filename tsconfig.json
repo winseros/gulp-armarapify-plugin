@@ -11,6 +11,6 @@
         "noResolve": true,
         "noUnusedLocals": true,
         "strictNullChecks": true,
-        "target": "ES5"
+        "target": "ES6"
     }
 }

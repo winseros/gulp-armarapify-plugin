@@ -8,13 +8,13 @@ const commentStart = '/';
 const commentSingleLine = '/';
 const commentMultiline = '*';
 
-export class CommentReader extends TokenReader {
+export class CommentReader extends TokenReader<string> {
     canRead(iterator: Iterator<string>): boolean {
         const isComment = iterator.current === commentStart;
         return isComment;
     }
 
-    read(iterator: Iterator<string>): Token {
+    read(iterator: Iterator<string>): Token<string> {
         if (iterator.moveNext()) {
             switch (iterator.current) {
                 case commentSingleLine: {
@@ -38,13 +38,13 @@ export class CommentReader extends TokenReader {
         }
     }
 
-    _readSingleline(iterator: Iterator<string>): Token {
+    _readSingleline(iterator: Iterator<string>): Token<string> {
         const result = {
             tokenType: tokenTypes.comment,
             tokenValue: '',
             lineNumber: iterator.line,
             colNumber: iterator.column - 1
-        } as Token;
+        } as Token<string>;
 
         while (iterator.moveNext() && iterator.current !== '\r' && iterator.current !== '\n') {
             result.tokenValue += iterator.current;
@@ -52,19 +52,20 @@ export class CommentReader extends TokenReader {
         return result;
     }
 
-    _readMultiline(iterator: Iterator<string>): Token {
+    _readMultiline(iterator: Iterator<string>): Token<string> {
         const result = {
             tokenType: tokenTypes.comment,
             tokenValue: '',
             lineNumber: iterator.line,
             colNumber: iterator.column - 1
-        } as Token;
+        } as Token<string>;
 
         while (iterator.moveNext()) {
             if (iterator.current === commentMultiline) {
                 const prev = iterator.current;
                 if (iterator.moveNext()) {
                     if (iterator.current === commentStart) {
+                        iterator.moveNext();
                         break;
                     } else {
                         result.tokenValue += prev;

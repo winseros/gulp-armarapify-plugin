@@ -43,7 +43,6 @@ describe('parser/tokens/codeBlockReader', () => {
             expect(codeBlockToken.lineNumber).toEqual(0);
             expect(codeBlockToken.colNumber).toEqual(0);
 
-            expect(iterator.moveNext()).toEqual(true);
             expect(iterator.current).toEqual('a');
         });
 
@@ -61,7 +60,6 @@ describe('parser/tokens/codeBlockReader', () => {
             expect(codeBlockToken.lineNumber).toEqual(0);
             expect(codeBlockToken.colNumber).toEqual(0);
 
-            expect(iterator.moveNext()).toEqual(true);
             expect(iterator.current).toEqual('a');
         });
 

@@ -1,6 +1,6 @@
-export interface Token {
+export interface Token<T> {
     tokenType: string;
-    tokenValue: string;
+    tokenValue: T;
     lineNumber: number;
     colNumber: number;
 }
