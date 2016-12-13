@@ -1,28 +1,58 @@
-interface Iterator extends IterableIterator<number> {
-    next(): Iterator;
-    value: number;
-    done: boolean;
-}
+import { Iterator } from './iterator';
 
-export class CharIterator {
-    private _iterator: Iterator;
-    private _value: string;
+const cr = 13;
+const lf = 10;
+
+export class CharIterator implements Iterator<string> {
+    private _buffer: Buffer;
+    private _bufferIndex = 0;
+    private _current: string;
+    private _line = 0;;
+    private _column = 0;
 
     constructor(buffer: Buffer) {
-        this._iterator = buffer.values() as Iterator;
+        this._buffer = buffer;
     }
 
-    next(): CharIterator {
-        this._iterator.next();
-        this._value = String.fromCharCode(this._iterator.value);
-        return this;
+    moveNext(): boolean {
+        if (this._buffer.length > this._bufferIndex) {
+            const current = this._peekOffsetByte(0);
+            this._updatePosition(current);
+
+            this._current = String.fromCharCode(current);
+            this._bufferIndex++;
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    get value(): string {
-        return this._value;
+    _updatePosition(current: number): void {
+        if (this._bufferIndex > 0) {
+            const prev = this._peekOffsetByte(-1);
+            if (prev === lf || prev === cr && current !== lf) {
+                this._column = 0;
+                this._line++;
+            } else {
+                this._column++;
+            }
+        }
     }
 
-    get done(): boolean {
-        return this._iterator.done;
+    _peekOffsetByte(offset: number): number {
+        const byte = this._buffer.readInt8(this._bufferIndex + offset);
+        return byte;
+    }
+
+    get current(): string {
+        return this._current;
+    }
+
+    get line(): number {
+        return this._line;
+    }
+
+    get column(): number {
+        return this._column;
     }
 }

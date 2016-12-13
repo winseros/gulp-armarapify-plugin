@@ -3,6 +3,7 @@ import tsc from 'gulp-typescript';
 import tslint from 'gulp-tslint';
 import sourcemaps from 'gulp-sourcemaps';
 import jasmine from 'gulp-jasmine';
+import consoleReporter from 'jasmine-console-reporter';
 import watch from 'gulp-watch';
 import del from 'del';
 
@@ -40,7 +41,8 @@ gulp.task('assemble', ['clean', 'tslint'], () => {
 gulp.task('test', ['assemble'], () => {
     return gulp.src(testFiles)
         .pipe(jasmine({
-            verbose: true
+            verbose: true,
+            reporter: new consoleReporter()
         }));
 });
 

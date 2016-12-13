@@ -1,0 +1,80 @@
+import { TokenReader } from './tokenReader';
+import { Token } from './token';
+import { Iterator } from '../iterator';
+import { ParserError } from '../parserError';
+import {tokenTypes} from './tokenTypes';
+
+const commentStart = '/';
+const commentSingleLine = '/';
+const commentMultiline = '*';
+
+export class CommentReader extends TokenReader {
+    canRead(iterator: Iterator<string>): boolean {
+        const isComment = iterator.current === commentStart;
+        return isComment;
+    }
+
+    read(iterator: Iterator<string>): Token {
+        if (iterator.moveNext()) {
+            switch (iterator.current) {
+                case commentSingleLine: {
+                    const result = this._readSingleline(iterator);
+                    return result;
+                }
+                case commentMultiline: {
+                    const result = this._readMultiline(iterator);
+                    return result;
+                }
+                default: {
+                    //no "/" or "*" symbol after the comment start
+                    const message = `Expected "${commentSingleLine}" or "${commentMultiline}" but got "${iterator.current}"`;
+                    throw new ParserError(message, iterator.line, iterator.column);
+                }
+            }
+        } else {
+            //no any symbols after the comment start
+            const message = `Expected "${commentSingleLine}" or "${commentMultiline}" but got EOF`;
+            throw new ParserError(message, iterator.line, iterator.column);
+        }
+    }
+
+    _readSingleline(iterator: Iterator<string>): Token {
+        const result = {
+            tokenType: tokenTypes.comment,
+            tokenValue: '',
+            lineNumber: iterator.line,
+            colNumber: iterator.column - 1
+        } as Token;
+
+        while (iterator.moveNext() && iterator.current !== '\r' && iterator.current !== '\n') {
+            result.tokenValue += iterator.current;
+        }
+        return result;
+    }
+
+    _readMultiline(iterator: Iterator<string>): Token {
+        const result = {
+            tokenType: tokenTypes.comment,
+            tokenValue: '',
+            lineNumber: iterator.line,
+            colNumber: iterator.column - 1
+        } as Token;
+
+        while (iterator.moveNext()) {
+            if (iterator.current === commentMultiline) {
+                const prev = iterator.current;
+                if (iterator.moveNext()) {
+                    if (iterator.current === commentStart) {
+                        break;
+                    } else {
+                        result.tokenValue += prev;
+                        result.tokenValue += iterator.current;
+                    }
+                }
+            } else {
+                result.tokenValue += iterator.current;
+            }
+        }
+        return result;
+    }
+}
