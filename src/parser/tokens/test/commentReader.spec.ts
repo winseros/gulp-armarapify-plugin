@@ -20,7 +20,6 @@ describe('parser/tokens/commentReader', () => {
         });
     });
 
-
     describe('read', () => {
         it('should read a single-line comment ending the reader', () => {
             const buffer = new Buffer('//this is a comment');

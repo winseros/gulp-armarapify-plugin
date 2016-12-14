@@ -23,7 +23,6 @@ describe('parser/tokens/numberReader', () => {
         });
     });
 
-
     describe('read', () => {
         it('should read an integer number', () => {
             const buffer = new Buffer('1234567890abc');

@@ -41,7 +41,6 @@ describe('parser/charIterator', () => {
             expect(iterator.line).toEqual(0);
         });
 
-
         it('should update line and column', () => {
             const input = new Buffer('ab\rcd\nef\r\ngh');
             const iterator = new CharIterator(input);

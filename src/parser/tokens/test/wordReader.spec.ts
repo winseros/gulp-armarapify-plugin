@@ -27,7 +27,6 @@ describe('parser/tokens/wordReader', () => {
         });
     });
 
-
     describe('read', () => {
         it('shold read a word', () => {
             it('should read a word', () => {
