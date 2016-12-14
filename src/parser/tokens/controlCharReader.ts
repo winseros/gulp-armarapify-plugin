@@ -8,9 +8,12 @@ const symbols = new Map();
 symbols.set('{', tokenTypes.codeBlockStart);
 symbols.set('}', tokenTypes.codeBlockEnd);
 symbols.set(';', tokenTypes.semicolon);
-symbols.set(',', tokenTypes.colon);
+symbols.set(',', tokenTypes.comma);
+symbols.set('=', tokenTypes.equals);
 symbols.set('[', tokenTypes.squareBracketOpen);
 symbols.set(']', tokenTypes.squareBracketClose);
+symbols.set('\r', tokenTypes.cr);
+symbols.set('\n', tokenTypes.lf);
 
 export class ControlCharReader extends TokenReader<string> {
     canRead(iterator: Iterator<string>): boolean {

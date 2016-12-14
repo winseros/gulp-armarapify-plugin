@@ -23,7 +23,7 @@ export class WordReader extends TokenReader<string>{
         while (iterator.moveNext()) {
             const match = regexpLetterOrDigit.test(iterator.current);
             if (match) {
-                result.tokenType += iterator.current;
+                result.tokenValue += iterator.current;
             } else {
                 break;
             }

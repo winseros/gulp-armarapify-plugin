@@ -28,39 +28,36 @@ describe('parser/tokens/wordReader', () => {
     });
 
     describe('read', () => {
-        it('shold read a word', () => {
-            it('should read a word', () => {
-                const buffer = new Buffer('class SomeClassName');
-                const iterator = new CharIterator(buffer);
-                const reader = new WordReader();
+        it('should read a word', () => {
+            const buffer = new Buffer('class SomeClassName');
+            const iterator = new CharIterator(buffer);
+            const reader = new WordReader();
 
-                iterator.moveNext();
-                const commentToken = reader.read(iterator);
-                expect(commentToken).toBeDefined();
+            iterator.moveNext();
+            const commentToken = reader.read(iterator);
+            expect(commentToken).toBeDefined();
 
-                expect(commentToken.tokenType).toEqual(tokenTypes.word);
-                expect(commentToken.tokenValue).toEqual('class');
-                expect(commentToken.lineNumber).toEqual(0);
-                expect(commentToken.colNumber).toEqual(0);
+            expect(commentToken.tokenType).toEqual(tokenTypes.word);
+            expect(commentToken.tokenValue).toEqual('class');
+            expect(commentToken.lineNumber).toEqual(0);
+            expect(commentToken.colNumber).toEqual(0);
 
-                expect(iterator.current).toEqual(' ');
-            });
+            expect(iterator.current).toEqual(' ');
+        });
 
-            it('should read a word at the end of buffer', () => {
-                const buffer = new Buffer('class');
-                const iterator = new CharIterator(buffer);
-                const reader = new WordReader();
+        it('should read a word at the end of buffer', () => {
+            const buffer = new Buffer('class');
+            const iterator = new CharIterator(buffer);
+            const reader = new WordReader();
 
-                iterator.moveNext();
-                const commentToken = reader.read(iterator);
-                expect(commentToken).toBeDefined();
+            iterator.moveNext();
+            const commentToken = reader.read(iterator);
+            expect(commentToken).toBeDefined();
 
-                expect(commentToken.tokenType).toEqual(tokenTypes.word);
-                expect(commentToken.tokenValue).toEqual('class');
-                expect(commentToken.lineNumber).toEqual(0);
-                expect(commentToken.colNumber).toEqual(0);
-            });
+            expect(commentToken.tokenType).toEqual(tokenTypes.word);
+            expect(commentToken.tokenValue).toEqual('class');
+            expect(commentToken.lineNumber).toEqual(0);
+            expect(commentToken.colNumber).toEqual(0);
         });
     });
-
 });

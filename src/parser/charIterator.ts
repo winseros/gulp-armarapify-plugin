@@ -6,12 +6,14 @@ const lf = 10;
 export class CharIterator implements Iterator<string> {
     private _buffer: Buffer;
     private _bufferIndex = 0;
+    private _depleted: boolean;
     private _current: string;
     private _line = 0;;
     private _column = 0;
 
     constructor(buffer: Buffer) {
         this._buffer = buffer;
+        this._depleted = !buffer.length;
     }
 
     moveNext(): boolean {
@@ -23,6 +25,7 @@ export class CharIterator implements Iterator<string> {
             this._bufferIndex++;
             return true;
         } else {
+            this._depleted = true;
             return false;
         }
     }
@@ -46,6 +49,10 @@ export class CharIterator implements Iterator<string> {
 
     get current(): string {
         return this._current;
+    }
+
+    get depleted(): boolean {
+        return this._depleted;
     }
 
     get line(): number {

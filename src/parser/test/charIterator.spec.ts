@@ -1,6 +1,21 @@
 import { CharIterator } from '../CharIterator';
 
 describe('parser/charIterator', () => {
+
+    describe('ctor', () => {
+        it('should set depleted to false', () => {
+            const input = new Buffer('abc');
+            const iterator = new CharIterator(input);
+            expect(iterator.depleted).toEqual(false);
+        });
+
+        it('should set depleted to true', () => {
+            const input = new Buffer('');
+            const iterator = new CharIterator(input);
+            expect(iterator.depleted).toEqual(true);
+        });
+    });
+
     describe('moveNext', () => {
         it('should iterate through values', () => {
             const input = new Buffer('abc');
@@ -11,17 +26,21 @@ describe('parser/charIterator', () => {
             let hasCurrent = iterator.moveNext();
             expect(hasCurrent).toEqual(true);
             expect(iterator.current).toEqual('a');
+            expect(iterator.depleted).toEqual(false);
 
             hasCurrent = iterator.moveNext();
             expect(hasCurrent).toEqual(true);
             expect(iterator.current).toEqual('b');
+            expect(iterator.depleted).toEqual(false);
 
             hasCurrent = iterator.moveNext();
             expect(hasCurrent).toEqual(true);
             expect(iterator.current).toEqual('c');
+            expect(iterator.depleted).toEqual(false);
 
             hasCurrent = iterator.moveNext();
             expect(hasCurrent).toEqual(false);
+            expect(iterator.depleted).toEqual(true);
         });
 
         it('should update column', () => {
@@ -93,6 +112,5 @@ describe('parser/charIterator', () => {
             expect(iterator.column).toEqual(1);
             expect(iterator.line).toEqual(3);//h
         });
-
     });
 });

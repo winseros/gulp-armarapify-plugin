@@ -34,6 +34,13 @@ describe('parser/tokens/codeBlockReader', () => {
             expect(canRead).toEqual(true);
         });
 
+        it('should return true for the "=" char', () => {
+            const iterator = { current: '=' } as Iterator<string>;
+            const reader = new ControlCharReader();
+            const canRead = reader.canRead(iterator);
+            expect(canRead).toEqual(true);
+        });
+
         it('should return true for the "[" char', () => {
             const iterator = { current: '[' } as Iterator<string>;
             const reader = new ControlCharReader();
@@ -43,6 +50,20 @@ describe('parser/tokens/codeBlockReader', () => {
 
         it('should return true for the "]" char', () => {
             const iterator = { current: ']' } as Iterator<string>;
+            const reader = new ControlCharReader();
+            const canRead = reader.canRead(iterator);
+            expect(canRead).toEqual(true);
+        });
+
+        it('should return true for the "\r" char', () => {
+            const iterator = { current: '\r' } as Iterator<string>;
+            const reader = new ControlCharReader();
+            const canRead = reader.canRead(iterator);
+            expect(canRead).toEqual(true);
+        });
+
+        it('should return true for the "\n" char', () => {
+            const iterator = { current: '\n' } as Iterator<string>;
             const reader = new ControlCharReader();
             const canRead = reader.canRead(iterator);
             expect(canRead).toEqual(true);
@@ -108,7 +129,7 @@ describe('parser/tokens/codeBlockReader', () => {
             expect(iterator.current).toEqual('a');
         });
 
-        it('should read the colon char', () => {
+        it('should read the comma char', () => {
             const buffer = new Buffer(',abcd');
             const iterator = new CharIterator(buffer);
             const reader = new ControlCharReader();
@@ -117,8 +138,25 @@ describe('parser/tokens/codeBlockReader', () => {
             const codeBlockToken = reader.read(iterator);
             expect(codeBlockToken).toBeDefined();
 
-            expect(codeBlockToken.tokenType).toEqual(tokenTypes.colon);
+            expect(codeBlockToken.tokenType).toEqual(tokenTypes.comma);
             expect(codeBlockToken.tokenValue).toEqual(',');
+            expect(codeBlockToken.lineNumber).toEqual(0);
+            expect(codeBlockToken.colNumber).toEqual(0);
+
+            expect(iterator.current).toEqual('a');
+        });
+
+        it('should read the equals char', () => {
+            const buffer = new Buffer('=abcd');
+            const iterator = new CharIterator(buffer);
+            const reader = new ControlCharReader();
+
+            iterator.moveNext();
+            const codeBlockToken = reader.read(iterator);
+            expect(codeBlockToken).toBeDefined();
+
+            expect(codeBlockToken.tokenType).toEqual(tokenTypes.equals);
+            expect(codeBlockToken.tokenValue).toEqual('=');
             expect(codeBlockToken.lineNumber).toEqual(0);
             expect(codeBlockToken.colNumber).toEqual(0);
 
@@ -153,6 +191,40 @@ describe('parser/tokens/codeBlockReader', () => {
 
             expect(codeBlockToken.tokenType).toEqual(tokenTypes.squareBracketClose);
             expect(codeBlockToken.tokenValue).toEqual(']');
+            expect(codeBlockToken.lineNumber).toEqual(0);
+            expect(codeBlockToken.colNumber).toEqual(0);
+
+            expect(iterator.current).toEqual('a');
+        });
+
+        it('should read the cr char', () => {
+            const buffer = new Buffer('\rabcd');
+            const iterator = new CharIterator(buffer);
+            const reader = new ControlCharReader();
+
+            iterator.moveNext();
+            const codeBlockToken = reader.read(iterator);
+            expect(codeBlockToken).toBeDefined();
+
+            expect(codeBlockToken.tokenType).toEqual(tokenTypes.cr);
+            expect(codeBlockToken.tokenValue).toEqual('\r');
+            expect(codeBlockToken.lineNumber).toEqual(0);
+            expect(codeBlockToken.colNumber).toEqual(0);
+
+            expect(iterator.current).toEqual('a');
+        });
+
+        it('should read the cr char', () => {
+            const buffer = new Buffer('\nabcd');
+            const iterator = new CharIterator(buffer);
+            const reader = new ControlCharReader();
+
+            iterator.moveNext();
+            const codeBlockToken = reader.read(iterator);
+            expect(codeBlockToken).toBeDefined();
+
+            expect(codeBlockToken.tokenType).toEqual(tokenTypes.lf);
+            expect(codeBlockToken.tokenValue).toEqual('\n');
             expect(codeBlockToken.lineNumber).toEqual(0);
             expect(codeBlockToken.colNumber).toEqual(0);
 
