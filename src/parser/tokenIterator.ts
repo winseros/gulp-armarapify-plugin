@@ -5,10 +5,10 @@ import { Token } from './tokens/token';
 
 const regexSpace = /[\s^\r\n]/;
 
-export class TokenIterator implements Iterator<Token<any>> {
+export class TokenIterator implements Iterator<Token<string | number>> {
     private _readerRegistry = ReaderRegistry.instance;
     private _iterator: CharIterator;
-    private _current: Token<any>;
+    private _current: Token<string | number>;
     private _line: number;
     private _column: number;
     private _depleted: boolean;
@@ -34,7 +34,7 @@ export class TokenIterator implements Iterator<Token<any>> {
         }
     }
 
-    get current(): Token<any> {
+    get current(): Token<string | number> {
         return this._current;
     }
 
@@ -66,7 +66,7 @@ export class TokenIterator implements Iterator<Token<any>> {
         return true;
     }
 
-    _readNextToken(): Token<any> {
+    _readNextToken(): Token<string | number> {
         const reader = this._readerRegistry.pickReader(this._iterator);
         const token = reader.read(this._iterator);
         return token;

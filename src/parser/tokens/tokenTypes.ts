@@ -4,6 +4,7 @@ export const tokenTypes = {
     codeBlockEnd: 'token-type--code-block-end',
     semicolon: 'token-type--semicolon',
     comma: 'token-type--comma',
+    colon: 'token-type--colon',
     squareBracketOpen: 'token-type--square-bracket-open',
     squareBracketClose: 'token-type--square-bracket-close',
     equals: 'token-type--equals',

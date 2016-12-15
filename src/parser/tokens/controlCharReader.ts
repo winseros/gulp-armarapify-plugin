@@ -9,6 +9,7 @@ symbols.set('{', tokenTypes.codeBlockStart);
 symbols.set('}', tokenTypes.codeBlockEnd);
 symbols.set(';', tokenTypes.semicolon);
 symbols.set(',', tokenTypes.comma);
+symbols.set(':', tokenTypes.colon);
 symbols.set('=', tokenTypes.equals);
 symbols.set('[', tokenTypes.squareBracketOpen);
 symbols.set(']', tokenTypes.squareBracketClose);

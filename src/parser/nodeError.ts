@@ -1,11 +1,11 @@
 import './error';
 
-export class ParserError extends Error {
+export class NodeError extends Error {
     constructor(message: string, line: number, column: number) {
         super(message);
         this.line = line;
         this.comumn = column;
-        this.name = 'ParserError';
+        this.name = 'NodeError';
     }
 
     line: number;
