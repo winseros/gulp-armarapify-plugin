@@ -1,5 +1,7 @@
 import { ClassNode } from './classNode';
 import { Node } from './node';
+import { ValueNode } from './valueNode';
+import { ArrayNode } from './arrayNode';
 import { NodeError } from './../nodeError';
 import { TokenIterator } from './../tokenIterator';
 import { Token } from './../tokens/token';
@@ -27,8 +29,8 @@ export class ClassReader {
             const child = this._readNextNode(this._iterator);
             result.push(child);
         }
-
         return result;
+
     }
 
     _readNextNode(iterator: TokenIterator): Node {
@@ -79,7 +81,44 @@ export class ClassReader {
     }
 
     _readNextProperty(propertyName: string, iterator: TokenIterator): Node {
-        throw new Error();
+        const next = this._expectNextToken(iterator, '= or [', tokenTypes.equals, tokenTypes.squareBracketOpen);
+
+        let result: Node;
+        if (next.tokenType === tokenTypes.equals) {
+            const value = this._readValueProperty(iterator);
+            result = new ValueNode(propertyName, value);
+        } else {
+            const arr = this._readArrayProperty(iterator);
+            result = new ArrayNode(propertyName, arr);
+        }
+
+        this._expectNextToken(iterator, ';', tokenTypes.semicolon);
+        return result;
+    }
+
+    _readValueProperty(iterator: TokenIterator): string | number {
+        const token = this._expectNextToken(iterator, 'string or number', tokenTypes.string, tokenTypes.number);
+        return token.tokenValue;
+    }
+
+    _readArrayProperty(iterator: TokenIterator): Array<string | number> {
+        this._expectNextToken(iterator, ']', tokenTypes.squareBracketClose);
+        this._expectNextToken(iterator, '=', tokenTypes.equals);
+        this._expectNextToken(iterator, '{', tokenTypes.codeBlockStart);
+
+        const result = [] as Array<string | number>;
+        let next = this._expectNextToken(iterator, 'string, number, }', tokenTypes.string, tokenTypes.number, tokenTypes.codeBlockEnd);
+
+        while (next.tokenType !== tokenTypes.codeBlockEnd) {
+            if (next.tokenType === tokenTypes.string || next.tokenType === tokenTypes.number) {
+                result.push(next.tokenValue);
+                next = this._expectNextToken(iterator, '} or ,', tokenTypes.codeBlockEnd, tokenTypes.comma);
+            } else {
+                next = this._expectNextToken(iterator, 'string or number', tokenTypes.string, tokenTypes.number);
+            }
+        }
+
+        return result;
     }
 
     _expectNextToken(iterator: TokenIterator, tokenName: string, ...tokenTypes: string[]): Token<string | number> {

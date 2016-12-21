@@ -1,18 +1,7 @@
-import { Node } from './node';
+import { DataNode } from './dataNode';
 
-export abstract class ValueNode implements Node {
-    private _name: string;
-    private _value: string | number;
-
+export class ValueNode extends DataNode<string | number> {
     constructor(name: string, value: string | number) {
-        this._name = name;
-    }
-
-    get name(): string {
-        return this._name;
-    }
-
-    get value(): string | number {
-        return this._value;
+        super(name, value);
     }
 }
