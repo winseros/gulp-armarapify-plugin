@@ -1,4 +1,5 @@
 import { TokenReader } from './tokenReader';
+import { CommentReader } from './commentReader';
 import { ControlCharReader } from './controlCharReader';
 import { StringReader } from './stringReader';
 import { NumberReader } from './numberReader';
@@ -17,7 +18,8 @@ export class ReaderRegistry {
     }
 
     static _registerReaders(registry: ReaderRegistry): void {
-        registry.registerReader(new ControlCharReader())
+        registry.registerReader(new CommentReader())
+        .registerReader(new ControlCharReader())
             .registerReader(new StringReader())
             .registerReader(new NumberReader())
             .registerReader(new WordReader());

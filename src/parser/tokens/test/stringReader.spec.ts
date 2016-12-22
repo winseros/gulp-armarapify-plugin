@@ -38,6 +38,23 @@ describe('parser/tokens/stringReader', () => {
             expect(iterator.current).toEqual(';');
         });
 
+        it('should read a string with inner quotes', () => {
+            const buffer = new Buffer('"some-string-text ""with inner quotes"" ";');
+            const iterator = new CharIterator(buffer);
+            const reader = new StringReader();
+
+            iterator.moveNext();
+            const commentToken = reader.read(iterator);
+            expect(commentToken).toBeDefined();
+
+            expect(commentToken.tokenType).toEqual(tokenTypes.string);
+            expect(commentToken.tokenValue).toEqual('some-string-text ""with inner quotes"" ";');
+            expect(commentToken.lineNumber).toEqual(0);
+            expect(commentToken.colNumber).toEqual(0);
+
+            expect(iterator.current).toEqual(';');
+        });
+
         it('should throw if a string contains CR symbol', () => {
             const buffer = new Buffer('"some-string-value\rmultiline"');
             const iterator = new CharIterator(buffer);

@@ -28,8 +28,13 @@ export class StringReader extends TokenReader<string>{
                 throw new ParserError('Strings can not wrap on a new line', iterator.line, iterator.column);
             } else if (iterator.current === symbolQuote) {
                 iterator.moveNext();
-                complete = true;
-                break;
+                if (iterator.current === symbolQuote) {
+                    result.tokenValue += iterator.current;
+                    result.tokenValue += iterator.current;//add 2 quotes
+                } else {
+                    complete = true;
+                    break;
+                }
             } else {
                 result.tokenValue += iterator.current;
             }
