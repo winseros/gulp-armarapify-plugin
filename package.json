@@ -4,7 +4,8 @@
     "description": "The plugin for Gulp which allows to rapify (binarize) ArmA *.hpp/*.ext files",
     "main": "dist/main.js",
     "scripts": {
-        "test": "./node_modules/.bin/gulp test",
+        "test": "./node_modules/.bin/gulp test:run",
+        "cover": "./node_modules/.bin/gulp cover:run",
         "assemble": "./node_modules/.bin/gulp assemble",
         "watch": "./node_modules/.bin/gulp watch"
     },
@@ -37,19 +38,21 @@
         "babel-preset-env": "^1.1.1",
         "del": "^2.2.2",
         "gulp": "^3.9.1",
+        "gulp-istanbul": "^1.1.1",
         "gulp-jasmine": "^2.4.2",
         "gulp-sourcemaps": "^1.9.1",
         "gulp-tslint": "^7.0.1",
         "gulp-typescript": "^3.1.3",
         "gulp-watch": "^4.3.11",
+        "istanbul": "^0.4.5",
         "jasmine": "^2.5.2",
         "jasmine-console-reporter": "^1.2.7",
         "karma": "^1.3.0",
         "merge-stream": "^1.0.1",
+        "remap-istanbul": "^0.8.4",
         "tslint": "^4.0.2",
         "typescript": "^2.0.10",
-        "typings": "^2.0.0",
-        "vinyl": "^2.0.1"
+        "typings": "^2.0.0"
     },
     "files": [
         "dist/**/*.js",
