@@ -48,7 +48,7 @@ describe('parser/tokens/stringReader', () => {
             expect(commentToken).toBeDefined();
 
             expect(commentToken.tokenType).toEqual(tokenTypes.string);
-            expect(commentToken.tokenValue).toEqual('some-string-text ""with inner quotes"" ";');
+            expect(commentToken.tokenValue).toEqual('some-string-text ""with inner quotes"" ');
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
 
