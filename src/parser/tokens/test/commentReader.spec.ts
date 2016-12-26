@@ -89,8 +89,8 @@ describe('parser/tokens/commentReader', () => {
             expect(iterator.moveNext()).toEqual(false);
         });
 
-        it('should read a multiline comment', () => {
-            const buffer = new Buffer('/*this is a comment*/some more text');
+        it('should read a multiline comment ending the reader with "*"', () => {
+            const buffer = new Buffer('/*this is a comment*');
             const iterator = new CharIterator(buffer);
             const reader = new CommentReader();
 
@@ -99,7 +99,24 @@ describe('parser/tokens/commentReader', () => {
             expect(commentToken).toBeDefined();
 
             expect(commentToken.tokenType).toEqual(tokenTypes.comment);
-            expect(commentToken.tokenValue).toEqual('this is a comment');
+            expect(commentToken.tokenValue).toEqual('this is a comment*');
+            expect(commentToken.lineNumber).toEqual(0);
+            expect(commentToken.colNumber).toEqual(0);
+
+            expect(iterator.moveNext()).toEqual(false);
+        });
+
+        it('should read a multiline comment', () => {
+            const buffer = new Buffer('/*this is * a comment*/some more text');
+            const iterator = new CharIterator(buffer);
+            const reader = new CommentReader();
+
+            iterator.moveNext();
+            const commentToken = reader.read(iterator);
+            expect(commentToken).toBeDefined();
+
+            expect(commentToken.tokenType).toEqual(tokenTypes.comment);
+            expect(commentToken.tokenValue).toEqual('this is * a comment');
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
 

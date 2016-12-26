@@ -214,6 +214,19 @@ describe('parser/tokens/numberReader', () => {
             });
         });
 
+        it('should throw if number contains "+" or "-" in the middle', () => {
+            const endings = ['+', '-'];
+            endings.forEach((sign) => {
+                const buffer = new Buffer(`12${sign}345`);
+
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                expect(() => reader.read(iterator)).toThrowError(`A "${sign}" sign allowed only after a "e" sign in a number`);
+            });
+        });
+
         it('should throw if could not parse a number', () => {
             const buffer = new Buffer('e+1');
             const iterator = new CharIterator(buffer);

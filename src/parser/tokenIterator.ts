@@ -29,6 +29,8 @@ export class TokenIterator implements Iterator<Token<string | number>> {
                 this._current = token;
                 this._line = token.lineNumber;
                 this._column = token.colNumber;
+            } else {
+                this._updateDepleted();
             }
             return hasMoreSymbols;
         }

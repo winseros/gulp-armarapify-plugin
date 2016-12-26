@@ -50,11 +50,6 @@ export class ClassReader {
         }
     }
 
-    _isNonSenseToken(tokenType: string) {
-        const result = tokenType === tokenTypes.comment || tokenType === tokenTypes.cr || tokenType === tokenTypes.lf;
-        return result;
-    }
-
     _readNextWord(iterator: TokenIterator, token: Token<any>): Node {
         const current = iterator.current as Token<string>;
         const result = current.tokenValue.toLowerCase() === 'class'

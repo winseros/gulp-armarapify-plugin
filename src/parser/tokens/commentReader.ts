@@ -71,6 +71,8 @@ export class CommentReader extends TokenReader<string> {
                         result.tokenValue += prev;
                         result.tokenValue += iterator.current;
                     }
+                } else {
+                    result.tokenValue += prev;
                 }
             } else {
                 result.tokenValue += iterator.current;

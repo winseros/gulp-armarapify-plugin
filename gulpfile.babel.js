@@ -51,7 +51,7 @@ gulp.task('test:run', ['assemble'], () => {
         }));
 });
 
-gulp.task('cover:instrument', () => {
+gulp.task('cover:instrument', ['assemble'], () => {
     return gulp.src(testSources)
         .pipe(istanbul())
         .pipe(istanbul.hookRequire());

@@ -4,7 +4,7 @@ import { TokenIterator } from '../tokenIterator';
 describe('tokenIterator', () => {
     describe('moveNext', () => {
         it('should iterate through the tokens', () => {
-            const data = 'class MyClass { myProperty1="string-value"; \r\n myProperty2=12345; \r myProperty3[]={1,2};\n}; \r\n';
+            const data = 'class MyClass { myProperty1="string-value"; \r\n myProperty2=12345; \r myProperty3[]={1,2};\n}; \r\n ';
             const iterator = new TokenIterator(new Buffer(data));
 
             //line 0

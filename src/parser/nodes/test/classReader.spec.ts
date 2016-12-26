@@ -57,5 +57,11 @@ describe('parser/nodes/ClassReader', () => {
             expect(prop3.name).toEqual('prop3');
             expect(prop3.value).toEqual([1, 2, 3, 4, 5]);
         });
+
+        it('should throw if can not read class signature', () => {
+            const buffer = new Buffer(';');
+            const reader = new ClassReader(buffer);
+            expect(() => reader.readClassNodes()).toThrowError('Token ";" is not expected');
+        });
     });
 });
