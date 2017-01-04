@@ -1,275 +1,73 @@
 import { tokenTypes } from './../tokens/tokenTypes';
 import { TokenIterator } from '../tokenIterator';
 
+const expectNext = (iterator: TokenIterator, tokenType: string, tokenValue: string | number, lineNumber: number, colNumber: number) => {
+    let next = iterator.moveNext();
+    expect(next).toEqual(true);
+    expect(iterator.current.tokenType).toEqual(tokenType);
+    expect(iterator.current.tokenValue).toEqual(tokenValue);
+    expect(iterator.current.lineNumber).toEqual(lineNumber);
+    expect(iterator.current.colNumber).toEqual(colNumber);
+    expect(iterator.line).toEqual(lineNumber);
+    expect(iterator.column).toEqual(colNumber);
+    expect(iterator.depleted).toEqual(false);
+};
+
 describe('tokenIterator', () => {
     describe('moveNext', () => {
         it('should iterate through the tokens', () => {
-            const data = 'class MyClass { myProperty1="string-value"; \r\n myProperty2=12345; \r myProperty3[]={1,2};\n}; \r\n ';
+            const data = 'class MyClass { myProperty1="string-value"; \r\n myProperty2=12345; \r myProperty3[] = {1,2};\n}; \r\n ';
             const iterator = new TokenIterator(new Buffer(data));
 
             //line 0
-            let next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.word);
-            expect(iterator.current.tokenValue).toEqual('class');
-            expect(iterator.current.lineNumber).toEqual(0);
-            expect(iterator.current.colNumber).toEqual(0);
-            expect(iterator.line).toEqual(0);
-            expect(iterator.column).toEqual(0);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.word);
-            expect(iterator.current.tokenValue).toEqual('MyClass');
-            expect(iterator.current.lineNumber).toEqual(0);
-            expect(iterator.current.colNumber).toEqual(6);
-            expect(iterator.line).toEqual(0);
-            expect(iterator.column).toEqual(6);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.codeBlockStart);
-            expect(iterator.current.tokenValue).toEqual('{');
-            expect(iterator.current.lineNumber).toEqual(0);
-            expect(iterator.current.colNumber).toEqual(14);
-            expect(iterator.line).toEqual(0);
-            expect(iterator.column).toEqual(14);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.word);
-            expect(iterator.current.tokenValue).toEqual('myProperty1');
-            expect(iterator.current.lineNumber).toEqual(0);
-            expect(iterator.current.colNumber).toEqual(16);
-            expect(iterator.line).toEqual(0);
-            expect(iterator.column).toEqual(16);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.equals);
-            expect(iterator.current.tokenValue).toEqual('=');
-            expect(iterator.current.lineNumber).toEqual(0);
-            expect(iterator.current.colNumber).toEqual(27);
-            expect(iterator.line).toEqual(0);
-            expect(iterator.column).toEqual(27);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.string);
-            expect(iterator.current.tokenValue).toEqual('string-value');
-            expect(iterator.current.lineNumber).toEqual(0);
-            expect(iterator.current.colNumber).toEqual(28);
-            expect(iterator.line).toEqual(0);
-            expect(iterator.column).toEqual(28);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.semicolon);
-            expect(iterator.current.tokenValue).toEqual(';');
-            expect(iterator.current.lineNumber).toEqual(0);
-            expect(iterator.current.colNumber).toEqual(42);
-            expect(iterator.line).toEqual(0);
-            expect(iterator.column).toEqual(42);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.cr);
-            expect(iterator.current.tokenValue).toEqual('\r');
-            expect(iterator.current.lineNumber).toEqual(0);
-            expect(iterator.current.colNumber).toEqual(44);
-            expect(iterator.line).toEqual(0);
-            expect(iterator.column).toEqual(44);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.lf);
-            expect(iterator.current.tokenValue).toEqual('\n');
-            expect(iterator.current.lineNumber).toEqual(0);
-            expect(iterator.current.colNumber).toEqual(45);
-            expect(iterator.line).toEqual(0);
-            expect(iterator.column).toEqual(45);
-            expect(iterator.depleted).toEqual(false);
+            expectNext(iterator, tokenTypes.word, 'class', 0, 0);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 5);
+            expectNext(iterator, tokenTypes.word, 'MyClass', 0, 6);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 13);
+            expectNext(iterator, tokenTypes.codeBlockStart, '{', 0, 14);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 15);
+            expectNext(iterator, tokenTypes.word, 'myProperty1', 0, 16);
+            expectNext(iterator, tokenTypes.equals, '=', 0, 27);
+            expectNext(iterator, tokenTypes.string, 'string-value', 0, 28);
+            expectNext(iterator, tokenTypes.semicolon, ';', 0, 42);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 43);
+            expectNext(iterator, tokenTypes.cr, '\r', 0, 44);
+            expectNext(iterator, tokenTypes.lf, '\n', 0, 45);
 
             //line 1
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.word);
-            expect(iterator.current.tokenValue).toEqual('myProperty2');
-            expect(iterator.current.lineNumber).toEqual(1);
-            expect(iterator.current.colNumber).toEqual(1);
-            expect(iterator.line).toEqual(1);
-            expect(iterator.column).toEqual(1);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.equals);
-            expect(iterator.current.tokenValue).toEqual('=');
-            expect(iterator.current.lineNumber).toEqual(1);
-            expect(iterator.current.colNumber).toEqual(12);
-            expect(iterator.line).toEqual(1);
-            expect(iterator.column).toEqual(12);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.number);
-            expect(iterator.current.tokenValue).toEqual(12345);
-            expect(iterator.current.lineNumber).toEqual(1);
-            expect(iterator.current.colNumber).toEqual(13);
-            expect(iterator.line).toEqual(1);
-            expect(iterator.column).toEqual(13);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.semicolon);
-            expect(iterator.current.tokenValue).toEqual(';');
-            expect(iterator.current.lineNumber).toEqual(1);
-            expect(iterator.current.colNumber).toEqual(18);
-            expect(iterator.line).toEqual(1);
-            expect(iterator.column).toEqual(18);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.cr);
-            expect(iterator.current.tokenValue).toEqual('\r');
-            expect(iterator.current.lineNumber).toEqual(1);
-            expect(iterator.current.colNumber).toEqual(20);
-            expect(iterator.line).toEqual(1);
-            expect(iterator.column).toEqual(20);
-            expect(iterator.depleted).toEqual(false);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 1, 0);
+            expectNext(iterator, tokenTypes.word, 'myProperty2', 1, 1);
+            expectNext(iterator, tokenTypes.equals, '=', 1, 12);
+            expectNext(iterator, tokenTypes.number, 12345, 1, 13);
+            expectNext(iterator, tokenTypes.semicolon, ';', 1, 18);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 1, 19);
+            expectNext(iterator, tokenTypes.cr, '\r', 1, 20);
 
             //line 2
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.word);
-            expect(iterator.current.tokenValue).toEqual('myProperty3');
-            expect(iterator.current.lineNumber).toEqual(2);
-            expect(iterator.current.colNumber).toEqual(1);
-            expect(iterator.line).toEqual(2);
-            expect(iterator.column).toEqual(1);
-            expect(iterator.depleted).toEqual(false);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 2, 0);
+            expectNext(iterator, tokenTypes.word, 'myProperty3', 2, 1);
+            expectNext(iterator, tokenTypes.squareBracketOpen, '[', 2, 12);
+            expectNext(iterator, tokenTypes.squareBracketClose, ']', 2, 13);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 2, 14);
+            expectNext(iterator, tokenTypes.equals, '=', 2, 15);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 2, 16);
+            expectNext(iterator, tokenTypes.codeBlockStart, '{', 2, 17);
+            expectNext(iterator, tokenTypes.number, 1, 2, 18);
+            expectNext(iterator, tokenTypes.comma, ',', 2, 19);
+            expectNext(iterator, tokenTypes.number, 2, 2, 20);
+            expectNext(iterator, tokenTypes.codeBlockEnd, '}', 2, 21);
+            expectNext(iterator, tokenTypes.semicolon, ';', 2, 22);
+            expectNext(iterator, tokenTypes.lf, '\n', 2, 23);
 
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.squareBracketOpen);
-            expect(iterator.current.tokenValue).toEqual('[');
-            expect(iterator.current.lineNumber).toEqual(2);
-            expect(iterator.current.colNumber).toEqual(12);
-            expect(iterator.line).toEqual(2);
-            expect(iterator.column).toEqual(12);
-            expect(iterator.depleted).toEqual(false);
+            //line 3
+            expectNext(iterator, tokenTypes.codeBlockEnd, '}', 3, 0);
+            expectNext(iterator, tokenTypes.semicolon, ';', 3, 1);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 3, 2);
+            expectNext(iterator, tokenTypes.cr, '\r', 3, 3);
+            expectNext(iterator, tokenTypes.lf, '\n', 3, 4);
 
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.squareBracketClose);
-            expect(iterator.current.tokenValue).toEqual(']');
-            expect(iterator.current.lineNumber).toEqual(2);
-            expect(iterator.current.colNumber).toEqual(13);
-            expect(iterator.line).toEqual(2);
-            expect(iterator.column).toEqual(13);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.equals);
-            expect(iterator.current.tokenValue).toEqual('=');
-            expect(iterator.current.lineNumber).toEqual(2);
-            expect(iterator.current.colNumber).toEqual(14);
-            expect(iterator.line).toEqual(2);
-            expect(iterator.column).toEqual(14);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.codeBlockStart);
-            expect(iterator.current.tokenValue).toEqual('{');
-            expect(iterator.current.lineNumber).toEqual(2);
-            expect(iterator.current.colNumber).toEqual(15);
-            expect(iterator.line).toEqual(2);
-            expect(iterator.column).toEqual(15);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.number);
-            expect(iterator.current.tokenValue).toEqual(1);
-            expect(iterator.current.lineNumber).toEqual(2);
-            expect(iterator.current.colNumber).toEqual(16);
-            expect(iterator.line).toEqual(2);
-            expect(iterator.column).toEqual(16);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.comma);
-            expect(iterator.current.tokenValue).toEqual(',');
-            expect(iterator.current.lineNumber).toEqual(2);
-            expect(iterator.current.colNumber).toEqual(17);
-            expect(iterator.line).toEqual(2);
-            expect(iterator.column).toEqual(17);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.number);
-            expect(iterator.current.tokenValue).toEqual(2);
-            expect(iterator.current.lineNumber).toEqual(2);
-            expect(iterator.current.colNumber).toEqual(18);
-            expect(iterator.line).toEqual(2);
-            expect(iterator.column).toEqual(18);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.codeBlockEnd);
-            expect(iterator.current.tokenValue).toEqual('}');
-            expect(iterator.current.lineNumber).toEqual(2);
-            expect(iterator.current.colNumber).toEqual(19);
-            expect(iterator.line).toEqual(2);
-            expect(iterator.column).toEqual(19);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.semicolon);
-            expect(iterator.current.tokenValue).toEqual(';');
-            expect(iterator.current.lineNumber).toEqual(2);
-            expect(iterator.current.colNumber).toEqual(20);
-            expect(iterator.line).toEqual(2);
-            expect(iterator.column).toEqual(20);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.lf);
-            expect(iterator.current.tokenValue).toEqual('\n');
-            expect(iterator.current.lineNumber).toEqual(2);
-            expect(iterator.current.colNumber).toEqual(21);
-            expect(iterator.line).toEqual(2);
-            expect(iterator.column).toEqual(21);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.codeBlockEnd);
-            expect(iterator.current.tokenValue).toEqual('}');
-            expect(iterator.current.lineNumber).toEqual(3);
-            expect(iterator.current.colNumber).toEqual(0);
-            expect(iterator.line).toEqual(3);
-            expect(iterator.column).toEqual(0);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.semicolon);
-            expect(iterator.current.tokenValue).toEqual(';');
-            expect(iterator.current.lineNumber).toEqual(3);
-            expect(iterator.current.colNumber).toEqual(1);
-            expect(iterator.line).toEqual(3);
-            expect(iterator.column).toEqual(1);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.cr);
-            expect(iterator.current.tokenValue).toEqual('\r');
-            expect(iterator.current.lineNumber).toEqual(3);
-            expect(iterator.current.colNumber).toEqual(3);
-            expect(iterator.line).toEqual(3);
-            expect(iterator.column).toEqual(3);
-            expect(iterator.depleted).toEqual(false);
-
-            next = iterator.moveNext(); expect(next).toEqual(true);
-            expect(iterator.current.tokenType).toEqual(tokenTypes.lf);
-            expect(iterator.current.tokenValue).toEqual('\n');
-            expect(iterator.current.lineNumber).toEqual(3);
-            expect(iterator.current.colNumber).toEqual(4);
-            expect(iterator.line).toEqual(3);
-            expect(iterator.column).toEqual(4);
-            expect(iterator.depleted).toEqual(false);
+            //line 4
+            expectNext(iterator, tokenTypes.whitespace, ' ', 4, 0);
 
             expect(iterator.moveNext()).toEqual(false);
             expect(iterator.depleted).toEqual(true);

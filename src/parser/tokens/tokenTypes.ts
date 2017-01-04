@@ -13,6 +13,7 @@ export const tokenTypes = {
     number: 'token-type--number',
     string: 'token-type--string',
     word: 'token-type--word',
+    whitespace: 'token-type--whitespace',
     cr: 'token-type--cr',
     lf: 'token-type--lf',
     mathPlus: 'tokentype--math-plus',

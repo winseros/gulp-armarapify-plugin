@@ -3,7 +3,7 @@ import { ArrayNode } from './../arrayNode';
 import { ClassNode } from './../classNode';
 import { ClassReader } from './../classReader';
 
-describe('parser/nodes/ClassReader', () => {
+xdescribe('parser/nodes/ClassReader', () => {
     describe('readClassNodes', () => {
         it('should read inner class nodes', () => {
             const buffer = new Buffer('class MyClass \r\n {\r\n class MyChildClass\r:MyClass2{}; class MyChildClass2:MyClass3{}; };');
