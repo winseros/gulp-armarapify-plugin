@@ -113,4 +113,45 @@ describe('parser/charIterator', () => {
             expect(iterator.line).toEqual(3);//h
         });
     });
+
+    describe('createCheckpoint', () => {
+        it('should create a restorable checkpoint', () => {
+            const input = new Buffer('ab');
+            const iterator = new CharIterator(input);
+
+            iterator.moveNext();
+            const checkpoint = iterator.createCheckpoint();
+
+            expect(checkpoint).toBeDefined();
+        });
+    });
+
+    describe('__rollbackCheckpoint', () => {
+        it('should create a restorable checkpoint', () => {
+            const input = new Buffer('ab');
+            const iterator = new CharIterator(input);
+
+            iterator.moveNext();//set the iterator to some state
+
+            const checkpoint = iterator.createCheckpoint();
+            const startState = {
+                current: iterator.current,
+                line: iterator.line,
+                column: iterator.column,
+                depleted: iterator.depleted
+            };
+
+            iterator.moveNext();//change the iterator state
+            checkpoint.restore();//restore the checkpoint
+
+            const endState = {
+                current: iterator.current,
+                line: iterator.line,
+                column: iterator.column,
+                depleted: iterator.depleted
+            };
+
+            expect(startState).toEqual(endState);
+        });
+    });
 });

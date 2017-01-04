@@ -1,16 +1,22 @@
 import { TokenReader } from './tokenReader';
 import { Token } from './token';
 import { Iterator } from '../iterator';
+import { CharIterator } from '../charIterator';
 import { ParserError } from '../parserError';
-import {tokenTypes} from './tokenTypes';
+import { tokenTypes } from './tokenTypes';
 
 const commentStart = '/';
 const commentSingleLine = '/';
 const commentMultiline = '*';
 
 export class CommentReader extends TokenReader<string> {
-    canRead(iterator: Iterator<string>): boolean {
-        const isComment = iterator.current === commentStart;
+    canRead(iterator: CharIterator): boolean {
+        let isComment = iterator.current === commentStart;
+        if (isComment) {
+            const checkpoint = iterator.createCheckpoint();
+            isComment = checkpoint.moveNext() && (checkpoint.current === commentSingleLine || checkpoint.current === commentMultiline);
+            checkpoint.restore();
+        }
         return isComment;
     }
 

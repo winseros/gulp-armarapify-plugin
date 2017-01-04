@@ -1,4 +1,5 @@
 import { Iterator } from './iterator';
+import { CharIteratorCheckpoint, CheckpointParams } from './charIteratorCheckpoint';
 
 const cr = 13;
 const lf = 10;
@@ -8,7 +9,7 @@ export class CharIterator implements Iterator<string> {
     private _bufferIndex = 0;
     private _depleted: boolean;
     private _current: string;
-    private _line = 0;;
+    private _line = 0;
     private _column = 0;
 
     constructor(buffer: Buffer) {
@@ -28,6 +29,28 @@ export class CharIterator implements Iterator<string> {
             this._depleted = true;
             return false;
         }
+    }
+
+    createCheckpoint(): CharIteratorCheckpoint {
+        const params = {
+            iterator: this,
+            bufferIndex: Math.max(this._bufferIndex - 1, 0),
+            line: this._line,
+            column: this._column,
+            depleted: this._depleted
+        } as CheckpointParams;
+        return new CharIteratorCheckpoint(params);
+    }
+
+    __rollbackCheckpoint(params: CheckpointParams): void {
+        this._bufferIndex = params.bufferIndex;
+        this._line = params.line;
+        this._column = params.column;
+        this._depleted = params.depleted;
+
+        const current = this._peekOffsetByte(0);
+        this._updatePosition(current);
+        this._current = String.fromCharCode(current);
     }
 
     _updatePosition(current: number): void {

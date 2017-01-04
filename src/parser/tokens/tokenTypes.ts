@@ -5,6 +5,8 @@ export const tokenTypes = {
     semicolon: 'token-type--semicolon',
     comma: 'token-type--comma',
     colon: 'token-type--colon',
+    bracketOpen: 'token-type--bracket-open',
+    bracketClose: 'token-type--bracket-close',
     squareBracketOpen: 'token-type--square-bracket-open',
     squareBracketClose: 'token-type--square-bracket-close',
     equals: 'token-type--equals',
@@ -12,5 +14,11 @@ export const tokenTypes = {
     string: 'token-type--string',
     word: 'token-type--word',
     cr: 'token-type--cr',
-    lf: 'token-type--lf'
+    lf: 'token-type--lf',
+    mathPlus: 'tokentype--math-plus',
+    mathMinus: 'tokentype--math-minus',
+    mathMul: 'tokentype--math-mul',
+    mathDiv: 'tokentype--math-div',
+    mathMod: 'tokentype--math-mod',
+    mathPow: 'tokentype--math-pow'
 };

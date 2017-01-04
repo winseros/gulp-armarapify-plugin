@@ -1,22 +1,43 @@
-import { Iterator } from '../../iterator';
 import { CharIterator } from '../../charIterator';
 import { CommentReader } from '../commentReader';
 import { tokenTypes } from '../tokenTypes';
 
 describe('parser/tokens/commentReader', () => {
     describe('canRead', () => {
-        it('should return true if current iterator char is a comment start', () => {
-            const iterator = { current: '/' } as Iterator<string>;
+        it('should return true if current iterator char is a single-line comment start', () => {
+            const iterator = new CharIterator(new Buffer('//abc'));
+            iterator.moveNext();
+
             const reader = new CommentReader();
             const canRead = reader.canRead(iterator);
             expect(canRead).toEqual(true);
+
+            expect(iterator.current).toEqual('/');
+            expect(iterator.column).toEqual(0);
+        });
+
+        it('should return true if current iterator char is a multi-line comment start', () => {
+            const iterator = new CharIterator(new Buffer('/*abc'));
+            iterator.moveNext();
+
+            const reader = new CommentReader();
+            const canRead = reader.canRead(iterator);
+            expect(canRead).toEqual(true);
+
+            expect(iterator.current).toEqual('/');
+            expect(iterator.column).toEqual(0);
         });
 
         it('should return true if current iterator char is a non-comment start', () => {
-            const iterator = { current: 'a' } as Iterator<string>;
+            const iterator = new CharIterator(new Buffer('/abc'));
+            iterator.moveNext();
+
             const reader = new CommentReader();
             const canRead = reader.canRead(iterator);
             expect(canRead).toEqual(false);
+
+            expect(iterator.current).toEqual('/');
+            expect(iterator.column).toEqual(0);
         });
     });
 

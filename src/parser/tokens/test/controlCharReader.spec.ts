@@ -8,7 +8,7 @@ describe('parser/tokens/controlCharReader', () => {
     describe('canRead', () => {
         it('should recognize a special character', () => {
 
-            const characters = ['{', '}', ';', ',', ':', '=', '[', ']', '\r', '\n'];
+            const characters = ['{', '}', ';', ',', ':', '=', '(', ')', '[', ']', '\r', '\n', '+', '-', '*', '/', '%', '^'];
 
             const iterator = {} as Iterator<string>;
             const reader = new ControlCharReader();
@@ -36,10 +36,18 @@ describe('parser/tokens/controlCharReader', () => {
                 ',': tokenTypes.comma,
                 ':': tokenTypes.colon,
                 '=': tokenTypes.equals,
+                '(': tokenTypes.bracketOpen,
+                ')': tokenTypes.bracketClose,
                 '[': tokenTypes.squareBracketOpen,
                 ']': tokenTypes.squareBracketClose,
                 '\r': tokenTypes.cr,
-                '\n': tokenTypes.lf
+                '\n': tokenTypes.lf,
+                '+': tokenTypes.mathPlus,
+                '-': tokenTypes.mathMinus,
+                '*': tokenTypes.mathMul,
+                '/': tokenTypes.mathDiv,
+                '%': tokenTypes.mathMod,
+                '^': tokenTypes.mathPow
             } as { [id: string]: string };
 
             const reader = new ControlCharReader();

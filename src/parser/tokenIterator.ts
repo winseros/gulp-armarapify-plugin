@@ -1,5 +1,5 @@
 import { ReaderRegistry } from './tokens/readerRegistry';
-import { Iterator } from './iterator';
+import { Checkpoint, Iterator } from './iterator';
 import { CharIterator } from './charIterator';
 import { Token } from './tokens/token';
 
@@ -84,5 +84,9 @@ export class TokenIterator implements Iterator<Token<string | number>> {
 
         const match = regexSpace.test(current);
         return match;
+    }
+
+    createCheckpoint(): Checkpoint<Token<string | number>> {
+        throw new Error('Not implemented');
     }
 }

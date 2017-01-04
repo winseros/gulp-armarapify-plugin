@@ -19,7 +19,7 @@ export class ReaderRegistry {
 
     static _registerReaders(registry: ReaderRegistry): void {
         registry.registerReader(new CommentReader())
-        .registerReader(new ControlCharReader())
+            .registerReader(new ControlCharReader())
             .registerReader(new StringReader())
             .registerReader(new NumberReader())
             .registerReader(new WordReader());

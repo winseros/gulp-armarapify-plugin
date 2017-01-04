@@ -275,4 +275,13 @@ describe('tokenIterator', () => {
             expect(iterator.depleted).toEqual(true);
         });
     });
+
+    describe('createCheckpoint', () => {
+        it('should throw an exception', () => {
+            const data = 'class';
+            const iterator = new TokenIterator(new Buffer(data));
+
+            expect(() => iterator.createCheckpoint()).toThrowError('Not implemented');
+        });
+    });
 });
