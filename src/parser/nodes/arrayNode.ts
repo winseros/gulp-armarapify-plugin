@@ -1,7 +1,13 @@
-import { DataNode } from './dataNode';
+import { Node } from './node';
+import { ConstNode } from './constNode';
+import { nodeTypes } from './nodeTypes';
 
-export class ArrayNode extends DataNode<Array<string | number>> {
-    constructor(name: string, value: Array<string | number>) {
-        super(name, value);
+export class ArrayNode extends ConstNode<Node[]> {
+    constructor(value: Node[]) {
+        super(value);
+    }
+
+    get type(): string {
+        return nodeTypes.array;
     }
 }

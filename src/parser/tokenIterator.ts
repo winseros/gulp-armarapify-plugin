@@ -1,10 +1,10 @@
-import { ReaderRegistry } from './tokens/readerRegistry';
+import { TokenReaders } from './tokens/tokenReaders';
 import { Checkpoint, Iterator } from './iterator';
 import { CharIterator } from './charIterator';
 import { Token } from './tokens/token';
 
 export class TokenIterator implements Iterator<Token<string | number>> {
-    private _readerRegistry = ReaderRegistry.instance;
+    private _readerRegistry = TokenReaders.instance;
     private _iterator: CharIterator;
     private _current: Token<string | number>;
     private _line: number;

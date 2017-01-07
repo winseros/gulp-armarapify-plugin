@@ -1,4 +1,4 @@
-import { ValueNode } from './../valueNode';
+import { ConstStringNode } from './../valueNode';
 import { ArrayNode } from './../arrayNode';
 import { ClassNode } from './../classNode';
 import { ClassReader } from './../classReader';
@@ -42,12 +42,12 @@ xdescribe('parser/nodes/ClassReader', () => {
             expect(node1.inherits).not.toBeDefined();
             expect(node1.children.length).toEqual(3);
 
-            const prop1 = node1.children[0] as ValueNode;
+            const prop1 = node1.children[0] as ConstStringNode;
             expect(prop1).toBeDefined();
             expect(prop1.name).toEqual('prop1');
             expect(prop1.value).toEqual(1.0);
 
-            const prop2 = node1.children[1] as ValueNode;
+            const prop2 = node1.children[1] as ConstStringNode;
             expect(prop2).toBeDefined();
             expect(prop2.name).toEqual('prop2');
             expect(prop2.value).toEqual('p2');

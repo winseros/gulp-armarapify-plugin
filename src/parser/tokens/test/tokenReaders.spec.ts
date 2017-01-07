@@ -1,7 +1,7 @@
 import { Iterator } from './../../iterator';
-import { ReaderRegistry } from '../readerRegistry';
+import { TokenReaders } from '../tokenReaders';
 
-describe('parser/tokens/readerRegistry', () => {
+describe('parser/tokens/tokenReaders', () => {
     describe('pickReader', () => {
         it('should return an appropriate reader', () => {
             const r1 = jasmine.createSpyObj('reader1', ['canRead']);
@@ -14,7 +14,7 @@ describe('parser/tokens/readerRegistry', () => {
             r1read.and.returnValue(false);
             r2read.and.returnValue(true);
 
-            const registry = new ReaderRegistry();
+            const registry = new TokenReaders();
             registry.registerReader(r1)
                 .registerReader(r2)
                 .registerReader(r3);
@@ -42,7 +42,7 @@ describe('parser/tokens/readerRegistry', () => {
             r1read.and.returnValue(false);
             r2read.and.returnValue(false);
 
-            const registry = new ReaderRegistry();
+            const registry = new TokenReaders();
             registry.registerReader(r1)
                 .registerReader(r2);
 

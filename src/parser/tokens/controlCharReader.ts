@@ -15,14 +15,12 @@ symbols.set('(', tokenTypes.bracketOpen);
 symbols.set(')', tokenTypes.bracketClose);
 symbols.set('[', tokenTypes.squareBracketOpen);
 symbols.set(']', tokenTypes.squareBracketClose);
-symbols.set('\r', tokenTypes.cr);
-symbols.set('\n', tokenTypes.lf);
-symbols.set('+', tokenTypes.mathPlus);
-symbols.set('-', tokenTypes.mathMinus);
-symbols.set('*', tokenTypes.mathMul);
-symbols.set('/', tokenTypes.mathDiv);
-symbols.set('%', tokenTypes.mathMod);
-symbols.set('^', tokenTypes.mathPow);
+symbols.set('+', tokenTypes.mathOp);
+symbols.set('-', tokenTypes.mathOp);
+symbols.set('*', tokenTypes.mathOp);
+symbols.set('/', tokenTypes.mathOp);
+symbols.set('%', tokenTypes.mathOp);
+symbols.set('^', tokenTypes.mathOp);
 
 export class ControlCharReader extends TokenReader<string> {
     canRead(iterator: Iterator<string>): boolean {

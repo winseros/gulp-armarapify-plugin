@@ -1,5 +1,6 @@
 import { TokenReader } from './tokenReader';
 import { WhitespaceReader } from './whitespaceReader';
+import { NewLineReader } from './newLineReader';
 import { CommentReader } from './commentReader';
 import { ControlCharReader } from './controlCharReader';
 import { StringReader } from './stringReader';
@@ -8,18 +9,19 @@ import { WordReader } from './wordReader';
 import { Iterator } from '../iterator';
 import { ParserError } from '../ParserError';
 
-export class ReaderRegistry {
-    private static _instance: ReaderRegistry;
-    static get instance(): ReaderRegistry {
-        if (!ReaderRegistry._instance) {
-            ReaderRegistry._instance = new ReaderRegistry();
-            ReaderRegistry._registerReaders(ReaderRegistry._instance);
+export class TokenReaders {
+    private static _instance: TokenReaders;
+    static get instance(): TokenReaders {
+        if (!TokenReaders._instance) {
+            TokenReaders._instance = new TokenReaders();
+            TokenReaders._registerReaders(TokenReaders._instance);
         }
-        return ReaderRegistry._instance;
+        return TokenReaders._instance;
     }
 
-    static _registerReaders(registry: ReaderRegistry): void {
+    static _registerReaders(registry: TokenReaders): void {
         registry.registerReader(new WhitespaceReader())
+            .registerReader(new NewLineReader())
             .registerReader(new CommentReader())
             .registerReader(new ControlCharReader())
             .registerReader(new StringReader())
@@ -29,7 +31,7 @@ export class ReaderRegistry {
 
     private _readers: TokenReader<any>[] = [];
 
-    registerReader(reader: TokenReader<any>): ReaderRegistry {
+    registerReader(reader: TokenReader<any>): TokenReaders {
         this._readers.push(reader);
         return this;
     }

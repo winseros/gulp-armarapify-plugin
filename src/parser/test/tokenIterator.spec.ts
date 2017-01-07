@@ -31,8 +31,7 @@ describe('tokenIterator', () => {
             expectNext(iterator, tokenTypes.string, 'string-value', 0, 28);
             expectNext(iterator, tokenTypes.semicolon, ';', 0, 42);
             expectNext(iterator, tokenTypes.whitespace, ' ', 0, 43);
-            expectNext(iterator, tokenTypes.cr, '\r', 0, 44);
-            expectNext(iterator, tokenTypes.lf, '\n', 0, 45);
+            expectNext(iterator, tokenTypes.newline, '\r\n', 0, 44);
 
             //line 1
             expectNext(iterator, tokenTypes.whitespace, ' ', 1, 0);
@@ -41,7 +40,7 @@ describe('tokenIterator', () => {
             expectNext(iterator, tokenTypes.number, 12345, 1, 13);
             expectNext(iterator, tokenTypes.semicolon, ';', 1, 18);
             expectNext(iterator, tokenTypes.whitespace, ' ', 1, 19);
-            expectNext(iterator, tokenTypes.cr, '\r', 1, 20);
+            expectNext(iterator, tokenTypes.newline, '\r\n', 1, 20);
 
             //line 2
             expectNext(iterator, tokenTypes.whitespace, ' ', 2, 0);
@@ -57,14 +56,13 @@ describe('tokenIterator', () => {
             expectNext(iterator, tokenTypes.number, 2, 2, 20);
             expectNext(iterator, tokenTypes.codeBlockEnd, '}', 2, 21);
             expectNext(iterator, tokenTypes.semicolon, ';', 2, 22);
-            expectNext(iterator, tokenTypes.lf, '\n', 2, 23);
+            expectNext(iterator, tokenTypes.newline, '\r\n', 2, 23);
 
             //line 3
             expectNext(iterator, tokenTypes.codeBlockEnd, '}', 3, 0);
             expectNext(iterator, tokenTypes.semicolon, ';', 3, 1);
             expectNext(iterator, tokenTypes.whitespace, ' ', 3, 2);
-            expectNext(iterator, tokenTypes.cr, '\r', 3, 3);
-            expectNext(iterator, tokenTypes.lf, '\n', 3, 4);
+            expectNext(iterator, tokenTypes.newline, '\r\n', 3, 3);
 
             //line 4
             expectNext(iterator, tokenTypes.whitespace, ' ', 4, 0);

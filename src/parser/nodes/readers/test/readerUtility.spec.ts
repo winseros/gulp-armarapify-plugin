@@ -1,7 +1,7 @@
-import { ReaderUtility } from './../readerUtility2';
-import { tokenTypes } from './../../tokens/tokenTypes';
-import { Token } from '../../tokens/token';
-import { TokenIterator } from '../../tokenIterator';
+import { ReaderUtility } from './../readerUtility';
+import { tokenTypes } from './../../../tokens/tokenTypes';
+import { Token } from '../../../tokens/token';
+import { TokenIterator } from '../../../tokenIterator';
 
 type CallConfig = { [index: number]: Token<any> };
 const implementFakeIterator = (iteratorMock: any, calls: CallConfig): any => {
@@ -13,19 +13,18 @@ const implementFakeIterator = (iteratorMock: any, calls: CallConfig): any => {
     };
 };
 
-describe('parser/nodes/readerUtility', () => {
-    describe('nextToken', () => {
-        it('should throw if expectedTokens are not configured', () => {
-            const tokenIterator = {} as TokenIterator;
+describe('parser/nodes/readers/readerUtility', () => {
+    describe('ctor', () => {
+        it('should initialize properties', () => {
+            const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
+
             const utility = new ReaderUtility(tokenIterator);
 
-            spyOn(utility, '_resetDefaults');
-
-            expect(() => utility.nextToken('anything')).toThrowError('The expectedTokens have not been configured. Call the expectTokens() method before this one.');
-
-            expect(utility._resetDefaults).toHaveBeenCalledTimes(1);
+            expect(utility.iterator).toBe(tokenIterator);
         });
+    });
 
+    describe('nextToken', () => {
         it('should read the next token ignoring comments', () => {
             const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
@@ -39,7 +38,7 @@ describe('parser/nodes/readerUtility', () => {
             const utility = new ReaderUtility(tokenIterator);
             spyOn(utility, '_resetDefaults');
 
-            const result = utility.expectTokens(tokenTypes.string).nextToken('anything');
+            const result = utility.nextToken('anything', tokenTypes.string);
             expect(result).toBe(expected);
 
             expect(spyMoveNext).toHaveBeenCalledTimes(2);
@@ -50,22 +49,21 @@ describe('parser/nodes/readerUtility', () => {
             const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
-            const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 9, colNumber: 10 };
+            const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8 };
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, {
                 0: { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
-                1: { tokenType: tokenTypes.cr, tokenValue: '\r', lineNumber: 3, colNumber: 4 },
-                2: { tokenType: tokenTypes.lf, tokenValue: '\n', lineNumber: 5, colNumber: 6 },
-                3: { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 7, colNumber: 8 },
-                4: expected
+                1: { tokenType: tokenTypes.newline, tokenValue: '\r', lineNumber: 3, colNumber: 4 },
+                2: { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 5, colNumber: 6 },
+                3: expected
             }));
 
             const utility = new ReaderUtility(tokenIterator);
             spyOn(utility, '_resetDefaults');
 
-            const result = utility.ignoreTokens(tokenTypes.cr, tokenTypes.lf, tokenTypes.whitespace).expectTokens(tokenTypes.string).nextToken('anything');
+            const result = utility.skip(tokenTypes.newline, tokenTypes.whitespace).nextToken('anything', tokenTypes.string);
             expect(result).toBe(expected);
 
-            expect(spyMoveNext).toHaveBeenCalledTimes(5);
+            expect(spyMoveNext).toHaveBeenCalledTimes(4);
             expect(utility._resetDefaults).toHaveBeenCalledTimes(1);
         });
 
@@ -79,7 +77,7 @@ describe('parser/nodes/readerUtility', () => {
 
             spyOn(utility, '_resetDefaults');
 
-            expect(() => utility.expectTokens(tokenTypes.word).nextToken('anything')).toThrowError('anything expected but got EOF');
+            expect(() => utility.nextToken('anything', tokenTypes.word)).toThrowError('anything expected but got EOF');
 
             expect(utility._resetDefaults).toHaveBeenCalledTimes(1);
         });
@@ -89,10 +87,9 @@ describe('parser/nodes/readerUtility', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, {
-                0: { tokenType: tokenTypes.cr, tokenValue: '\r', lineNumber: 3, colNumber: 4 },
-                1: { tokenType: tokenTypes.lf, tokenValue: '\n', lineNumber: 5, colNumber: 6 },
-                2: { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 7, colNumber: 8 },
-                3: { tokenType: tokenTypes.number, tokenValue: 12345, lineNumber: 9, colNumber: 10 }
+                0: { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 1, colNumber: 2 },
+                1: { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 3, colNumber: 4 },
+                2: { tokenType: tokenTypes.number, tokenValue: 12345, lineNumber: 5, colNumber: 6 }
             }));
 
             const utility = new ReaderUtility(tokenIterator);
@@ -100,9 +97,9 @@ describe('parser/nodes/readerUtility', () => {
 
             const spyReset = utility._resetDefaults as jasmine.Spy;
 
-            ['#13', '#10', 'whitespace', '12345'].forEach(value => {
+            ['newline', 'whitespace', '12345'].forEach(value => {
                 const msg = `anything expected but got "${value}"`;
-                expect(() => utility.expectTokens(tokenTypes.word).nextToken('anything')).toThrowError(msg);
+                expect(() => utility.nextToken('anything', tokenTypes.word)).toThrowError(msg);
                 expect(spyReset).toHaveBeenCalledTimes(1);
                 spyReset.calls.reset();
             });
@@ -122,7 +119,7 @@ describe('parser/nodes/readerUtility', () => {
 
             const utility = new ReaderUtility(tokenIterator);
 
-            const result = utility.expectTokens(tokenTypes.string).moveToNextTokenOrEof('anything');
+            const result = utility.moveToNextTokenOrEof();
             expect(result).toBe(false);
 
             expect(spyMoveNext).toHaveBeenCalledTimes(2);
@@ -136,18 +133,17 @@ describe('parser/nodes/readerUtility', () => {
             const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8 };
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, {
                 0: { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
-                1: { tokenType: tokenTypes.cr, tokenValue: '\r', lineNumber: 3, colNumber: 4 },
-                2: { tokenType: tokenTypes.lf, tokenValue: '\n', lineNumber: 5, colNumber: 6 },
-                3: { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 7, colNumber: 8 },
-                4: expected
+                1: { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 3, colNumber: 4 },
+                2: { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 7, colNumber: 8 },
+                3: expected
             }));
 
             const utility = new ReaderUtility(tokenIterator);
 
-            const result = utility.ignoreTokens(tokenTypes.cr, tokenTypes.lf, tokenTypes.whitespace).expectTokens(tokenTypes.string).moveToNextTokenOrEof('anything');
+            const result = utility.skip(tokenTypes.newline, tokenTypes.whitespace).moveToNextTokenOrEof();
             expect(result).toBe(false);
 
-            expect(spyMoveNext).toHaveBeenCalledTimes(5);
+            expect(spyMoveNext).toHaveBeenCalledTimes(4);
             expect(tokenIterator.current).toBe(expected);
         });
 
@@ -161,10 +157,33 @@ describe('parser/nodes/readerUtility', () => {
 
             const utility = new ReaderUtility(tokenIterator);
 
-            const result = utility.expectTokens(tokenTypes.string).moveToNextTokenOrEof('anything');
+            const result = utility.moveToNextTokenOrEof();
             expect(result).toBe(true);
 
             expect(spyMoveNext).toHaveBeenCalledTimes(2);
         });
     });
+
+    describe('moveToNextToken', () => {
+        it('should throw in case of EOF', () => {
+            const utility = new ReaderUtility({} as TokenIterator);
+            spyOn(utility, 'moveToNextTokenOrEof').and.returnValue(true);
+            spyOn(utility, '_resetDefaults');
+
+            expect(() => utility.moveToNextToken()).toThrowError('Any token expected but got EOF');
+
+            expect(utility._resetDefaults).toHaveBeenCalledTimes(1);
+        });
+
+        it('should not throw in case of not EOF', () => {
+            const utility = new ReaderUtility({} as TokenIterator);
+            spyOn(utility, 'moveToNextTokenOrEof').and.returnValue(false);
+            spyOn(utility, '_resetDefaults');
+
+            expect(() => utility.moveToNextToken()).not.toThrow();
+
+            expect(utility._resetDefaults).not.toHaveBeenCalled();
+        });
+    });
+
 });

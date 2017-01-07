@@ -1,6 +1,6 @@
 import { ClassNode } from './classNode';
 import { Node } from './node';
-import { ValueNode } from './valueNode';
+import { ConstStringNode } from './valueNode';
 import { ArrayNode } from './arrayNode';
 import { NodeError } from './../nodeError';
 import { TokenIterator } from './../tokenIterator';
@@ -84,7 +84,7 @@ export class ClassReader {
         let result: Node;
         if (next.tokenType === tokenTypes.equals) {
             const value = this._readValueProperty(iterator);
-            result = new ValueNode(propertyName, value);
+            result = new ConstStringNode(propertyName, value);
         } else {
             const arr = this._readArrayProperty(iterator);
             result = new ArrayNode(propertyName, arr);

@@ -14,12 +14,6 @@ export const tokenTypes = {
     string: 'token-type--string',
     word: 'token-type--word',
     whitespace: 'token-type--whitespace',
-    cr: 'token-type--cr',
-    lf: 'token-type--lf',
-    mathPlus: 'tokentype--math-plus',
-    mathMinus: 'tokentype--math-minus',
-    mathMul: 'tokentype--math-mul',
-    mathDiv: 'tokentype--math-div',
-    mathMod: 'tokentype--math-mod',
-    mathPow: 'tokentype--math-pow'
+    newline: 'token-type--newline',
+    mathOp: 'tokentype--math-op'
 };
