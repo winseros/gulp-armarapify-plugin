@@ -33,6 +33,10 @@ export class MathOpNode implements Node {
         return this._right;
     }
 
+    set right(value: Node | undefined) {
+        this._right = value;
+    }
+
     get type(): string {
         return nodeTypes.mathOp;
     }

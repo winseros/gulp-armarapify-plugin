@@ -42,7 +42,6 @@ describe('parser/nodes/readers/arrayNodeReader', () => {
         });
     });
 
-
     describe('read', () => {
         it('should read an array', () => {
             const str = ']\n=\n{\n"a", 1, {"b", \n 2}\n};';

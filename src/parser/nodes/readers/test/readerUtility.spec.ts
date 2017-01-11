@@ -3,8 +3,7 @@ import { tokenTypes } from './../../../tokens/tokenTypes';
 import { Token } from '../../../tokens/token';
 import { TokenIterator } from '../../../tokenIterator';
 
-type CallConfig = { [index: number]: Token<any> };
-const implementFakeIterator = (iteratorMock: any, calls: CallConfig): any => {
+const implementFakeIterator = (iteratorMock: any, calls: Token<any>[]): any => {
     let callIndex = 0;
     return (): boolean => {
         iteratorMock.current = calls[callIndex];
@@ -30,10 +29,10 @@ describe('parser/nodes/readers/readerUtility', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8 };
-            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, {
-                0: { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
-                1: expected
-            }));
+            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
+                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
+                expected
+            ]));
 
             const utility = new ReaderUtility(tokenIterator);
             spyOn(utility, '_resetDefaults');
@@ -50,12 +49,12 @@ describe('parser/nodes/readers/readerUtility', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8 };
-            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, {
-                0: { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
-                1: { tokenType: tokenTypes.newline, tokenValue: '\r', lineNumber: 3, colNumber: 4 },
-                2: { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 5, colNumber: 6 },
-                3: expected
-            }));
+            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
+                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
+                { tokenType: tokenTypes.newline, tokenValue: '\r', lineNumber: 3, colNumber: 4 },
+                { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 5, colNumber: 6 },
+                expected
+            ]));
 
             const utility = new ReaderUtility(tokenIterator);
             spyOn(utility, '_resetDefaults');
@@ -86,11 +85,11 @@ describe('parser/nodes/readers/readerUtility', () => {
             const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
-            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, {
-                0: { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 1, colNumber: 2 },
-                1: { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 3, colNumber: 4 },
-                2: { tokenType: tokenTypes.number, tokenValue: 12345, lineNumber: 5, colNumber: 6 }
-            }));
+            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
+                { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 1, colNumber: 2 },
+                { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 3, colNumber: 4 },
+                { tokenType: tokenTypes.number, tokenValue: 12345, lineNumber: 5, colNumber: 6 }
+            ]));
 
             const utility = new ReaderUtility(tokenIterator);
             spyOn(utility, '_resetDefaults');
@@ -112,10 +111,10 @@ describe('parser/nodes/readers/readerUtility', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8 };
-            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, {
-                0: { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
-                1: expected
-            }));
+            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
+                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
+                expected
+            ]));
 
             const utility = new ReaderUtility(tokenIterator);
 
@@ -131,12 +130,12 @@ describe('parser/nodes/readers/readerUtility', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8 };
-            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, {
-                0: { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
-                1: { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 3, colNumber: 4 },
-                2: { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 7, colNumber: 8 },
-                3: expected
-            }));
+            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
+                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
+                { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 3, colNumber: 4 },
+                { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 7, colNumber: 8 },
+                expected
+            ]));
 
             const utility = new ReaderUtility(tokenIterator);
 
@@ -151,9 +150,9 @@ describe('parser/nodes/readers/readerUtility', () => {
             const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
-            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, {
-                0: { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 }
-            }));
+            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
+                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 }
+            ]));
 
             const utility = new ReaderUtility(tokenIterator);
 
