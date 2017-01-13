@@ -1,8 +1,8 @@
 import { ExpressionNodeReader } from '../expressionNodeReader';
 import { tokenTypes } from '../../../tokens/tokenTypes';
+import { nodeTypes } from '../../nodeTypes';
 import { ReaderUtility } from '../readerUtility';
 import { StringNode } from '../../stringNode';
-import { ExpressionReader } from '../expressionReader';
 import { TokenIterator } from '../../../tokenIterator';
 import { Token } from '../../../tokens/token';
 
@@ -43,15 +43,14 @@ describe('parser/nodes/readers/expressionNodeReader', () => {
         it('should call the internal methods', () => {
             const str = '="a";';
             const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
-
-            const n1 = new StringNode('a');
-            spyOn(ExpressionReader.prototype, 'readExpression').and.returnValue(n1);
+            readerUtility.moveToNextToken();
 
             const reader = new ExpressionNodeReader();
-            const node = reader.read(readerUtility);
+            const node = reader.read(readerUtility) as StringNode;
 
             expect(node).toBeDefined();
-            expect(node).toBe(n1);
+            expect(node.type).toEqual(nodeTypes.string);
+            expect(node.value).toEqual('a');
         });
     });
 });

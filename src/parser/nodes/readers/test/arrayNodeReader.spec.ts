@@ -5,7 +5,6 @@ import { nodeTypes } from '../../nodeTypes';
 import { StringNode } from '../../stringNode';
 import { NumberNode } from '../../numberNode';
 import { ArrayNode } from '../../arrayNode';
-import { ExpressionReader } from '../expressionReader';
 import { TokenIterator } from '../../../tokenIterator';
 import { Token } from '../../../tokens/token';
 
@@ -45,13 +44,8 @@ describe('parser/nodes/readers/arrayNodeReader', () => {
     describe('read', () => {
         it('should read an array', () => {
             const str = ']\n=\n{\n"a", 1, {"b", \n 2}\n};';
-            const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
 
-            const n1 = new StringNode('a');
-            const n2 = new NumberNode(1);
-            const n3 = new StringNode('b');
-            const n4 = new NumberNode(2);
-            spyOn(ExpressionReader.prototype, 'readExpression').and.returnValues(n1, n2, n3, n4);
+            const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
 
             const reader = new ArrayNodeReader();
             const arrayNode = reader.read(readerUtility) as ArrayNode;
@@ -62,8 +56,12 @@ describe('parser/nodes/readers/arrayNodeReader', () => {
             expect(arrayNode.value.length).toEqual(3);
 
             //main array elements 0 and 1
-            expect(arrayNode.value[0]).toBe(n1);
-            expect(arrayNode.value[1]).toBe(n2);
+            const arrayNode0 = arrayNode.value[0] as StringNode;
+            const arrayNode1 = arrayNode.value[1] as NumberNode;
+            expect(arrayNode0.type).toEqual(nodeTypes.string);
+            expect(arrayNode0.value).toEqual('a');
+            expect(arrayNode1.type).toEqual(nodeTypes.number);
+            expect(arrayNode1.value).toEqual(1);
 
             //array element 2 - embedded array
             const embedArray = arrayNode.value[2] as ArrayNode;
@@ -72,9 +70,12 @@ describe('parser/nodes/readers/arrayNodeReader', () => {
             expect(embedArray.value.length).toEqual(2);
 
             //embedded array elements 0 and 1
-            expect(embedArray.value[0]).toBe(n3);
-            expect(embedArray.value[1]).toBe(n4);
+            const embedNode0 = embedArray.value[0] as StringNode;
+            const embedNode1 = embedArray.value[1] as NumberNode;
+            expect(embedNode0.type).toEqual(nodeTypes.string);
+            expect(embedNode0.value).toEqual('b');
+            expect(embedNode1.type).toEqual(nodeTypes.number);
+            expect(embedNode1.value).toEqual(2);
         });
     });
-
 });

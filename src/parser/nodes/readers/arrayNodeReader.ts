@@ -35,12 +35,18 @@ export class ArrayNodeReader extends NodeReader {
         while (true) {
             reader.skip(tokenTypes.whitespace, tokenTypes.newline).moveToNextToken();
 
+            let node: Node;
             const isEmbeddedArray = reader.iterator.current.tokenType === tokenTypes.codeBlockStart;
-            const node = isEmbeddedArray ? this._readArray(reader) : expressionReader.readExpression(', or )', tokenTypes.comma, tokenTypes.bracketClose);
+            if (isEmbeddedArray) {
+                node = this._readArray(reader);
+                reader.skip(tokenTypes.whitespace, tokenTypes.newline).moveToNextToken();
+            } else {
+                node = expressionReader.readExpression(', or }', tokenTypes.comma, tokenTypes.codeBlockEnd);
+            }
+
             result.push(node);
 
-            const next = reader.skip(tokenTypes.whitespace, tokenTypes.newline).nextToken(', or }', tokenTypes.comma, tokenTypes.codeBlockEnd);
-            if (next.tokenType === tokenTypes.codeBlockEnd) {
+            if (reader.iterator.current.tokenType === tokenTypes.codeBlockEnd) {
                 break;
             }
         }

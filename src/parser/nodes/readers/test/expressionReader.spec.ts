@@ -26,6 +26,47 @@ describe('parser/nodes/readers/expressionReader', () => {
             expect(() => reader.readExpression('something')).toThrowError('A set of tokens to stop at must be specified');
         });
 
+        it('should throw if a math operator is missing', () => {
+            const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
+            const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
+
+            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
+                { tokenType: tokenTypes.number, tokenValue: 1, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.number, tokenValue: 2, lineNumber: 0, colNumber: 0 }
+            ]));
+
+            tokenIterator.moveNext();
+            const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
+            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError(`Math operator expected but was "2" of type "${tokenTypes.number}"`);
+        });
+
+        it('should throw if a ( is following not a preprocessor call', () => {
+            const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
+            const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
+
+            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
+                { tokenType: tokenTypes.number, tokenValue: 1, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.bracketOpen, tokenValue: '(', lineNumber: 0, colNumber: 0 }
+            ]));
+
+            tokenIterator.moveNext();
+            const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
+            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError('The "(" must follow a preprocessor call or a math operation');
+        });
+
+        it('should throw if next token is unexpected', () => {
+            const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
+            const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
+
+            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
+                { tokenType: tokenTypes.equals, tokenValue: '=', lineNumber: 0, colNumber: 0 }
+            ]));
+
+            tokenIterator.moveNext();
+            const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
+            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError(`Unexpected token "=" of type "${tokenTypes.equals}"`);
+        });
+
         it('should read "string" expression', () => {
             const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;

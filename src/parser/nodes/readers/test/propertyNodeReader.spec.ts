@@ -1,5 +1,9 @@
 import { PropertyNodeReader } from '../propertyNodeReader';
+import { PropertyNode } from '../../propertyNode';
+import { NumberNode } from '../../numberNode';
+import { ArrayNode } from '../../arrayNode';
 import { tokenTypes } from '../../../tokens/tokenTypes';
+import { nodeTypes } from '../../nodeTypes';
 import { ReaderUtility } from '../readerUtility';
 import { TokenIterator } from '../../../tokenIterator';
 import { Token } from '../../../tokens/token';
@@ -53,4 +57,57 @@ describe('parser/nodes/readers/propertyNodeReader', () => {
             expect(canRead).toEqual(false);
         });
     });
+
+    describe('read', () => {
+        it('should read an expression node', () => {
+            const str = 'prop=15;';
+            const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
+            readerUtility.moveToNextToken();
+
+            const reader = new PropertyNodeReader();
+            const node = reader.read(readerUtility);
+
+            expect(node).toBeDefined();
+
+            const propertyNode = node as PropertyNode;
+            expect(propertyNode.type).toEqual(nodeTypes.property);
+            expect(propertyNode.name).toEqual('prop');
+
+            const numberNode = propertyNode.value as NumberNode;
+            expect(numberNode.type).toEqual(nodeTypes.number);
+            expect(numberNode.value).toEqual(15);
+        });
+
+        it('should read an array node', () => {
+            const str = 'prop[]={1, 2, 3};';
+            const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
+            readerUtility.moveToNextToken();
+
+            const reader = new PropertyNodeReader();
+            const node = reader.read(readerUtility);
+
+            expect(node).toBeDefined();
+
+            const propertyNode = node as PropertyNode;
+            expect(propertyNode.type).toEqual(nodeTypes.property);
+            expect(propertyNode.name).toEqual('prop');
+
+            const arrayNode = propertyNode.value as ArrayNode;
+            expect(arrayNode.type).toEqual(nodeTypes.array);
+            expect(arrayNode.value.length).toEqual(3);
+
+            const n1 = arrayNode.value[0] as NumberNode;
+            expect(n1.type).toEqual(nodeTypes.number);
+            expect(n1.value).toEqual(1);
+
+            const n2 = arrayNode.value[1] as NumberNode;
+            expect(n2.type).toEqual(nodeTypes.number);
+            expect(n2.value).toEqual(2);
+
+            const n3 = arrayNode.value[2] as NumberNode;
+            expect(n3.type).toEqual(nodeTypes.number);
+            expect(n3.value).toEqual(3);
+        });
+    });
+
 });
