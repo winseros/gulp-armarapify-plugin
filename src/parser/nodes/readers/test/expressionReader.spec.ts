@@ -8,7 +8,6 @@ import { StringNode } from '../../stringNode';
 import { MathGrpNode } from '../../mathGrpNode';
 import { MathOpNode } from '../../mathOpNode';
 import { NumberNode } from '../../numberNode';
-import { PreprocessorNode } from '../../preprocessorNode';
 
 const implementFakeIterator = (iteratorMock: any, calls: Token<any>[]): any => {
     let callIndex = 0;
@@ -38,20 +37,6 @@ describe('parser/nodes/readers/expressionReader', () => {
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
             expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError(`Math operator expected but was "2" of type "${tokenTypes.number}"`);
-        });
-
-        it('should throw if a ( is following not a preprocessor call', () => {
-            const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
-            const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
-
-            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.number, tokenValue: 1, lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.bracketOpen, tokenValue: '(', lineNumber: 0, colNumber: 0 }
-            ]));
-
-            tokenIterator.moveNext();
-            const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError('The "(" must follow a preprocessor call or a math operation');
         });
 
         it('should throw if next token is unexpected', () => {
@@ -320,84 +305,6 @@ describe('parser/nodes/readers/expressionReader', () => {
             const plusRight = div.right as NumberNode;
             expect(plusRight.type).toEqual(nodeTypes.number);
             expect(plusRight.value).toEqual(2);
-        });
-
-        it('should read "PREPROCESSOR" calls', () => {
-            const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
-            const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
-
-            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.word, tokenValue: 'macro', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.semicolon, tokenValue: ';', lineNumber: 0, colNumber: 0 }
-            ]));
-
-            tokenIterator.moveNext();
-            const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
-
-            expect(expression).toBeDefined();
-
-            const preprocessor = expression as PreprocessorNode;
-            expect(preprocessor.type).toEqual(nodeTypes.preprocessor);
-            expect(preprocessor.commandName).toEqual('macro');
-            expect(preprocessor.args).toEqual([]);
-        });
-
-        it('should read "PREPROCESSOR()" calls', () => {
-            const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
-            const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
-
-            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.word, tokenValue: 'macro', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.bracketOpen, tokenValue: '(', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.bracketClose, tokenValue: ')', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.semicolon, tokenValue: ';', lineNumber: 0, colNumber: 0 }
-            ]));
-
-            tokenIterator.moveNext();
-            const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
-
-            expect(expression).toBeDefined();
-
-            const preprocessor = expression as PreprocessorNode;
-            expect(preprocessor.type).toEqual(nodeTypes.preprocessor);
-            expect(preprocessor.commandName).toEqual('macro');
-            expect(preprocessor.args).toEqual([]);
-        });
-
-        it('should read "PREPROCESSOR(a, b)" calls', () => {
-            const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
-            const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
-
-            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.word, tokenValue: 'macro', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.bracketOpen, tokenValue: '(', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.string, tokenValue: 'abc', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.comma, tokenValue: ',', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 1, lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.bracketClose, tokenValue: ')', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.semicolon, tokenValue: ';', lineNumber: 0, colNumber: 0 }
-            ]));
-
-            tokenIterator.moveNext();
-            const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
-
-            expect(expression).toBeDefined();
-
-            const preprocessor = expression as PreprocessorNode;
-            expect(preprocessor.type).toEqual(nodeTypes.preprocessor);
-            expect(preprocessor.commandName).toEqual('macro');
-            expect(preprocessor.args.length).toEqual(2);
-
-            const strArg = preprocessor.args[0] as StringNode;
-            expect(strArg.type).toEqual(nodeTypes.string);
-            expect(strArg.value).toEqual('abc');
-
-            const numArg = preprocessor.args[1] as NumberNode;
-            expect(numArg.type).toEqual(nodeTypes.number);
-            expect(numArg.value).toEqual(1);
         });
     });
 });

@@ -1,10 +1,8 @@
-import { Token } from '../../tokens/token';
 import { Node } from '../node';
 import { StringNode } from '../stringNode';
 import { NumberNode } from '../numberNode';
 import { MathGrpNode } from '../mathGrpNode';
 import { MathOpNode } from '../mathOpNode';
-import { PreprocessorNode } from '../preprocessorNode';
 import { nodeTypes } from '../nodeTypes';
 import { tokenTypes } from '../../tokens/tokenTypes';
 import { ReaderUtility } from './readerUtility';
@@ -29,10 +27,6 @@ export class ExpressionReader {
         while (true) {
             this._reader.skip(tokenTypes.whitespace).moveToNextToken();
 
-            if (iterator.current.tokenType === tokenTypes.bracketOpen) {
-                this._tryReadPreprocessorParams(iterator.current, node);
-            }
-
             if (stopAt.indexOf(iterator.current.tokenType) >= 0) {
                 break;
             }
@@ -50,32 +44,6 @@ export class ExpressionReader {
         }
 
         return node;
-    }
-
-    _tryReadPreprocessorParams(operator: Token<string | number>, node: Node) {
-        if (node.type === nodeTypes.preprocessor) {
-            const preprocessorNode = node as PreprocessorNode;
-            while (true) {
-                this._reader.skip(tokenTypes.whitespace).moveToNextToken();
-
-                //handle "preprocessorCall() cases - i.e. no call parameters specified
-                if (this._reader.iterator.current.tokenType === tokenTypes.bracketClose) {
-                    this._reader.skip(tokenTypes.whitespace).moveToNextToken();
-                    break;
-                }
-
-                const param = this.readExpression(', or )', tokenTypes.comma, tokenTypes.bracketClose);
-                preprocessorNode.args.push(param);
-
-                //handle "preprocessorCall(<params>)" cases - i.e. some call parameters specified
-                if (this._reader.iterator.current.tokenType === tokenTypes.bracketClose) {
-                    this._reader.skip(tokenTypes.whitespace).moveToNextToken();
-                    break;
-                }
-            }
-        } else {
-            throw new NodeError('The "(" must follow a preprocessor call or a math operation', this._reader.iterator.line, this._reader.iterator.column);
-        }
     }
 
     _combineNodes(node1: Node, node2: Node, mathOperator: string): Node {
@@ -113,10 +81,6 @@ export class ExpressionReader {
             }
             case tokenTypes.number: {
                 node = new NumberNode(token.tokenValue as number);
-                break;
-            }
-            case tokenTypes.word: {
-                node = new PreprocessorNode(token.tokenValue as string);
                 break;
             }
             default: {
