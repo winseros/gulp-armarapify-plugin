@@ -1,11 +1,14 @@
-import { ClassReaderBase } from './classReaderBase';
+import { NodeReader } from './nodeReader';
+import { ClassReaders } from './classReaders';
 import { Node } from '../node';
 import { ClassNode } from '../classNode';
 import { tokenTypes } from '../../tokens/tokenTypes';
 import { ReaderUtility } from './readerUtility';
 import { Token } from '../../tokens/token';
 
-export class ClassNodeReader extends ClassReaderBase {
+export class ClassNodeReader extends NodeReader {
+    private _readerRegistry = ClassReaders.instance;
+
     canRead(reader: ReaderUtility): boolean {
         const current = reader.iterator.current;
         const canRead = current.tokenType === tokenTypes.word && (current.tokenValue as string).toLowerCase() === 'class';
@@ -26,6 +29,26 @@ export class ClassNodeReader extends ClassReaderBase {
         const children = this._readClassChildren(reader);
 
         const inherits = inheritsToken ? inheritsToken.tokenValue : undefined;
+
         return new ClassNode(className.tokenValue, children, inherits);
+    }
+
+    _readClassChildren(reader: ReaderUtility): Node[] {
+        const result = [] as Node[];
+
+        while (true) {
+            reader.skip(tokenTypes.whitespace, tokenTypes.newline).moveToNextToken();
+
+            if (reader.iterator.current.tokenType === tokenTypes.codeBlockEnd) {
+                reader.skip(tokenTypes.whitespace).nextToken(';', tokenTypes.semicolon);
+                break;
+            }
+
+            const childReader = this._readerRegistry.pickReader(reader);
+            const child = childReader.read(reader);
+            result.push(child);
+        }
+
+        return result;
     }
 }

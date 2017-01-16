@@ -57,7 +57,7 @@ describe('parser/nodes/readers/readers', () => {
                 } as TokenIterator
             } as ReaderUtility;
 
-            expect(() => registry.pickReader(readerUtility)).toThrowError('Couldn\'t find an appropriate reader by the token: "some-token-value", type: some-token-type');
+            expect(() => registry.pickReader(readerUtility)).toThrowError('Unexpected token: "some-token-value", type: some-token-type');
 
             expect(r1read).toHaveBeenCalledTimes(1);
             expect(r1read).toHaveBeenCalledWith(readerUtility);

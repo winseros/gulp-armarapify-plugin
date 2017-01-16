@@ -20,7 +20,7 @@ export class Readers {
         }
 
         const iterator = reader.iterator;
-        const message = `Couldn't find an appropriate reader by the token: \"${iterator.current.tokenValue}\", type: ${iterator.current.tokenType}`;
+        const message = `Unexpected token: \"${iterator.current.tokenValue}\", type: ${iterator.current.tokenType}`;
         throw new NodeError(message, iterator.line, iterator.column);
     }
 }
