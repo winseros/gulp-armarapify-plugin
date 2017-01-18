@@ -30,7 +30,6 @@ export class NumberReader implements TokenReader<number> {
         let result = iterator.current === symbolPlus ? '' : iterator.current;
 
         const token = {
-            tokenType: tokenTypes.number,
             lineNumber: iterator.line,
             colNumber: iterator.column
         } as Token<number>;
@@ -87,6 +86,8 @@ export class NumberReader implements TokenReader<number> {
         if (isNaN(token.tokenValue)) {
             throw new ParserError(`Couldn't convert value "${result}" into a number`, iterator.line, iterator.column);
         }
+
+        token.tokenType = e || dot ? tokenTypes.float : tokenTypes.integer;
 
         return token;
     }

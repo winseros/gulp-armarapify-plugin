@@ -37,7 +37,7 @@ describe('tokenIterator', () => {
             expectNext(iterator, tokenTypes.whitespace, ' ', 1, 0);
             expectNext(iterator, tokenTypes.word, 'myProperty2', 1, 1);
             expectNext(iterator, tokenTypes.equals, '=', 1, 12);
-            expectNext(iterator, tokenTypes.number, 12345, 1, 13);
+            expectNext(iterator, tokenTypes.integer, 12345, 1, 13);
             expectNext(iterator, tokenTypes.semicolon, ';', 1, 18);
             expectNext(iterator, tokenTypes.whitespace, ' ', 1, 19);
             expectNext(iterator, tokenTypes.newline, '\r\n', 1, 20);
@@ -51,9 +51,9 @@ describe('tokenIterator', () => {
             expectNext(iterator, tokenTypes.equals, '=', 2, 15);
             expectNext(iterator, tokenTypes.whitespace, ' ', 2, 16);
             expectNext(iterator, tokenTypes.codeBlockStart, '{', 2, 17);
-            expectNext(iterator, tokenTypes.number, 1, 2, 18);
+            expectNext(iterator, tokenTypes.integer, 1, 2, 18);
             expectNext(iterator, tokenTypes.comma, ',', 2, 19);
-            expectNext(iterator, tokenTypes.number, 2, 2, 20);
+            expectNext(iterator, tokenTypes.integer, 2, 2, 20);
             expectNext(iterator, tokenTypes.codeBlockEnd, '}', 2, 21);
             expectNext(iterator, tokenTypes.semicolon, ';', 2, 22);
             expectNext(iterator, tokenTypes.newline, '\r\n', 2, 23);

@@ -79,8 +79,12 @@ export class ExpressionReader {
                 node = new StringNode(token.tokenValue as string);
                 break;
             }
-            case tokenTypes.number: {
-                node = new NumberNode(token.tokenValue as number);
+            case tokenTypes.float: {
+                node = new NumberNode(token.tokenValue as number, true);
+                break;
+            }
+            case tokenTypes.integer: {
+                node = new NumberNode(token.tokenValue as number, false);
                 break;
             }
             default: {

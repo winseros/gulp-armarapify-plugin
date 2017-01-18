@@ -33,7 +33,7 @@ describe('parser/tokens/numberReader', () => {
             const commentToken = reader.read(iterator);
             expect(commentToken).toBeDefined();
 
-            expect(commentToken.tokenType).toEqual(tokenTypes.number);
+            expect(commentToken.tokenType).toEqual(tokenTypes.integer);
             expect(commentToken.tokenValue).toEqual(1234567890);
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
@@ -50,7 +50,7 @@ describe('parser/tokens/numberReader', () => {
             const commentToken = reader.read(iterator);
             expect(commentToken).toBeDefined();
 
-            expect(commentToken.tokenType).toEqual(tokenTypes.number);
+            expect(commentToken.tokenType).toEqual(tokenTypes.float);
             expect(commentToken.tokenValue).toEqual(12340.56789);
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
@@ -67,7 +67,7 @@ describe('parser/tokens/numberReader', () => {
             const commentToken = reader.read(iterator);
             expect(commentToken).toBeDefined();
 
-            expect(commentToken.tokenType).toEqual(tokenTypes.number);
+            expect(commentToken.tokenType).toEqual(tokenTypes.float);
             expect(commentToken.tokenValue).toEqual(0.56789);
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
@@ -84,7 +84,7 @@ describe('parser/tokens/numberReader', () => {
             const commentToken = reader.read(iterator);
             expect(commentToken).toBeDefined();
 
-            expect(commentToken.tokenType).toEqual(tokenTypes.number);
+            expect(commentToken.tokenType).toEqual(tokenTypes.float);
             expect(commentToken.tokenValue).toEqual(-12340.56789);
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
@@ -101,7 +101,7 @@ describe('parser/tokens/numberReader', () => {
             const commentToken = reader.read(iterator);
             expect(commentToken).toBeDefined();
 
-            expect(commentToken.tokenType).toEqual(tokenTypes.number);
+            expect(commentToken.tokenType).toEqual(tokenTypes.float);
             expect(commentToken.tokenValue).toEqual(1000);
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
@@ -118,7 +118,7 @@ describe('parser/tokens/numberReader', () => {
             const commentToken = reader.read(iterator);
             expect(commentToken).toBeDefined();
 
-            expect(commentToken.tokenType).toEqual(tokenTypes.number);
+            expect(commentToken.tokenType).toEqual(tokenTypes.float);
             expect(commentToken.tokenValue).toEqual(0.001);
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
@@ -135,7 +135,7 @@ describe('parser/tokens/numberReader', () => {
             const commentToken = reader.read(iterator);
             expect(commentToken).toBeDefined();
 
-            expect(commentToken.tokenType).toEqual(tokenTypes.number);
+            expect(commentToken.tokenType).toEqual(tokenTypes.float);
             expect(commentToken.tokenValue).toEqual(1000);
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);

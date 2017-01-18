@@ -30,13 +30,13 @@ describe('parser/nodes/readers/expressionReader', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.number, tokenValue: 1, lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 2, lineNumber: 0, colNumber: 0 }
+                { tokenType: tokenTypes.integer, tokenValue: 1, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 2, lineNumber: 0, colNumber: 0 }
             ]));
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError(`Math operator expected but was "2" of type "${tokenTypes.number}"`);
+            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError(`Math operator expected but was "2" of type "${tokenTypes.integer}"`);
         });
 
         it('should throw if next token is unexpected', () => {
@@ -77,9 +77,9 @@ describe('parser/nodes/readers/expressionReader', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.number, tokenValue: 1, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.float, tokenValue: 1.5, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '+', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 2, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 2, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.semicolon, tokenValue: ';', lineNumber: 0, colNumber: 0 }
             ]));
 
@@ -95,11 +95,13 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             const left = plus.left as NumberNode;
             expect(left.type).toEqual(nodeTypes.number);
-            expect(left.value).toEqual(1);
+            expect(left.value).toEqual(1.5);
+            expect(left.isFloat).toEqual(true);
 
             const right = plus.right as NumberNode;
             expect(right.type).toEqual(nodeTypes.number);
             expect(right.value).toEqual(2);
+            expect(right.isFloat).toEqual(false);
         });
 
         it('should read "a*b + c" expression', () => {
@@ -107,11 +109,11 @@ describe('parser/nodes/readers/expressionReader', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.number, tokenValue: 1, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 1, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '*', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 2, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 2, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '-', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 3, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 3, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.semicolon, tokenValue: ';', lineNumber: 0, colNumber: 0 }
             ]));
 
@@ -147,11 +149,11 @@ describe('parser/nodes/readers/expressionReader', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.number, tokenValue: 1, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 1, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '*', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 2, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 2, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '^', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 3, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 3, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.semicolon, tokenValue: ';', lineNumber: 0, colNumber: 0 }
             ]));
 
@@ -187,11 +189,11 @@ describe('parser/nodes/readers/expressionReader', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.number, tokenValue: 1, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 1, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '+', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 2, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 2, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '*', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 3, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 3, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.semicolon, tokenValue: ';', lineNumber: 0, colNumber: 0 }
             ]));
 
@@ -228,12 +230,12 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
                 { tokenType: tokenTypes.bracketOpen, tokenValue: '(', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 1, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 1, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '+', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 2, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 2, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.bracketClose, tokenValue: ')', lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '*', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 3, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 3, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.semicolon, tokenValue: ';', lineNumber: 0, colNumber: 0 }
             ]));
 
@@ -274,9 +276,9 @@ describe('parser/nodes/readers/expressionReader', () => {
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
                 { tokenType: tokenTypes.bracketOpen, tokenValue: '(', lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.bracketOpen, tokenValue: '(', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 1, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 1, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '/', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.number, tokenValue: 2, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 2, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.bracketClose, tokenValue: ')', lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.bracketClose, tokenValue: ')', lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.semicolon, tokenValue: ';', lineNumber: 0, colNumber: 0 }

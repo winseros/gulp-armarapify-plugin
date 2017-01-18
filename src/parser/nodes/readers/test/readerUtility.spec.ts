@@ -88,7 +88,7 @@ describe('parser/nodes/readers/readerUtility', () => {
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
                 { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 1, colNumber: 2 },
                 { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 3, colNumber: 4 },
-                { tokenType: tokenTypes.number, tokenValue: 12345, lineNumber: 5, colNumber: 6 }
+                { tokenType: tokenTypes.integer, tokenValue: 12345, lineNumber: 5, colNumber: 6 }
             ]));
 
             const utility = new ReaderUtility(tokenIterator);
