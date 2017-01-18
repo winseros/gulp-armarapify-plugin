@@ -8,7 +8,7 @@ const commentStart = '/';
 const commentSingleLine = '/';
 const commentMultiline = '*';
 
-export class CommentReader extends TokenReader<string> {
+export class CommentReader implements TokenReader<string> {
     canRead(iterator: Iterator<string>): boolean {
         let isComment = iterator.current === commentStart;
         if (isComment) {

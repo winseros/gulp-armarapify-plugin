@@ -1,7 +1,7 @@
 import { Token } from './token';
 import { Iterator } from '../iterator';
 
-export abstract class TokenReader<T> {
-    abstract canRead(iterator: Iterator<string>): boolean;
-    abstract read(iterator: Iterator<string>): Token<T>;
+export interface TokenReader<T> {
+    canRead(iterator: Iterator<string>): boolean;
+    read(iterator: Iterator<string>): Token<T>;
 }

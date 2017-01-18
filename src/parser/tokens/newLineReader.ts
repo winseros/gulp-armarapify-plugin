@@ -6,7 +6,7 @@ import { tokenTypes } from './tokenTypes';
 const cr = '\r';
 const lf = '\n';
 
-export class NewLineReader extends TokenReader<string> {
+export class NewLineReader implements TokenReader<string> {
     canRead(iterator: Iterator<string>): boolean {
         const current = iterator.current;
         const newLine = current === cr || current === lf;

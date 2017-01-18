@@ -6,7 +6,7 @@ import { tokenTypes } from '../../tokens/tokenTypes';
 import { ReaderUtility } from './readerUtility';
 import { Token } from '../../tokens/token';
 
-export class ClassNodeReader extends NodeReader {
+export class ClassNodeReader implements NodeReader {
     private _readerRegistry = ClassReaders.instance;
 
     canRead(reader: ReaderUtility): boolean {

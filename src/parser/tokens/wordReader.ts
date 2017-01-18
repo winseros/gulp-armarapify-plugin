@@ -6,7 +6,7 @@ import { tokenTypes } from './tokenTypes';
 const regexpLetter = /[a-zA-Z_]/;
 const regexpLetterOrDigit = /[\w\d_]/;
 
-export class WordReader extends TokenReader<string>{
+export class WordReader implements TokenReader<string>{
     canRead(iterator: Iterator<string>): boolean {
         const match = regexpLetter.test(iterator.current);
         return match;

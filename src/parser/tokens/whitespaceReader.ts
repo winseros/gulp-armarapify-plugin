@@ -5,7 +5,7 @@ import { tokenTypes } from './tokenTypes';
 
 const regexSpace = /[\s^\r\n]/;
 
-export class WhitespaceReader extends TokenReader<string> {
+export class WhitespaceReader implements TokenReader<string> {
     canRead(iterator: Iterator<string>): boolean {
         const result = this._isWhitespace(iterator.current);
         return result;

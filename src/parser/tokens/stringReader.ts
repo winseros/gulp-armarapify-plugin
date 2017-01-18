@@ -8,7 +8,7 @@ const symbolQuote = '"';
 const symbolR = '\r';
 const symbolN = '\n';
 
-export class StringReader extends TokenReader<string>{
+export class StringReader implements TokenReader<string>{
     canRead(iterator: Iterator<string>): boolean {
         const isQuote = iterator.current === symbolQuote;
         return isQuote;

@@ -6,7 +6,7 @@ import { Token } from '../../tokens/token';
 import { PropertyReaders } from './propertyReaders';
 import { ReaderUtility } from './readerUtility';
 
-export class PropertyNodeReader extends NodeReader {
+export class PropertyNodeReader implements NodeReader {
     private _registry = PropertyReaders.instance;
 
     canRead(reader: ReaderUtility): boolean {

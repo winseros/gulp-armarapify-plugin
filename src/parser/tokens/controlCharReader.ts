@@ -22,7 +22,7 @@ symbols.set('/', tokenTypes.mathOp);
 symbols.set('%', tokenTypes.mathOp);
 symbols.set('^', tokenTypes.mathOp);
 
-export class ControlCharReader extends TokenReader<string> {
+export class ControlCharReader implements TokenReader<string> {
     canRead(iterator: Iterator<string>): boolean {
         const canRead = symbols.has(iterator.current);
         return canRead;

@@ -5,7 +5,7 @@ import { tokenTypes } from '../../tokens/tokenTypes';
 import { ReaderUtility } from './readerUtility';
 import { ExpressionReader } from './expressionReader';
 
-export class ArrayNodeReader extends NodeReader {
+export class ArrayNodeReader implements NodeReader {
     canRead(reader: ReaderUtility): boolean {
         const canRead = reader.iterator.current.tokenType === tokenTypes.squareBracketOpen;
         return canRead;

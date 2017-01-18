@@ -11,7 +11,7 @@ const symbolE = 'e';
 const charCode0 = 48;
 const charCode9 = 57;
 
-export class NumberReader extends TokenReader<number> {
+export class NumberReader implements TokenReader<number> {
     canRead(iterator: Iterator<string>): boolean {
         let isNumber = iterator.current === symbolMinus
             || iterator.current === symbolPlus
