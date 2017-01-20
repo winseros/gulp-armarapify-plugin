@@ -11,7 +11,15 @@ describe('serializer/packets/enumsPacket', () => {
 
     describe('bytes', () => {
         it('should return a fulfilled buffer', () => {
+            const packet = new EnumsPacket({ size: 10, offset: 1 } as Packet);
 
+            const bytes = packet.bytes();
+
+            const expected = [
+                0x0b, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00
+            ];
+            expect(bytes).toEqual(Buffer.from(expected));
         });
     });
 });

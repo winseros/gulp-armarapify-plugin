@@ -28,14 +28,14 @@ export class NodeExpander {
     expandClass(node: ClassNode): SignaturePacket {
         const startPacket = new SignaturePacket();
         const lastDataPacket = this._expandClassBody(startPacket, node);
-        startPacket.last = new EnumsPacket(lastDataPacket);
+        lastDataPacket.next = startPacket.last = new EnumsPacket(lastDataPacket);
         return startPacket;
     }
 
     _expandClassBody(packet: Packet, node: ClassNode): Packet {
         type Tupple = { packet: ClassPacket, node: ClassNode };
 
-        packet = this._expandClass(packet, node);
+        packet.next = packet = this._expandClass(packet, node);
         const pool = [{ packet, node }] as Tupple[];
 
         while (pool.length) {
@@ -44,7 +44,7 @@ export class NodeExpander {
             const children = tupple.node.children;
             for (let i = 0; i < children.length; i++) {
                 if (i === 0) {
-                    packet = tupple.packet.firstChild = new ClassBodyPacket(tupple.node.inherits, children.length, packet);
+                    packet.next = packet = tupple.packet.firstChild = new ClassBodyPacket(tupple.node.inherits, children.length, packet);
                 }
                 const child = children[i];
                 switch (child.type) {
@@ -65,7 +65,7 @@ export class NodeExpander {
     }
 
     _expandClass(packet: Packet, node: ClassNode): Packet {
-        packet = new ClassPacket(node.className, node.inherits, packet);
+        packet.next = packet = new ClassPacket(node.className, node.inherits, packet);
         return packet;
     }
 
@@ -107,8 +107,8 @@ export class NodeExpander {
 
     _expandArray(packet: Packet, node: PropertyNode): Packet {
         const arrayStruct = this._expandArrayContents(node.value as ArrayNode);
-        packet = new ArrayPacket(node.name, arrayStruct, packet);
-        return packet;
+        packet.next = new ArrayPacket(node.name, arrayStruct, packet);
+        return packet.next;
     }
 
     _expandArrayContents(node: ArrayNode): ArrayStruct {
@@ -137,8 +137,8 @@ export class NodeExpander {
     }
 
     _expandExpression(packet: Packet, node: PropertyNode): Packet {
-        const number = this._resolver.resolve(node);
-        packet = number.isFloat ? new FloatPacket(node.name, number.value, packet) : new IntegerPacket(node.name, number.value, packet);
+        const number = this._resolver.resolve(node.value);
+        packet.next = packet = number.isFloat ? new FloatPacket(node.name, number.value, packet) : new IntegerPacket(node.name, number.value, packet);
         return packet;
     }
 }
