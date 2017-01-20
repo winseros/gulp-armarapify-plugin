@@ -1,21 +1,12 @@
 import { Node } from './node';
 import { nodeTypes } from './nodeTypes';
 
-export const mathOperators = {
-    '+': 'math-plus',
-    '-': 'math-minus',
-    '*': 'math-mul',
-    '/': 'math-div',
-    '%': 'math-mod',
-    '^': 'math-pow'
-};
-
 export class MathOpNode implements Node {
     private _operator: string;
     private _left: Node;
-    private _right: Node | undefined;
+    private _right: Node;
 
-    constructor(operator: string, left: Node, right?: Node) {
+    constructor(operator: string, left: Node, right: Node) {
         this._operator = operator;
         this._left = left;
         this._right = right;
@@ -29,11 +20,11 @@ export class MathOpNode implements Node {
         return this._left;
     }
 
-    get right(): Node | undefined {
+    get right(): Node {
         return this._right;
     }
 
-    set right(value: Node | undefined) {
+    set right(value: Node) {
         this._right = value;
     }
 

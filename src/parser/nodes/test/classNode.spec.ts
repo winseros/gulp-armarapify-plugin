@@ -18,7 +18,7 @@ describe('parser/nodes/classNode', () => {
 
             expect(node.className).toEqual('clsName');
             expect(node.children).toBe(children);
-            expect(node.inherits).not.toBeDefined();
+            expect(node.inherits).toEqual('');
             expect(node.type).toEqual(nodeTypes.class);
         });
     });

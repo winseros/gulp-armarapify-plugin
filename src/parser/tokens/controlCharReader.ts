@@ -3,6 +3,7 @@ import { Token } from './token';
 import { Iterator } from '../iterator';
 import { tokenTypes } from './tokenTypes';
 import { ParserError } from '../ParserError';
+import { mathOperators } from '../../mathOperators';
 
 const symbols = new Map();
 symbols.set('{', tokenTypes.codeBlockStart);
@@ -15,12 +16,12 @@ symbols.set('(', tokenTypes.bracketOpen);
 symbols.set(')', tokenTypes.bracketClose);
 symbols.set('[', tokenTypes.squareBracketOpen);
 symbols.set(']', tokenTypes.squareBracketClose);
-symbols.set('+', tokenTypes.mathOp);
-symbols.set('-', tokenTypes.mathOp);
-symbols.set('*', tokenTypes.mathOp);
-symbols.set('/', tokenTypes.mathOp);
-symbols.set('%', tokenTypes.mathOp);
-symbols.set('^', tokenTypes.mathOp);
+symbols.set(mathOperators.plus, tokenTypes.mathOp);
+symbols.set(mathOperators.minus, tokenTypes.mathOp);
+symbols.set(mathOperators.mul, tokenTypes.mathOp);
+symbols.set(mathOperators.div, tokenTypes.mathOp);
+symbols.set(mathOperators.pow, tokenTypes.mathOp);
+symbols.set(mathOperators.mod, tokenTypes.mathOp);
 
 export class ControlCharReader implements TokenReader<string> {
     canRead(iterator: Iterator<string>): boolean {

@@ -3,10 +3,10 @@ import { nodeTypes } from './nodeTypes';
 
 export class ClassNode implements Node {
     private _className: string;
-    private _inherits?: string;
+    private _inherits: string;
     private _children: Node[];
 
-    constructor(className: string, children: Node[], inherits?: string) {
+    constructor(className: string, children: Node[], inherits = '') {
         this._className = className;
         this._children = children;
         this._inherits = inherits;
@@ -16,7 +16,7 @@ export class ClassNode implements Node {
         return this._className;
     }
 
-    get inherits(): string | undefined {
+    get inherits(): string {
         return this._inherits;
     }
 

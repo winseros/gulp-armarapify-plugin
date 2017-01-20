@@ -1,4 +1,4 @@
-import './error';
+import '../error';
 
 export class NodeError extends Error {
     constructor(message: string, line: number, column: number) {

@@ -70,7 +70,7 @@ describe('parser/nodes/readers/classNodeReader', () => {
 
             expect(node.type).toEqual(nodeTypes.class);
             expect(node.className).toEqual('MyClass');
-            expect(node.inherits).not.toBeDefined();
+            expect(node.inherits).toEqual('');
 
             expect(node.children.length).toEqual(3);
 

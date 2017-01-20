@@ -53,7 +53,7 @@ export class ExpressionReader {
             const nodeWeight = this._getMathOpWeight(mathOpNode.operator);
             const newWeight = this._getMathOpWeight(mathOperator);
             if (newWeight > nodeWeight) {
-                mathOpNode.right = new MathOpNode(mathOperator, mathOpNode.right as Node, node2);
+                mathOpNode.right = new MathOpNode(mathOperator, mathOpNode.right, node2);
                 node = mathOpNode;
             } else {
                 node = new MathOpNode(mathOperator, node1, node2);

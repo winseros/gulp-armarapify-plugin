@@ -19,7 +19,7 @@ describe('parser/nodes/readers/fileReader', () => {
 
             expect(node.type).toEqual(nodeTypes.class);
             expect(node.className).toEqual('MyFile.txt');
-            expect(node.inherits).not.toBeDefined();
+            expect(node.inherits).toEqual('');
 
             expect(node.children.length).toEqual(3);
 

@@ -1,4 +1,4 @@
-import './error';
+import '../error';
 
 export class ParserError extends Error {
     constructor(message: string, line: number, column: number) {
