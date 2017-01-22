@@ -126,6 +126,23 @@ describe('parser/tokens/numberReader', () => {
             expect(iterator.current).toEqual('a');
         });
 
+        it('should read an float in scientific notation with + sign', () => {
+            const buffer = new Buffer('1.3e+3abc');
+            const iterator = new CharIterator(buffer);
+            const reader = new NumberReader();
+
+            iterator.moveNext();
+            const commentToken = reader.read(iterator);
+            expect(commentToken).toBeDefined();
+
+            expect(commentToken.tokenType).toEqual(tokenTypes.float);
+            expect(commentToken.tokenValue).toEqual(1300);
+            expect(commentToken.lineNumber).toEqual(0);
+            expect(commentToken.colNumber).toEqual(0);
+
+            expect(iterator.current).toEqual('a');
+        });
+
         it('should read an number in scientific notation with uppercase E sign', () => {
             const buffer = new Buffer('1E3abc');
             const iterator = new CharIterator(buffer);
@@ -150,15 +167,6 @@ describe('parser/tokens/numberReader', () => {
 
             iterator.moveNext();
             expect(() => reader.read(iterator)).toThrowError('Found a duplicating "." symbol in a number');
-        });
-
-        it('should throw if number contains a "e" after "." symbol', () => {
-            const buffer = new Buffer('123.456e012');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('A number can not contain a "e" after a "."');
         });
 
         it('should throw if number contains a duplicating "e" symbol', () => {

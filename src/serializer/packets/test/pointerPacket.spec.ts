@@ -1,23 +1,22 @@
 import { Packet } from '../packet';
-import { EnumsPacket } from '../enumsPacket';
+import { PointerPacket } from '../pointerPacket';
 
-describe('serializer/packets/enumsPacket', () => {
+describe('serializer/packets/pointerPacket', () => {
     describe('size', () => {
         it('should return a valid packet size', () => {
-            const packet = new EnumsPacket({} as Packet);
+            const packet = new PointerPacket({} as Packet);
             expect(packet.size).toEqual(4);
         });
     });
 
     describe('bytes', () => {
         it('should return a fulfilled buffer', () => {
-            const packet = new EnumsPacket({} as Packet);
+            const packet = new PointerPacket({} as Packet);
+            packet.next = { offset: 0x00bbccdd } as Packet;
 
             const bytes = packet.bytes();
 
-            const expected = [
-                0x00, 0x00, 0x00, 0x00
-            ];
+            const expected = [0xdd, 0xcc, 0xbb, 0x00];
             expect(bytes).toEqual(Buffer.from(expected));
         });
     });

@@ -10,6 +10,7 @@ import { Packet } from '../packets/packet';
 import { SignaturePacket } from '../packets/signaturePacket';
 import { ClassPacket } from '../packets/classPacket';
 import { ClassBodyPacket } from '../packets/classBodyPacket';
+import { PointerPacket } from '../packets/pointerPacket';
 import { StringPacket } from '../packets/stringPacket';
 import { FloatPacket } from '../packets/floatPacket';
 import { IntegerPacket } from '../packets/integerPacket';
@@ -37,6 +38,7 @@ describe('serializer/nodeExpander', () => {
                 new PropertyNode('innerProp1', new StringNode('innerProp1val')),
                 new PropertyNode('innerProp2', new StringNode('innerProp2val')),
             ]));
+            root.children.push(new ClassNode('EmptyClass', []));
             root.children.push(new PropertyNode('prop6', new ArrayNode([
                 new NumberNode(1, false),
                 new NumberNode(1.5, true),
@@ -52,15 +54,9 @@ describe('serializer/nodeExpander', () => {
             //signature packet
             expect(packet instanceof SignaturePacket).toBeTruthy();
 
-            //root class packet
-            packet = packet.next!;
-            expect(packet instanceof ClassPacket).toBeTruthy();
-            const rootClassPacket = packet as ClassPacket;
-
             //root class body packet
             packet = packet.next!;
             expect(packet instanceof ClassBodyPacket).toBeTruthy();
-            expect(rootClassPacket.firstChild).toBe(packet);
 
             //prop1 packet
             packet = packet.next!;
@@ -87,9 +83,18 @@ describe('serializer/nodeExpander', () => {
             expect(packet instanceof ClassPacket).toBeTruthy();
             const innerClassPacket = packet as ClassPacket;
 
+            //EmptyClass packet
+            packet = packet.next!;
+            expect(packet instanceof ClassPacket).toBeTruthy();
+            const emptyClassPacket = packet as ClassPacket;
+
             //prop6 packet
             packet = packet.next!;
             expect(packet instanceof ArrayPacket).toBeTruthy();
+
+            //pointer to the next packet
+            packet = packet.next!;
+            expect(packet instanceof PointerPacket).toBeTruthy();
 
             //InnerClass body packet
             packet = packet.next!;
@@ -103,6 +108,19 @@ describe('serializer/nodeExpander', () => {
             //innerProp2 packet
             packet = packet.next!;
             expect(packet instanceof StringPacket).toBeTruthy();
+
+            //pointer to the next packet
+            packet = packet.next!;
+            expect(packet instanceof PointerPacket).toBeTruthy();
+
+            //EmptyClass body packet
+            packet = packet.next!;
+            expect(packet instanceof ClassBodyPacket).toBeTruthy();
+            expect(emptyClassPacket.firstChild).toBe(packet);
+
+            //pointer to the next packet
+            packet = packet.next!;
+            expect(packet instanceof PointerPacket).toBeTruthy();
 
             //enums packet
             packet = packet.next!;

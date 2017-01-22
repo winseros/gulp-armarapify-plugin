@@ -53,9 +53,6 @@ export class NumberReader implements TokenReader<number> {
                 if (e) {
                     let msg = `Found a duplicating "${symbolE}" symbol in a number`;
                     throw new ParserError(msg, iterator.line, iterator.column);
-                } else if (dot) {
-                    let msg = `A number can not contain a \"${symbolE}" after a "${symbolDot}"`;
-                    throw new ParserError(msg, iterator.line, iterator.column);
                 } else {
                     e = true;
                     result += iterator.current;

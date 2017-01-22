@@ -9,6 +9,7 @@ import { SignaturePacket } from './packets/signaturePacket';
 import { EnumsPacket } from './packets/enumsPacket';
 import { ClassBodyPacket } from './packets/classBodyPacket';
 import { ClassPacket } from './packets/classPacket';
+import { PointerPacket } from './packets/pointerPacket';
 import { StringPacket } from './packets/stringPacket';
 import { FloatPacket } from './packets/floatPacket';
 import { IntegerPacket } from './packets/integerPacket';
@@ -34,18 +35,14 @@ export class NodeExpander {
 
     _expandClassBody(packet: Packet, node: ClassNode): Packet {
         type Tupple = { packet: ClassPacket, node: ClassNode };
-
-        packet.next = packet = this._expandClass(packet, node);
         const pool = [{ packet, node }] as Tupple[];
 
         while (pool.length) {
             const tupple = pool.shift() !;
 
             const children = tupple.node.children;
+            packet.next = packet = tupple.packet.firstChild = new ClassBodyPacket(tupple.node.inherits, children.length, packet);
             for (let i = 0; i < children.length; i++) {
-                if (i === 0) {
-                    packet.next = packet = tupple.packet.firstChild = new ClassBodyPacket(tupple.node.inherits, children.length, packet);
-                }
                 const child = children[i];
                 switch (child.type) {
                     case nodeTypes.class: {
@@ -59,6 +56,7 @@ export class NodeExpander {
                     }
                 }
             }
+            packet.next = packet = new PointerPacket(packet);
         }
 
         return packet;

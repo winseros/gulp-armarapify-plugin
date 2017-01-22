@@ -12,7 +12,7 @@ export class FileReader {
         this._fileName = fileName;
     }
 
-    read(reader: ReaderUtility): Node {
+    read(reader: ReaderUtility): ClassNode {
         const children = this._readClassChildren(reader);
         const node = new ClassNode(this._fileName, children);
         return node;

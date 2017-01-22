@@ -6,7 +6,7 @@ export class TreeError extends Error {
         super(message);
         Error.captureStackTrace(this, TreeError);
 
-        this.name = 'NodeError';
+        this.name = 'TreeError';
         this.node = node;
     }
 

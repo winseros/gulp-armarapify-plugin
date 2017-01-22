@@ -43,7 +43,7 @@ describe('parser/nodes/readers/arrayNodeReader', () => {
 
     describe('read', () => {
         it('should read an array', () => {
-            const str = ']\n=\n{\n"a", 1, {"b", \n 2}\n};';
+            const str = ']\n=\n{\n"a", 1, {"b", \n 2\n}\n};';
 
             const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
 
@@ -76,6 +76,19 @@ describe('parser/nodes/readers/arrayNodeReader', () => {
             expect(embedNode0.value).toEqual('b');
             expect(embedNode1.type).toEqual(nodeTypes.number);
             expect(embedNode1.value).toEqual(2);
+        });
+
+        it('should read an empty array', () => {
+            const str = ']\n=\n{\n };';
+
+            const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
+
+            const reader = new ArrayNodeReader();
+            const arrayNode = reader.read(readerUtility) as ArrayNode;
+
+            expect(arrayNode).toBeDefined();
+            expect(arrayNode.type).toEqual(nodeTypes.array);
+            expect(arrayNode.value.length).toEqual(0);
         });
     });
 });

@@ -23,9 +23,9 @@ export class TokenReaders {
         registry.registerReader(new WhitespaceReader())
             .registerReader(new NewLineReader())
             .registerReader(new CommentReader())
-            .registerReader(new ControlCharReader())
-            .registerReader(new StringReader())
             .registerReader(new NumberReader())
+            .registerReader(new StringReader())
+            .registerReader(new ControlCharReader())
             .registerReader(new WordReader());
     }
 
