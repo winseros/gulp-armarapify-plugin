@@ -1,5 +1,7 @@
 import { NodeExpander } from '../nodeExpander';
 import { ClassNode } from '../../parser/nodes/classNode';
+import { ExternNode } from '../../parser/nodes/externNode';
+import { DeleteNode } from '../../parser/nodes/deleteNode';
 import { PropertyNode } from '../../parser/nodes/propertyNode';
 import { StringNode } from '../../parser/nodes/stringNode';
 import { NumberNode } from '../../parser/nodes/numberNode';
@@ -10,6 +12,8 @@ import { Packet } from '../packets/packet';
 import { SignaturePacket } from '../packets/signaturePacket';
 import { ClassPacket } from '../packets/classPacket';
 import { ClassBodyPacket } from '../packets/classBodyPacket';
+import { ExternPacket } from '../packets/externPacket';
+import { DeletePacket } from '../packets/deletePacket';
 import { PointerPacket } from '../packets/pointerPacket';
 import { StringPacket } from '../packets/stringPacket';
 import { FloatPacket } from '../packets/floatPacket';
@@ -46,6 +50,8 @@ describe('serializer/nodeExpander', () => {
                     new StringNode('prop5string')
                 ])
             ])));
+            root.children.push(new ExternNode('BaseClass'));
+            root.children.push(new DeleteNode('NotAClass'));
 
             const expander = new NodeExpander();
             const signaturePacket = expander.expandClass(root);
@@ -91,6 +97,14 @@ describe('serializer/nodeExpander', () => {
             //prop6 packet
             packet = packet.next!;
             expect(packet instanceof ArrayPacket).toBeTruthy();
+
+            //BaseClass packet
+            packet = packet.next!;
+            expect(packet instanceof ExternPacket).toBeTruthy();
+
+            //NotAClass packet
+            packet = packet.next!;
+            expect(packet instanceof DeletePacket).toBeTruthy();
 
             //pointer to the next packet
             packet = packet.next!;

@@ -1,4 +1,6 @@
 import { ClassNode } from '../parser/nodes/classNode';
+import { ExternNode } from '../parser/nodes/externNode';
+import { DeleteNode } from '../parser/nodes/deleteNode';
 import { PropertyNode } from '../parser/nodes/propertyNode';
 import { NumberNode } from '../parser/nodes/numberNode';
 import { StringNode } from '../parser/nodes/stringNode';
@@ -9,6 +11,8 @@ import { SignaturePacket } from './packets/signaturePacket';
 import { EnumsPacket } from './packets/enumsPacket';
 import { ClassBodyPacket } from './packets/classBodyPacket';
 import { ClassPacket } from './packets/classPacket';
+import { ExternPacket } from './packets/externPacket';
+import { DeletePacket } from './packets/deletePacket';
 import { PointerPacket } from './packets/pointerPacket';
 import { StringPacket } from './packets/stringPacket';
 import { FloatPacket } from './packets/floatPacket';
@@ -50,6 +54,14 @@ export class NodeExpander {
                         pool.push({ packet: packet as ClassPacket, node: child as ClassNode });
                         break;
                     }
+                    case nodeTypes.extern: {
+                        packet = this._expandExtern(packet, child as ExternNode);
+                        break;
+                    }
+                    case nodeTypes.delete: {
+                        packet = this._expandDelete(packet, child as DeleteNode);
+                        break;
+                    }
                     case nodeTypes.property: {
                         packet = this._expandProperty(packet, child as PropertyNode);
                         break;
@@ -64,6 +76,16 @@ export class NodeExpander {
 
     _expandClass(packet: Packet, node: ClassNode): Packet {
         packet.next = packet = new ClassPacket(node.className, node.inherits, packet);
+        return packet;
+    }
+
+    _expandExtern(packet: Packet, node: ExternNode): Packet {
+        packet.next = packet = new ExternPacket(node.className, packet);
+        return packet;
+    }
+
+    _expandDelete(packet: Packet, node: DeleteNode): Packet {
+        packet.next = packet = new DeletePacket(node.className, packet);
         return packet;
     }
 

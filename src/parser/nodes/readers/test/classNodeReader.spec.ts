@@ -5,6 +5,7 @@ import { ReaderUtility } from '../readerUtility';
 import { TokenIterator } from '../../../tokenIterator';
 import { Token } from '../../../tokens/token';
 import { ClassNode } from '../../classNode';
+import { ExternNode } from '../../externNode';
 import { PropertyNode } from '../../propertyNode';
 import { StringNode } from '../../stringNode';
 import { NumberNode } from '../../numberNode';
@@ -60,6 +61,18 @@ describe('parser/nodes/readers/classNodeReader', () => {
     });
 
     describe('read', () => {
+        it('should read an extern class', () => {
+            const str = 'class MyClass;';
+            const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
+            readerUtility.moveToNextToken();
+
+            const reader = new ClassNodeReader();
+            const node = reader.read(readerUtility) as ExternNode;
+
+            expect(node.type).toEqual(nodeTypes.extern);
+            expect(node.className).toEqual('MyClass');
+        });
+
         it('should read a class without inheritance', () => {
             const str = 'class MyClass \r\n { \r\n prop1="value"; prop2=100500; \r\n class MyClsInner{ prop3=1; \r\n}; };';
             const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));

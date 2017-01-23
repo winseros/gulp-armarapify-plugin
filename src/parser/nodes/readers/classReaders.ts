@@ -1,5 +1,6 @@
 import { Readers } from './readers';
 import { ClassNodeReader } from './classNodeReader';
+import { DeleteNodeReader } from './deleteNodeReader';
 import { PropertyNodeReader } from './propertyNodeReader';
 
 export class ClassReaders extends Readers {
@@ -14,6 +15,7 @@ export class ClassReaders extends Readers {
 
     static _registerReaders(registry: ClassReaders): void {
         registry.registerReader(new ClassNodeReader())
+            .registerReader(new DeleteNodeReader())
             .registerReader(new PropertyNodeReader());
     }
 }

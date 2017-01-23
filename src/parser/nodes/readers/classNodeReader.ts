@@ -2,6 +2,7 @@ import { NodeReader } from './nodeReader';
 import { ClassReaders } from './classReaders';
 import { Node } from '../node';
 import { ClassNode } from '../classNode';
+import { ExternNode } from '../externNode';
 import { tokenTypes } from '../../tokens/tokenTypes';
 import { ReaderUtility } from './readerUtility';
 import { Token } from '../../tokens/token';
@@ -18,7 +19,11 @@ export class ClassNodeReader implements NodeReader {
     read(reader: ReaderUtility): Node {
         const className = reader.skip(tokenTypes.whitespace).nextToken('Class name', tokenTypes.word) as Token<string>;
 
-        const nextToken = reader.skip(tokenTypes.whitespace, tokenTypes.newline).nextToken('{ or :', tokenTypes.codeBlockStart, tokenTypes.colon);
+        const nextToken = reader.skip(tokenTypes.whitespace, tokenTypes.newline).nextToken('{ or : or ;', tokenTypes.codeBlockStart, tokenTypes.colon, tokenTypes.semicolon);
+
+        if (nextToken.tokenType === tokenTypes.semicolon) {
+            return new ExternNode(className.tokenValue);
+        }
 
         let inheritsToken: Token<string> | undefined;
         if (nextToken.tokenType === tokenTypes.colon) {
