@@ -7,7 +7,7 @@ import { StringReader } from './stringReader';
 import { NumberReader } from './numberReader';
 import { WordReader } from './wordReader';
 import { Iterator } from '../iterator';
-import { ParserError } from '../ParserError';
+import { ParserError } from '../parserError';
 
 export class TokenReaders {
     private static _instance: TokenReaders;
