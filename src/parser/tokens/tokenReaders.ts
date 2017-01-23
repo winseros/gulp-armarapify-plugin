@@ -45,7 +45,7 @@ export class TokenReaders {
             }
         }
         const symbolCode = iterator.current.charCodeAt(0);
-        const message = `Couldn't find an appropriate reader by the symbol: \"${iterator.current}\", code: ${symbolCode}`;
+        const message = `Unexpected symbol: \"${iterator.current}\", code: ${symbolCode}`;
         throw new ParserError(message, iterator.line, iterator.column);
     }
 }

@@ -31,7 +31,9 @@ export class ExpressionReader {
                 break;
             }
 
-            if (iterator.current.tokenType !== tokenTypes.mathOp) {
+            if (iterator.current.tokenType === tokenTypes.newline) {
+                throw new NodeError(`; expected at the end of the line`, iterator.line, iterator.column);
+            } else if (iterator.current.tokenType !== tokenTypes.mathOp) {
                 throw new NodeError(`Math operator expected but was "${iterator.current.tokenValue}" of type "${iterator.current.tokenType}"`, iterator.line, iterator.column);
             }
 

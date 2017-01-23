@@ -25,6 +25,20 @@ describe('parser/nodes/readers/expressionReader', () => {
             expect(() => reader.readExpression('something')).toThrowError('A set of tokens to stop at must be specified');
         });
 
+        it('should throw if a ; is missing at the end of the line', () => {
+            const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
+            const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
+
+            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
+                { tokenType: tokenTypes.integer, tokenValue: 1, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 0, colNumber: 0 }
+            ]));
+
+            tokenIterator.moveNext();
+            const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
+            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError('; expected at the end of the line');
+        });
+
         it('should throw if a math operator is missing', () => {
             const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;

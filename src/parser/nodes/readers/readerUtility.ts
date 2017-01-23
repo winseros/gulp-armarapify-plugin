@@ -50,7 +50,7 @@ export class ReaderUtility {
 
         switch (token.tokenType) {
             case tokenTypes.whitespace: { value = 'whitespace'; break; }
-            case tokenTypes.newline: { value = 'newline'; break; }
+            case tokenTypes.newline: { value = 'EOL'; break; }
             default: { value = token.tokenValue; }
         }
 

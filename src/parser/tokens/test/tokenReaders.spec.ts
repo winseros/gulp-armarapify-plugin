@@ -48,7 +48,7 @@ describe('parser/tokens/tokenReaders', () => {
 
             const iterator = { current: 'x' } as Iterator<string>;
 
-            expect(() => registry.pickReader(iterator)).toThrowError('Couldn\'t find an appropriate reader by the symbol: "x", code: 120');
+            expect(() => registry.pickReader(iterator)).toThrowError('Unexpected symbol: "x", code: 120');
 
             expect(r1read).toHaveBeenCalledTimes(1);
             expect(r1read).toHaveBeenCalledWith(iterator);

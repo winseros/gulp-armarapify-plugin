@@ -20,7 +20,7 @@ export class RapifyStream extends Transform {
 
     _transform(file: File, encoding: string, callback: TransformCallback): void {
         if (file.isStream()) {
-            callback(new PluginError(constants.pluginName, 'Streaming input is not supported', { fileName: file.basename }));
+            callback(new PluginError(constants.pluginName, 'Streaming input is not supported', { fileName: file.relative }));
             return;
         }
 
@@ -48,18 +48,20 @@ export class RapifyStream extends Transform {
         return new PluginError({
             plugin: constants.pluginName,
             error: error,
-            fileName: file.basename,
+            fileName: file.relative,
         });
     }
 
     _convertParserError(error: ErrorWithLineNumber, file: File): PluginError {
-        const message = `[${error.line}:${error.comumn}] ${error.message}`;
+        const line = error.line + 1;
+        const column = error.comumn + 1;
+        const message = `${file.relative}(${line}:${column}): ${error.message}`;
         return new PluginError({
             plugin: constants.pluginName,
             message: message,
-            fileName: file.basename,
+            fileName: file.relative,
             name: error.name,
-            lineNumber: error.line
+            lineNumber: line
         });
     }
 }

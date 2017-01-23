@@ -96,7 +96,7 @@ describe('parser/nodes/readers/readerUtility', () => {
 
             const spyReset = utility._resetDefaults as jasmine.Spy;
 
-            ['newline', 'whitespace', '12345'].forEach(value => {
+            ['EOL', 'whitespace', '12345'].forEach(value => {
                 const msg = `anything expected but got "${value}"`;
                 expect(() => utility.nextToken('anything', tokenTypes.word)).toThrowError(msg);
                 expect(spyReset).toHaveBeenCalledTimes(1);
