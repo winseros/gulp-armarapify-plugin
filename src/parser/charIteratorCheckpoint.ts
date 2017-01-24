@@ -1,9 +1,10 @@
-import {Checkpoint} from './iterator';
-import {CharIterator} from './charIterator';
+import { Checkpoint } from './iterator';
+import { CharIterator } from './charIterator';
 
 export interface CheckpointParams {
     iterator: CharIterator;
     bufferIndex: number;
+    current: string;
     line: number;
     column: number;
     depleted: boolean;

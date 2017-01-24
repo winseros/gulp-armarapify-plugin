@@ -6,11 +6,13 @@ import { ClassNode } from '../../classNode';
 import { PropertyNode } from '../../propertyNode';
 import { StringNode } from '../../stringNode';
 import { NumberNode } from '../../numberNode';
+import { MathOpNode } from '../../mathOpNode';
+import { mathOperators } from '../../../../mathOperators';
 
 describe('parser/nodes/readers/fileReader', () => {
     describe('read', () => {
         it('should read nodes', () => {
-            const str = '\r\n prop1="value"; prop2=100500; \r\n class MyClsInner{ prop3=1; \r\n};';
+            const str = '\r\n prop1="value"; prop2=100500; \r\n class MyClsInner{ prop3=1/2; \r\n};';
             const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
             readerUtility.moveToNextToken();
 
@@ -37,6 +39,22 @@ describe('parser/nodes/readers/fileReader', () => {
             expect(child3.className).toEqual('MyClsInner');
             expect(child3.type).toEqual(nodeTypes.class);
             expect(child3.children.length).toEqual(1);
+
+            const child31 = child3.children[0] as PropertyNode;
+            expect(child31.type).toEqual(nodeTypes.property);
+            expect(child31.name).toEqual('prop3');
+
+            const child31v = child31.value as MathOpNode;
+            expect(child31v.type).toEqual(nodeTypes.mathOp);
+            expect(child31v.operator).toEqual(mathOperators.div);
+
+            const child31Left = child31v.left as NumberNode;
+            expect(child31Left.type).toEqual(nodeTypes.number);
+            expect(child31Left.value).toEqual(1);
+
+            const child31right = child31v.right as NumberNode;
+            expect(child31right.type).toEqual(nodeTypes.number);
+            expect(child31right.value).toEqual(2);
         });
     });
 });

@@ -34,7 +34,8 @@ export class CharIterator implements Iterator<string> {
     createCheckpoint(): CharIteratorCheckpoint {
         const params = {
             iterator: this,
-            bufferIndex: Math.max(this._bufferIndex - 1, 0),
+            bufferIndex: Math.max(this._bufferIndex, 0),
+            current: this.current,
             line: this._line,
             column: this._column,
             depleted: this._depleted
@@ -44,13 +45,10 @@ export class CharIterator implements Iterator<string> {
 
     __rollbackCheckpoint(params: CheckpointParams): void {
         this._bufferIndex = params.bufferIndex;
+        this._current = params.current;
         this._line = params.line;
         this._column = params.column;
         this._depleted = params.depleted;
-
-        const current = this._peekOffsetByte(0);
-        this._updatePosition(current);
-        this._current = String.fromCharCode(current);
     }
 
     _updatePosition(current: number): void {
