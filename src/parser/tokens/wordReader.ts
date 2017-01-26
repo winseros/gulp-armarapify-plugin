@@ -3,7 +3,7 @@ import { Token } from './token';
 import { Iterator } from '../iterator';
 import { tokenTypes } from './tokenTypes';
 
-const regexpLetter = /[a-zA-Z_]/;
+const regexpLetter = /[a-zA-Z_\$]/;
 const regexpLetterOrDigit = /[\w\d_]/;
 
 export class WordReader implements TokenReader<string>{

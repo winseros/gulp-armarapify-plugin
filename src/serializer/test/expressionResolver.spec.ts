@@ -2,7 +2,10 @@ import { ExpressionResolver } from '../expressionResolver';
 import { mathOperators } from '../../mathOperators';
 import { nodeTypes } from '../../parser/nodes/nodeTypes';
 import { ArrayNode } from '../../parser/nodes/arrayNode';
-import { NumberNode } from '../../parser/nodes/numberNode';
+import { IntegerNode } from '../../parser/nodes/integerNode';
+import { FloatNode } from '../../parser/nodes/floatNode';
+import { StringNode } from '../../parser/nodes/stringNode';
+import { WordNode } from '../../parser/nodes/wordNode';
 import { MathOpNode } from '../../parser/nodes/mathOpNode';
 import { MathGrpNode } from '../../parser/nodes/mathGrpNode';
 
@@ -16,10 +19,37 @@ describe('serializer/expressionResolver', () => {
             expect(() => resolver.resolve(node)).toThrowError(`The node of type "${node.type}" was not expected`);
         });
 
-        it('should resolve NumberNodes', () => {
+        it('should resolve IntegerNodes', () => {
             const resolver = new ExpressionResolver();
 
-            const node = new NumberNode(1, false);
+            const node = new IntegerNode(1);
+
+            const resolved = resolver.resolve(node);
+            expect(resolved).toBe(node);
+        });
+
+        it('should resolve FloatNodes', () => {
+            const resolver = new ExpressionResolver();
+
+            const node = new FloatNode(1);
+
+            const resolved = resolver.resolve(node);
+            expect(resolved).toBe(node);
+        });
+
+        it('should resolve StringNodes', () => {
+            const resolver = new ExpressionResolver();
+
+            const node = new StringNode('abc');
+
+            const resolved = resolver.resolve(node);
+            expect(resolved).toBe(node);
+        });
+
+        it('should resolve WordNodes', () => {
+            const resolver = new ExpressionResolver();
+
+            const node = new WordNode('abc');
 
             const resolved = resolver.resolve(node);
             expect(resolved).toBe(node);
@@ -28,7 +58,7 @@ describe('serializer/expressionResolver', () => {
         it('should resolve MathGrpNodes', () => {
             const resolver = new ExpressionResolver();
 
-            const node = new NumberNode(1, false);
+            const node = new IntegerNode(1);
 
             const resolved = resolver.resolve(new MathGrpNode(node));
             expect(resolved).toBe(node);
@@ -37,8 +67,8 @@ describe('serializer/expressionResolver', () => {
         it('should throw if can not perform an operation', () => {
             const resolver = new ExpressionResolver();
 
-            const left = new NumberNode(1, false);
-            const right = new NumberNode(2, false);
+            const left = new IntegerNode(1);
+            const right = new IntegerNode(2);
             const op = new MathOpNode('unknown-symbol', left, right);
 
             expect(() => resolver.resolve(op)).toThrowError('"unknown-symbol" is not a known math operation');
@@ -46,200 +76,164 @@ describe('serializer/expressionResolver', () => {
 
         describe('plus', () => {
             it('should resolve plus operations with int values', () => {
+                const op = new MathOpNode(mathOperators.plus, new IntegerNode(1), new IntegerNode(2));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as IntegerNode;
 
-                const left = new NumberNode(1, false);
-                const right = new NumberNode(2, false);
-                const op = new MathOpNode(mathOperators.plus, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.integer);
                 expect(resolved.value).toEqual(3);
-                expect(resolved.isFloat).toEqual(false);
             });
 
             it('should resolve plus operations with float values', () => {
+                const op = new MathOpNode(mathOperators.plus, new FloatNode(1.5), new IntegerNode(2));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as FloatNode;
 
-                const left = new NumberNode(1.5, true);
-                const right = new NumberNode(2, false);
-                const op = new MathOpNode(mathOperators.plus, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.float);
                 expect(resolved.value).toEqual(3.5);
-                expect(resolved.isFloat).toEqual(true);
             });
         });
 
         describe('minus', () => {
             it('should resolve minus operations with int values', () => {
+                const op = new MathOpNode(mathOperators.minus, new IntegerNode(10), new IntegerNode(4));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as IntegerNode;
 
-                const left = new NumberNode(10, false);
-                const right = new NumberNode(4, false);
-                const op = new MathOpNode(mathOperators.minus, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.integer);
                 expect(resolved.value).toEqual(6);
-                expect(resolved.isFloat).toEqual(false);
             });
 
             it('should resolve minus operations with float values', () => {
+                const op = new MathOpNode(mathOperators.minus, new FloatNode(10.5), new IntegerNode(3));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as FloatNode;
 
-                const left = new NumberNode(10.5, true);
-                const right = new NumberNode(3, false);
-                const op = new MathOpNode(mathOperators.minus, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.float);
                 expect(resolved.value).toEqual(7.5);
-                expect(resolved.isFloat).toEqual(true);
             });
         });
 
         describe('multiplication', () => {
             it('should resolve multiplication operations with int values', () => {
+                const op = new MathOpNode(mathOperators.mul, new IntegerNode(5), new IntegerNode(2));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as IntegerNode;
 
-                const left = new NumberNode(5, false);
-                const right = new NumberNode(2, false);
-                const op = new MathOpNode(mathOperators.mul, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.integer);
                 expect(resolved.value).toEqual(10);
-                expect(resolved.isFloat).toEqual(false);
             });
 
             it('should resolve multiplication operations with float values', () => {
+                const op = new MathOpNode(mathOperators.mul, new FloatNode(2.5), new IntegerNode(5));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as FloatNode;
 
-                const left = new NumberNode(2.5, true);
-                const right = new NumberNode(5, false);
-                const op = new MathOpNode(mathOperators.mul, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.float);
                 expect(resolved.value).toEqual(12.5);
-                expect(resolved.isFloat).toEqual(true);
             });
         });
 
         describe('division', () => {
             it('should resolve division operations with int values', () => {
+                const op = new MathOpNode(mathOperators.div, new IntegerNode(10), new IntegerNode(2));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as FloatNode;
 
-                const left = new NumberNode(10, false);
-                const right = new NumberNode(2, false);
-                const op = new MathOpNode(mathOperators.div, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.float);
                 expect(resolved.value).toEqual(5);
-                expect(resolved.isFloat).toEqual(true);
             });
 
             it('should resolve division operations with float values', () => {
+                const op = new MathOpNode(mathOperators.div, new FloatNode(10.5), new IntegerNode(2));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as FloatNode;
 
-                const left = new NumberNode(10.5, true);
-                const right = new NumberNode(2, false);
-                const op = new MathOpNode(mathOperators.div, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.float);
                 expect(resolved.value).toEqual(5.25);
-                expect(resolved.isFloat).toEqual(true);
             });
         });
 
         describe('power', () => {
             it('should resolve power operations with int values', () => {
+                const op = new MathOpNode(mathOperators.pow, new IntegerNode(10), new IntegerNode(2));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as IntegerNode;
 
-                const left = new NumberNode(10, false);
-                const right = new NumberNode(2, false);
-                const op = new MathOpNode(mathOperators.pow, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.integer);
                 expect(resolved.value).toEqual(100);
-                expect(resolved.isFloat).toEqual(false);
             });
 
             it('should resolve power operations with float values', () => {
+                const op = new MathOpNode(mathOperators.pow, new FloatNode(2.5), new IntegerNode(2));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as FloatNode;
 
-                const left = new NumberNode(2.5, true);
-                const right = new NumberNode(2, false);
-                const op = new MathOpNode(mathOperators.pow, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.float);
                 expect(resolved.value).toEqual(6.25);
-                expect(resolved.isFloat).toEqual(true);
             });
         });
 
         describe('modulus', () => {
             it('should resolve modulus operations with int values', () => {
+                const op = new MathOpNode(mathOperators.mod, new IntegerNode(10), new IntegerNode(3));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as IntegerNode;
 
-                const left = new NumberNode(10, false);
-                const right = new NumberNode(3, false);
-                const op = new MathOpNode(mathOperators.mod, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.integer);
                 expect(resolved.value).toEqual(1);
-                expect(resolved.isFloat).toEqual(false);
             });
 
             it('should resolve modulus operations with float values', () => {
+                const op = new MathOpNode(mathOperators.mod, new FloatNode(2.5), new IntegerNode(2));
                 const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(op) as FloatNode;
 
-                const left = new NumberNode(2.5, true);
-                const right = new NumberNode(2, false);
-                const op = new MathOpNode(mathOperators.mod, left, right);
-
-                const resolved = resolver.resolve(op);
-
-                expect(resolved.type).toEqual(nodeTypes.number);
+                expect(resolved.type).toEqual(nodeTypes.float);
                 expect(resolved.value).toEqual(0.5);
-                expect(resolved.isFloat).toEqual(true);
             });
         });
 
-        it('should resolve complex expressions', () => {
+        it('should resolve complex expressions with numbers', () => {
+            const op1 = new MathOpNode(mathOperators.plus, new IntegerNode(1), new IntegerNode(2));
+            const op2 = new MathOpNode(mathOperators.mul, new IntegerNode(5), new MathGrpNode(op1));
+
             const resolver = new ExpressionResolver();
+            const resolved = resolver.resolve(op2) as IntegerNode;
 
-            const left1 = new NumberNode(1, false);
-            const right1 = new NumberNode(2, false);
-            const op1 = new MathOpNode(mathOperators.plus, left1, right1);
+            expect(resolved.type).toEqual(nodeTypes.integer);
+            expect(resolved.value).toEqual(15);
+        });
 
-            const left2 = new NumberNode(10, false);
-            const op2 = new MathOpNode(mathOperators.minus, left2, op1);
+        it('should partially resolve complex expressions with strings', () => {
+            const op1 = new MathOpNode(mathOperators.plus, new IntegerNode(1), new IntegerNode(2));
+            const op2 = new MathOpNode(mathOperators.mul, new StringNode('a'), new MathGrpNode(op1));
+            const grp2 = new MathGrpNode(op2);
 
-            const resolved = resolver.resolve(op2);
+            const resolver = new ExpressionResolver();
+            const resolved = resolver.resolve(grp2) as MathGrpNode;
 
-            expect(resolved.type).toEqual(nodeTypes.number);
-            expect(resolved.value).toEqual(7);
-            expect(resolved.isFloat).toEqual(false);
+            expect(resolved.type).toEqual(nodeTypes.mathGrp);
+
+            const mul = resolved.value as MathOpNode;
+            expect(mul.type).toEqual(nodeTypes.mathOp);
+            expect(mul.operator).toEqual(mathOperators.mul);
+
+            expect(mul.left).toBe(op2.left);
+
+            const mulRight = mul.right as IntegerNode;
+            expect(mulRight.type).toEqual(nodeTypes.integer);
+            expect(mulRight.value).toEqual(3);
+        });
+
+        it('should not resolve expressions with of strings', () => {
+            const op1 = new MathOpNode(mathOperators.plus, new StringNode('a'), new IntegerNode(2));
+            const grp1 = new MathGrpNode(op1);
+
+            const resolver = new ExpressionResolver();
+            const resolved = resolver.resolve(grp1);
+
+            expect(resolved).toBe(grp1);
         });
     });
-
 });

@@ -51,5 +51,12 @@ describe('parser/tokens/newLineReader', () => {
                 expect(iterator.current).toEqual(p.exp);
             });
         });
+
+        it('should throw if iterator.current is not CR or LF symbol', () => {
+            const iterator = new CharIterator(new Buffer('a'));
+            iterator.moveNext();
+            const reader = new NewLineReader();
+            expect(() => reader.read(iterator)).toThrowError('Expected CR or LF bymbol but got "a", code: 97');
+        });
     });
 });

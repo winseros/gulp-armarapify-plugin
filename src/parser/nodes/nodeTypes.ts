@@ -3,8 +3,10 @@ export const nodeTypes = {
     extern: 'node-type--extern',
     delete: 'node-type--delete',
     property: 'node-type--property',
+    word: 'node-type--word',
     string: 'node-type--string',
-    number: 'node-type--number',
+    integer: 'node-type--integer',
+    float: 'node-type--float',
     array: 'node-type--array',
     mathGrp: 'node-type--math-group',
     mathOp: 'node-type--math-operator'

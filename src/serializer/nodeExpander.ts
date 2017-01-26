@@ -1,8 +1,10 @@
+import { Node } from '../parser/nodes/node';
 import { ClassNode } from '../parser/nodes/classNode';
 import { ExternNode } from '../parser/nodes/externNode';
 import { DeleteNode } from '../parser/nodes/deleteNode';
 import { PropertyNode } from '../parser/nodes/propertyNode';
-import { NumberNode } from '../parser/nodes/numberNode';
+import { IntegerNode } from '../parser/nodes/integerNode';
+import { FloatNode } from '../parser/nodes/floatNode';
 import { StringNode } from '../parser/nodes/stringNode';
 import { ArrayNode } from '../parser/nodes/arrayNode';
 import { nodeTypes } from '../parser/nodes/nodeTypes';
@@ -25,10 +27,11 @@ import {
     ArrayElementInteger,
     ArrayElementFloat
 } from './packets/arrayElement';
-import { ExpressionResolver } from './expressionResolver';
+import { ExpressionSerializer } from './expressionSerializer';
+import { TreeError } from './treeError';
 
 export class NodeExpander {
-    private _resolver = new ExpressionResolver();
+    private _serializer = new ExpressionSerializer();
 
     expandClass(node: ClassNode): SignaturePacket {
         const startPacket = new SignaturePacket();
@@ -63,8 +66,12 @@ export class NodeExpander {
                         break;
                     }
                     case nodeTypes.property: {
-                        packet = this._expandProperty(packet, child as PropertyNode);
+                        const propNode = child as PropertyNode;
+                        packet = this._expandProperty(packet, propNode.name, propNode.value);
                         break;
+                    }
+                    default: {
+                        throw new TreeError(`Unexpected class child of type "${child.type}"`, child);
                     }
                 }
             }
@@ -89,76 +96,78 @@ export class NodeExpander {
         return packet;
     }
 
-    _expandProperty(packet: Packet, node: PropertyNode): Packet {
-        const value = node.value;
+    _expandProperty(packet: Packet, name: string, value: Node): Packet {
         switch (value.type) {
-            case nodeTypes.number: {
-                packet = this._expandNumber(packet, node);
+            case nodeTypes.integer: {
+                const intNode = value as IntegerNode;
+                packet = packet.next = new IntegerPacket(name, intNode.value, packet);
+                break;
+            }
+            case nodeTypes.float: {
+                const floatNode = value as FloatNode;
+                packet = packet.next = new FloatPacket(name, floatNode.value, packet);
                 break;
             }
             case nodeTypes.string: {
-                packet = this._expandString(packet, node);
+                const strNode = value as StringNode;
+                packet = packet.next = new StringPacket(name, strNode.value, packet);
                 break;
             }
             case nodeTypes.array: {
-                packet = this._expandArray(packet, node);
+                const arrayStruct = this._expandArrayContents(value as ArrayNode);
+                packet = packet.next = new ArrayPacket(name, arrayStruct, packet);
                 break;
             }
             case nodeTypes.mathOp:
             case nodeTypes.mathGrp: {
-                packet = this._expandExpression(packet, node);
+                const resolved = this._serializer.serialize(value);
+                packet = this._expandProperty(packet, name, resolved);
                 break;
+            }
+            default: {
+                throw new TreeError(`Unexpected property value of type "${value.type}"`, value);
             }
         }
         return packet;
-    }
-
-    _expandNumber(packet: Packet, node: PropertyNode): Packet {
-        const number = node.value as NumberNode;
-        packet.next = number.isFloat ? new FloatPacket(node.name, number.value, packet) : new IntegerPacket(node.name, number.value, packet);
-        return packet.next;
-    }
-
-    _expandString(packet: Packet, node: PropertyNode): Packet {
-        const string = node.value as StringNode;
-        packet.next = new StringPacket(node.name, string.value, packet);
-        return packet.next;
-    }
-
-    _expandArray(packet: Packet, node: PropertyNode): Packet {
-        const arrayStruct = this._expandArrayContents(node.value as ArrayNode);
-        packet.next = new ArrayPacket(node.name, arrayStruct, packet);
-        return packet.next;
     }
 
     _expandArrayContents(node: ArrayNode): ArrayStruct {
-        const elements = [] as ArrayElement[];
-        for (let child of node.value) {
-            switch (child.type) {
-                case nodeTypes.string: {
-                    const strNode = child as StringNode;
-                    elements.push(new ArrayElementString(strNode.value));
-                    break;
-                }
-                case nodeTypes.number: {
-                    const numNode = child as NumberNode;
-                    const numElement = numNode.isFloat ? new ArrayElementFloat(numNode.value) : new ArrayElementInteger(numNode.value);
-                    elements.push(numElement);
-                    break;
-                }
-                case nodeTypes.array: {
-                    const arrayElement = this._expandArrayContents(child as ArrayNode);
-                    elements.push(arrayElement);
-                    break;
-                }
-            }
-        }
+        const elements = node.value.map(this._expandArrayElement, this);
         return new ArrayStruct(elements);
     }
 
-    _expandExpression(packet: Packet, node: PropertyNode): Packet {
-        const number = this._resolver.resolve(node.value);
-        packet.next = packet = number.isFloat ? new FloatPacket(node.name, number.value, packet) : new IntegerPacket(node.name, number.value, packet);
-        return packet;
+    _expandArrayElement(node: Node): ArrayElement {
+        let element: ArrayElement;
+        switch (node.type) {
+            case nodeTypes.string: {
+                const strNode = node as StringNode;
+                element = new ArrayElementString(strNode.value);
+                break;
+            }
+            case nodeTypes.integer: {
+                const intNode = node as IntegerNode;
+                element = new ArrayElementInteger(intNode.value);
+                break;
+            }
+            case nodeTypes.float: {
+                const fltNode = node as FloatNode;
+                element = new ArrayElementFloat(fltNode.value);
+                break;
+            }
+            case nodeTypes.array: {
+                element = this._expandArrayContents(node as ArrayNode);
+                break;
+            }
+            case nodeTypes.mathGrp:
+            case nodeTypes.mathOp: {
+                const resolved = this._serializer.serialize(node);
+                element = this._expandArrayElement(resolved);
+                break;
+            }
+            default: {
+                throw new TreeError(`Unexpected array element of type "${node.type}"`, node);
+            }
+        }
+        return element;
     }
 }

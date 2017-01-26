@@ -11,7 +11,7 @@ describe('serializer/packets/classPacket', () => {
     });
 
     describe('bytes', () => {
-        it('should return a fulfilled buffer', () => {
+        it('should return a fulfilled buffer with some class children', () => {
             const packet = new ClassPacket('a-class-name', 'nothing', {} as Packet);
             packet.firstChild = { offset: 100500 } as Packet;
 
@@ -21,6 +21,20 @@ describe('serializer/packets/classPacket', () => {
                 PacketType.className,
                 0x61, 0x2d, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x2d, 0x6e, 0x61, 0x6d, 0x65, 0x00,
                 0x94, 0x88, 0x01, 0x00
+            ];
+
+            expect(bytes).toEqual(Buffer.from(expected));
+        });
+
+        it('should return a fulfilled buffer with no class children', () => {
+            const packet = new ClassPacket('a-class-name', 'nothing', {} as Packet);
+
+            const bytes = packet.bytes();
+
+            const expected = [
+                PacketType.className,
+                0x61, 0x2d, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x2d, 0x6e, 0x61, 0x6d, 0x65, 0x00,
+                0x00, 0x00, 0x00, 0x00
             ];
 
             expect(bytes).toEqual(Buffer.from(expected));

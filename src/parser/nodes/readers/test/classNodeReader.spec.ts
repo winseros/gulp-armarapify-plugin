@@ -8,7 +8,7 @@ import { ClassNode } from '../../classNode';
 import { ExternNode } from '../../externNode';
 import { PropertyNode } from '../../propertyNode';
 import { StringNode } from '../../stringNode';
-import { NumberNode } from '../../numberNode';
+import { IntegerNode } from '../../integerNode';
 
 describe('parser/nodes/readers/classNodeReader', () => {
     describe('canRead', () => {
@@ -95,7 +95,7 @@ describe('parser/nodes/readers/classNodeReader', () => {
             const child2 = node.children[1] as PropertyNode;
             expect(child2.name).toEqual('prop2');
             expect(child2.type).toEqual(nodeTypes.property);
-            expect((child2.value as NumberNode).value).toEqual(100500);
+            expect((child2.value as IntegerNode).value).toEqual(100500);
 
             const child3 = node.children[2] as ClassNode;
             expect(child3.className).toEqual('MyClsInner');
@@ -130,7 +130,7 @@ describe('parser/nodes/readers/classNodeReader', () => {
             const child3 = node.children[2] as PropertyNode;
             expect(child3.name).toEqual('prop2');
             expect(child3.type).toEqual(nodeTypes.property);
-            expect((child3.value as NumberNode).value).toEqual(100500);
+            expect((child3.value as IntegerNode).value).toEqual(100500);
         });
     });
 });

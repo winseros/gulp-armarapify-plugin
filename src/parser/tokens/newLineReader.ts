@@ -2,6 +2,7 @@ import { TokenReader } from './tokenReader';
 import { Token } from './token';
 import { Iterator } from '../iterator';
 import { tokenTypes } from './tokenTypes';
+import { ParserError } from '../parserError';
 
 const cr = '\r';
 const lf = '\n';
@@ -28,6 +29,10 @@ export class NewLineReader implements TokenReader<string> {
             if (iterator.current === lf) {
                 iterator.moveNext();
             }
+        } else {
+            const symbolCode = iterator.current.charCodeAt(0);
+            const message = `Expected CR or LF bymbol but got \"${iterator.current}\", code: ${symbolCode}`;
+            throw new ParserError(message, iterator.line, iterator.column);
         }
 
         return result;

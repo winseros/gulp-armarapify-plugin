@@ -3,7 +3,7 @@ import { tokenTypes } from '../../../tokens/tokenTypes';
 import { ReaderUtility } from '../readerUtility';
 import { nodeTypes } from '../../nodeTypes';
 import { StringNode } from '../../stringNode';
-import { NumberNode } from '../../numberNode';
+import { IntegerNode } from '../../integerNode';
 import { ArrayNode } from '../../arrayNode';
 import { TokenIterator } from '../../../tokenIterator';
 import { Token } from '../../../tokens/token';
@@ -57,10 +57,10 @@ describe('parser/nodes/readers/arrayNodeReader', () => {
 
             //main array elements 0 and 1
             const arrayNode0 = arrayNode.value[0] as StringNode;
-            const arrayNode1 = arrayNode.value[1] as NumberNode;
+            const arrayNode1 = arrayNode.value[1] as IntegerNode;
             expect(arrayNode0.type).toEqual(nodeTypes.string);
             expect(arrayNode0.value).toEqual('a');
-            expect(arrayNode1.type).toEqual(nodeTypes.number);
+            expect(arrayNode1.type).toEqual(nodeTypes.integer);
             expect(arrayNode1.value).toEqual(1);
 
             //array element 2 - embedded array
@@ -71,10 +71,10 @@ describe('parser/nodes/readers/arrayNodeReader', () => {
 
             //embedded array elements 0 and 1
             const embedNode0 = embedArray.value[0] as StringNode;
-            const embedNode1 = embedArray.value[1] as NumberNode;
+            const embedNode1 = embedArray.value[1] as IntegerNode;
             expect(embedNode0.type).toEqual(nodeTypes.string);
             expect(embedNode0.value).toEqual('b');
-            expect(embedNode1.type).toEqual(nodeTypes.number);
+            expect(embedNode1.type).toEqual(nodeTypes.integer);
             expect(embedNode1.value).toEqual(2);
         });
 

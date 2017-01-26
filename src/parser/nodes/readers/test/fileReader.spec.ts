@@ -5,7 +5,7 @@ import { TokenIterator } from '../../../tokenIterator';
 import { ClassNode } from '../../classNode';
 import { PropertyNode } from '../../propertyNode';
 import { StringNode } from '../../stringNode';
-import { NumberNode } from '../../numberNode';
+import { IntegerNode } from '../../integerNode';
 import { MathOpNode } from '../../mathOpNode';
 import { mathOperators } from '../../../../mathOperators';
 
@@ -33,7 +33,7 @@ describe('parser/nodes/readers/fileReader', () => {
             const child2 = node.children[1] as PropertyNode;
             expect(child2.name).toEqual('prop2');
             expect(child2.type).toEqual(nodeTypes.property);
-            expect((child2.value as NumberNode).value).toEqual(100500);
+            expect((child2.value as IntegerNode).value).toEqual(100500);
 
             const child3 = node.children[2] as ClassNode;
             expect(child3.className).toEqual('MyClsInner');
@@ -48,12 +48,12 @@ describe('parser/nodes/readers/fileReader', () => {
             expect(child31v.type).toEqual(nodeTypes.mathOp);
             expect(child31v.operator).toEqual(mathOperators.div);
 
-            const child31Left = child31v.left as NumberNode;
-            expect(child31Left.type).toEqual(nodeTypes.number);
+            const child31Left = child31v.left as IntegerNode;
+            expect(child31Left.type).toEqual(nodeTypes.integer);
             expect(child31Left.value).toEqual(1);
 
-            const child31right = child31v.right as NumberNode;
-            expect(child31right.type).toEqual(nodeTypes.number);
+            const child31right = child31v.right as IntegerNode;
+            expect(child31right.type).toEqual(nodeTypes.integer);
             expect(child31right.value).toEqual(2);
         });
     });

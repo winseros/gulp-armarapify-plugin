@@ -7,7 +7,9 @@ import { nodeTypes } from '../../nodeTypes';
 import { StringNode } from '../../stringNode';
 import { MathGrpNode } from '../../mathGrpNode';
 import { MathOpNode } from '../../mathOpNode';
-import { NumberNode } from '../../numberNode';
+import { WordNode } from '../../wordNode';
+import { IntegerNode } from '../../integerNode';
+import { FloatNode } from '../../floatNode';
 
 const implementFakeIterator = (iteratorMock: any, calls: Token<any>[]): any => {
     let callIndex = 0;
@@ -107,15 +109,13 @@ describe('parser/nodes/readers/expressionReader', () => {
             expect(plus.type).toEqual(nodeTypes.mathOp);
             expect(plus.operator).toEqual('+');
 
-            const left = plus.left as NumberNode;
-            expect(left.type).toEqual(nodeTypes.number);
+            const left = plus.left as FloatNode;
+            expect(left.type).toEqual(nodeTypes.float);
             expect(left.value).toEqual(1.5);
-            expect(left.isFloat).toEqual(true);
 
-            const right = plus.right as NumberNode;
-            expect(right.type).toEqual(nodeTypes.number);
+            const right = plus.right as IntegerNode;
+            expect(right.type).toEqual(nodeTypes.integer);
             expect(right.value).toEqual(2);
-            expect(right.isFloat).toEqual(false);
         });
 
         it('should read "a*b + c" expression', () => {
@@ -127,7 +127,7 @@ describe('parser/nodes/readers/expressionReader', () => {
                 { tokenType: tokenTypes.mathOp, tokenValue: '*', lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.integer, tokenValue: 2, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '-', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.integer, tokenValue: 3, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.string, tokenValue: 'abc', lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.semicolon, tokenValue: ';', lineNumber: 0, colNumber: 0 }
             ]));
 
@@ -141,20 +141,20 @@ describe('parser/nodes/readers/expressionReader', () => {
             expect(minus.type).toEqual(nodeTypes.mathOp);
             expect(minus.operator).toEqual('-');
 
-            const minusRight = minus.right as NumberNode;
-            expect(minusRight.type).toEqual(nodeTypes.number);
-            expect(minusRight.value).toEqual(3);
+            const minusRight = minus.right as StringNode;
+            expect(minusRight.type).toEqual(nodeTypes.string);
+            expect(minusRight.value).toEqual('abc');
 
             const mul = minus.left as MathOpNode;
             expect(mul.type).toEqual(nodeTypes.mathOp);
             expect(mul.operator).toEqual('*');
 
-            const mulLeft = mul.left as NumberNode;
-            expect(mulLeft.type).toEqual(nodeTypes.number);
+            const mulLeft = mul.left as IntegerNode;
+            expect(mulLeft.type).toEqual(nodeTypes.integer);
             expect(mulLeft.value).toEqual(1);
 
-            const mulRight = mul.right as NumberNode;
-            expect(mulRight.type).toEqual(nodeTypes.number);
+            const mulRight = mul.right as IntegerNode;
+            expect(mulRight.type).toEqual(nodeTypes.integer);
             expect(mulRight.value).toEqual(2);
         });
 
@@ -167,7 +167,7 @@ describe('parser/nodes/readers/expressionReader', () => {
                 { tokenType: tokenTypes.mathOp, tokenValue: '*', lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.integer, tokenValue: 2, lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.mathOp, tokenValue: '^', lineNumber: 0, colNumber: 0 },
-                { tokenType: tokenTypes.integer, tokenValue: 3, lineNumber: 0, colNumber: 0 },
+                { tokenType: tokenTypes.word, tokenValue: 'abc', lineNumber: 0, colNumber: 0 },
                 { tokenType: tokenTypes.semicolon, tokenValue: ';', lineNumber: 0, colNumber: 0 }
             ]));
 
@@ -181,21 +181,21 @@ describe('parser/nodes/readers/expressionReader', () => {
             expect(mul.type).toEqual(nodeTypes.mathOp);
             expect(mul.operator).toEqual('*');
 
-            const mulLeft = mul.left as NumberNode;
-            expect(mulLeft.type).toEqual(nodeTypes.number);
+            const mulLeft = mul.left as IntegerNode;
+            expect(mulLeft.type).toEqual(nodeTypes.integer);
             expect(mulLeft.value).toEqual(1);
 
             const exp = mul.right as MathOpNode;
             expect(exp.type).toEqual(nodeTypes.mathOp);
             expect(exp.operator).toEqual('^');
 
-            const expLeft = exp.left as NumberNode;
-            expect(expLeft.type).toEqual(nodeTypes.number);
+            const expLeft = exp.left as IntegerNode;
+            expect(expLeft.type).toEqual(nodeTypes.integer);
             expect(expLeft.value).toEqual(2);
 
-            const expRight = exp.right as NumberNode;
-            expect(expRight.type).toEqual(nodeTypes.number);
-            expect(expRight.value).toEqual(3);
+            const expRight = exp.right as WordNode;
+            expect(expRight.type).toEqual(nodeTypes.word);
+            expect(expRight.value).toEqual('abc');
         });
 
         it('should read "a + b*c" expression', () => {
@@ -221,20 +221,20 @@ describe('parser/nodes/readers/expressionReader', () => {
             expect(plus.type).toEqual(nodeTypes.mathOp);
             expect(plus.operator).toEqual('+');
 
-            const plusLeft = plus.left as NumberNode;
-            expect(plusLeft.type).toEqual(nodeTypes.number);
+            const plusLeft = plus.left as IntegerNode;
+            expect(plusLeft.type).toEqual(nodeTypes.integer);
             expect(plusLeft.value).toEqual(1);
 
             const mul = plus.right as MathOpNode;
             expect(mul.type).toEqual(nodeTypes.mathOp);
             expect(mul.operator).toEqual('*');
 
-            const mulLeft = mul.left as NumberNode;
-            expect(mulLeft.type).toEqual(nodeTypes.number);
+            const mulLeft = mul.left as IntegerNode;
+            expect(mulLeft.type).toEqual(nodeTypes.integer);
             expect(mulLeft.value).toEqual(2);
 
-            const mulRight = mul.right as NumberNode;
-            expect(mulRight.type).toEqual(nodeTypes.number);
+            const mulRight = mul.right as IntegerNode;
+            expect(mulRight.type).toEqual(nodeTypes.integer);
             expect(mulRight.value).toEqual(3);
         });
 
@@ -263,8 +263,8 @@ describe('parser/nodes/readers/expressionReader', () => {
             expect(mul.type).toEqual(nodeTypes.mathOp);
             expect(mul.operator).toEqual('*');
 
-            const mulRight = mul.right as NumberNode;
-            expect(mulRight.type).toEqual(nodeTypes.number);
+            const mulRight = mul.right as IntegerNode;
+            expect(mulRight.type).toEqual(nodeTypes.integer);
             expect(mulRight.value).toEqual(3);
 
             const grp = mul.left as MathGrpNode;
@@ -274,12 +274,12 @@ describe('parser/nodes/readers/expressionReader', () => {
             expect(plus.type).toEqual(nodeTypes.mathOp);
             expect(plus.operator).toEqual('+');
 
-            const plusLeft = plus.left as NumberNode;
-            expect(plusLeft.type).toEqual(nodeTypes.number);
+            const plusLeft = plus.left as IntegerNode;
+            expect(plusLeft.type).toEqual(nodeTypes.integer);
             expect(plusLeft.value).toEqual(1);
 
-            const plusRight = plus.right as NumberNode;
-            expect(plusRight.type).toEqual(nodeTypes.number);
+            const plusRight = plus.right as IntegerNode;
+            expect(plusRight.type).toEqual(nodeTypes.integer);
             expect(plusRight.value).toEqual(2);
         });
 
@@ -314,12 +314,12 @@ describe('parser/nodes/readers/expressionReader', () => {
             expect(div.type).toEqual(nodeTypes.mathOp);
             expect(div.operator).toEqual('/');
 
-            const plusLeft = div.left as NumberNode;
-            expect(plusLeft.type).toEqual(nodeTypes.number);
+            const plusLeft = div.left as IntegerNode;
+            expect(plusLeft.type).toEqual(nodeTypes.integer);
             expect(plusLeft.value).toEqual(1);
 
-            const plusRight = div.right as NumberNode;
-            expect(plusRight.type).toEqual(nodeTypes.number);
+            const plusRight = div.right as IntegerNode;
+            expect(plusRight.type).toEqual(nodeTypes.integer);
             expect(plusRight.value).toEqual(2);
         });
     });

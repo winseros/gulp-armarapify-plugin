@@ -1,6 +1,8 @@
 import { Node } from '../node';
+import { WordNode } from '../wordNode';
 import { StringNode } from '../stringNode';
-import { NumberNode } from '../numberNode';
+import { IntegerNode } from '../integerNode';
+import { FloatNode } from '../floatNode';
 import { MathGrpNode } from '../mathGrpNode';
 import { MathOpNode } from '../mathOpNode';
 import { nodeTypes } from '../nodeTypes';
@@ -81,12 +83,16 @@ export class ExpressionReader {
                 node = new StringNode(token.tokenValue as string);
                 break;
             }
+            case tokenTypes.word: {
+                node = new WordNode(token.tokenValue as string);
+                break;
+            }
             case tokenTypes.float: {
-                node = new NumberNode(token.tokenValue as number, true);
+                node = new FloatNode(token.tokenValue as number);
                 break;
             }
             case tokenTypes.integer: {
-                node = new NumberNode(token.tokenValue as number, false);
+                node = new IntegerNode(token.tokenValue as number);
                 break;
             }
             default: {

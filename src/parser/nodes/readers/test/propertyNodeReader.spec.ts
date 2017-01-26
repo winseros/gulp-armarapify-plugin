@@ -1,6 +1,6 @@
 import { PropertyNodeReader } from '../propertyNodeReader';
 import { PropertyNode } from '../../propertyNode';
-import { NumberNode } from '../../numberNode';
+import { IntegerNode } from '../../integerNode';
 import { ArrayNode } from '../../arrayNode';
 import { tokenTypes } from '../../../tokens/tokenTypes';
 import { nodeTypes } from '../../nodeTypes';
@@ -73,8 +73,8 @@ describe('parser/nodes/readers/propertyNodeReader', () => {
             expect(propertyNode.type).toEqual(nodeTypes.property);
             expect(propertyNode.name).toEqual('prop');
 
-            const numberNode = propertyNode.value as NumberNode;
-            expect(numberNode.type).toEqual(nodeTypes.number);
+            const numberNode = propertyNode.value as IntegerNode;
+            expect(numberNode.type).toEqual(nodeTypes.integer);
             expect(numberNode.value).toEqual(15);
         });
 
@@ -96,16 +96,16 @@ describe('parser/nodes/readers/propertyNodeReader', () => {
             expect(arrayNode.type).toEqual(nodeTypes.array);
             expect(arrayNode.value.length).toEqual(3);
 
-            const n1 = arrayNode.value[0] as NumberNode;
-            expect(n1.type).toEqual(nodeTypes.number);
+            const n1 = arrayNode.value[0] as IntegerNode;
+            expect(n1.type).toEqual(nodeTypes.integer);
             expect(n1.value).toEqual(1);
 
-            const n2 = arrayNode.value[1] as NumberNode;
-            expect(n2.type).toEqual(nodeTypes.number);
+            const n2 = arrayNode.value[1] as IntegerNode;
+            expect(n2.type).toEqual(nodeTypes.integer);
             expect(n2.value).toEqual(2);
 
-            const n3 = arrayNode.value[2] as NumberNode;
-            expect(n3.type).toEqual(nodeTypes.number);
+            const n3 = arrayNode.value[2] as IntegerNode;
+            expect(n3.type).toEqual(nodeTypes.integer);
             expect(n3.value).toEqual(3);
         });
     });

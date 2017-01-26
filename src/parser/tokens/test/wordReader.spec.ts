@@ -19,6 +19,13 @@ describe('parser/tokens/wordReader', () => {
             expect(canRead).toEqual(true);
         });
 
+        it('should return true if current iterator char is a $ sign', () => {
+            const reader = new WordReader();
+            const iterator = { current: '$' } as Iterator<string>;
+            const canRead = reader.canRead(iterator);
+            expect(canRead).toEqual(true);
+        });
+
         it('should return true if current iterator char is a non-letter', () => {
             const reader = new WordReader();
             const iterator = { current: '1' } as Iterator<string>;

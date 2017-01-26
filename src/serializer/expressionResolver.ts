@@ -2,24 +2,39 @@ import { nodeTypes } from '../parser/nodes/nodeTypes';
 import { Node } from '../parser/nodes/node';
 import { MathOpNode } from '../parser/nodes/mathOpNode';
 import { MathGrpNode } from '../parser/nodes/mathGrpNode';
-import { NumberNode } from '../parser/nodes/numberNode';
+import { IntegerNode } from '../parser/nodes/integerNode';
+import { FloatNode } from '../parser/nodes/floatNode';
+import { StringNode } from '../parser/nodes/stringNode';
+import { WordNode } from '../parser/nodes/wordNode';
+import { ConstNode } from '../parser/nodes/constNode';
 import { TreeError } from './treeError';
 import { mathOperators } from '../mathOperators';
 
+const numberTypes = [nodeTypes.integer, nodeTypes.float];
+
 export class ExpressionResolver {
-    resolve(expression: Node): NumberNode {
-        let result: NumberNode;
+    resolve(expression: Node): Node {
+        let result: Node;
         switch (expression.type) {
             case nodeTypes.mathGrp: {
-                result = this.resolve((expression as MathGrpNode).value);
+                result = this._resolveGrp(expression as MathGrpNode);
                 break;
             }
             case nodeTypes.mathOp: {
                 result = this._resolveOp(expression as MathOpNode);
                 break;
             }
-            case nodeTypes.number: {
-                return expression as NumberNode;
+            case nodeTypes.integer: {
+                return expression as IntegerNode;
+            }
+            case nodeTypes.float: {
+                return expression as FloatNode;
+            }
+            case nodeTypes.string: {
+                return expression as StringNode;
+            }
+            case nodeTypes.word: {
+                return expression as WordNode;
             }
             default: {
                 throw new TreeError(`The node of type "${expression.type}" was not expected`, expression);
@@ -28,31 +43,43 @@ export class ExpressionResolver {
         return result;
     }
 
-    _resolveOp(node: MathOpNode): NumberNode {
-        let result: NumberNode;
+    _resolveGrp(node: MathGrpNode): Node {
+        let result = this.resolve(node.value);
+        if (result.type === nodeTypes.mathOp) {
+            if (result === node.value) {
+                result = node;
+            } else {
+                result = new MathGrpNode(result);
+            }
+        }
+        return result;
+    }
+
+    _resolveOp(node: MathOpNode): Node {
+        let result: Node;
         switch (node.operator) {
             case mathOperators.plus: {
-                result = this._performOperation(node, 'plus', (x, y) => x + y);
+                result = this._performOperation(node, (x, y) => x + y);
                 break;
             }
             case mathOperators.minus: {
-                result = this._performOperation(node, 'minus', (x, y) => x - y);
+                result = this._performOperation(node, (x, y) => x - y);
                 break;
             }
             case mathOperators.mul: {
-                result = this._performOperation(node, 'multiply', (x, y) => x * y);
+                result = this._performOperation(node, (x, y) => x * y);
                 break;
             }
             case mathOperators.div: {
-                result = this._performOperation(node, 'divide', (x, y) => x / y, true);
+                result = this._performOperation(node, (x, y) => x / y, true);
                 break;
             }
             case mathOperators.pow: {
-                result = this._performOperation(node, 'power', (x, y) => Math.pow(x, y));
+                result = this._performOperation(node, (x, y) => Math.pow(x, y));
                 break;
             }
             case mathOperators.mod: {
-                result = this._performOperation(node, 'plus', (x, y) => x % y);
+                result = this._performOperation(node, (x, y) => x % y);
                 break;
             }
             default: {
@@ -65,21 +92,21 @@ export class ExpressionResolver {
 
     _performOperation(
         node: MathOpNode,
-        operationDescription: string,
         impl: (left: number, right: number) => number,
         forceFloat = false
-    ): NumberNode {
+    ): Node {
         const left = this.resolve(node.left);
         const right = this.resolve(node.right);
 
-        const value = impl(left.value, right.value);
-
-        const isFloat = forceFloat || this._isFloat(left, right);
-        return new NumberNode(value, isFloat);
-    }
-
-    _isFloat(left: NumberNode, right: NumberNode): boolean {
-        const result = left.isFloat || right.isFloat;
+        let result: Node = node;
+        const resolvable = numberTypes.indexOf(left.type) >= 0 && numberTypes.indexOf(right.type) >= 0;
+        if (resolvable) {
+            const float = forceFloat || left.type === nodeTypes.float || right.type === nodeTypes.float;
+            const valueNum = impl((left as ConstNode<number>).value, (right as ConstNode<number>).value);
+            result = float ? new FloatNode(valueNum) : new IntegerNode(valueNum);
+        } else if (left !== node.left || right !== node.right) {
+            result = new MathOpNode(node.operator, left, right);
+        }
         return result;
     }
 }

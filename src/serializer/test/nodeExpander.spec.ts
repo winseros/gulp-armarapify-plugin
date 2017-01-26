@@ -4,9 +4,11 @@ import { ExternNode } from '../../parser/nodes/externNode';
 import { DeleteNode } from '../../parser/nodes/deleteNode';
 import { PropertyNode } from '../../parser/nodes/propertyNode';
 import { StringNode } from '../../parser/nodes/stringNode';
-import { NumberNode } from '../../parser/nodes/numberNode';
+import { IntegerNode } from '../../parser/nodes/integerNode';
+import { FloatNode } from '../../parser/nodes/floatNode';
 import { ArrayNode } from '../../parser/nodes/arrayNode';
 import { MathOpNode } from '../../parser/nodes/mathOpNode';
+import { MathGrpNode } from '../../parser/nodes/mathGrpNode';
 import { mathOperators } from '../../mathOperators';
 import { Packet } from '../packets/packet';
 import { SignaturePacket } from '../packets/signaturePacket';
@@ -26,17 +28,17 @@ describe('serializer/nodeExpander', () => {
         it('should expand a class with internal objects', () => {
             const root = new ClassNode('', []);
             root.children.push(new PropertyNode('prop1', new StringNode('prop1Value')));
-            root.children.push(new PropertyNode('prop2', new NumberNode(1, false)));
-            root.children.push(new PropertyNode('prop3', new NumberNode(1.5, true)));
+            root.children.push(new PropertyNode('prop2', new IntegerNode(1)));
+            root.children.push(new PropertyNode('prop3', new FloatNode(1.5)));
             root.children.push(new PropertyNode('prop4', new MathOpNode(
                 mathOperators.plus,
-                new NumberNode(1, false),
-                new NumberNode(1, false)
+                new IntegerNode(1),
+                new IntegerNode(1)
             )));
             root.children.push(new PropertyNode('prop5', new MathOpNode(
                 mathOperators.plus,
-                new NumberNode(1.5, true),
-                new NumberNode(1.5, true)
+                new FloatNode(1.5),
+                new FloatNode(1.5)
             )));
             root.children.push(new ClassNode('InnerClass', [
                 new PropertyNode('innerProp1', new StringNode('innerProp1val')),
@@ -44,11 +46,13 @@ describe('serializer/nodeExpander', () => {
             ]));
             root.children.push(new ClassNode('EmptyClass', []));
             root.children.push(new PropertyNode('prop6', new ArrayNode([
-                new NumberNode(1, false),
-                new NumberNode(1.5, true),
+                new IntegerNode(1),
+                new FloatNode(1.5),
                 new ArrayNode([
                     new StringNode('prop5string')
-                ])
+                ]),
+                new MathOpNode(mathOperators.plus, new IntegerNode(1), new IntegerNode(2)),
+                new MathGrpNode(new StringNode('prop6string'))
             ])));
             root.children.push(new ExternNode('BaseClass'));
             root.children.push(new DeleteNode('NotAClass'));
@@ -140,6 +144,32 @@ describe('serializer/nodeExpander', () => {
             packet = packet.next!;
             expect(packet instanceof EnumsPacket).toBeTruthy();
             expect(signaturePacket.last).toEqual(packet);
+        });
+
+        it('should throw if class contains unexpected child', () => {
+            const root = new ClassNode('', []);
+            root.children.push(new StringNode('prop1Value'));
+
+            const expander = new NodeExpander();
+            expect(() => expander.expandClass(root)).toThrowError(`Unexpected class child of type "${root.children[0].type}"`);
+        });
+
+        it('should throw if property contains unexpected data', () => {
+            const root = new ClassNode('', []);
+            const prop = new PropertyNode('prop2', new StringNode('prop1Value'));
+            root.children.push(new PropertyNode('prop1', prop));
+
+            const expander = new NodeExpander();
+            expect(() => expander.expandClass(root)).toThrowError(`Unexpected property value of type "${prop.type}"`);
+        });
+
+        it('should throw if array contains unexpected data', () => {
+            const root = new ClassNode('', []);
+            const prop = new PropertyNode('prop2', new StringNode('prop1Value'));
+            root.children.push(new PropertyNode('prop1', new ArrayNode([prop])));
+
+            const expander = new NodeExpander();
+            expect(() => expander.expandClass(root)).toThrowError(`Unexpected array element of type "${prop.type}"`);
         });
     });
 });
