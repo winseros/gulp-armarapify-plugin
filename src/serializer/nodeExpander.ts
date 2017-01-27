@@ -49,8 +49,7 @@ export class NodeExpander {
 
             const children = tupple.node.children;
             packet.next = packet = tupple.packet.firstChild = new ClassBodyPacket(tupple.node.inherits, children.length, packet);
-            for (let i = 0; i < children.length; i++) {
-                const child = children[i];
+            for (const child of children) {
                 switch (child.type) {
                     case nodeTypes.class: {
                         packet = this._expandClass(packet, child as ClassNode);

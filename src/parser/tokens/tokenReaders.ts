@@ -37,8 +37,7 @@ export class TokenReaders {
     }
 
     pickReader(iterator: Iterator<string>): TokenReader<any> {
-        for (let i = 0; i < this._readers.length; i++) {
-            const reader = this._readers[i];
+        for (const reader of this._readers) {
             const canRead = reader.canRead(iterator);
             if (canRead) {
                 return reader;

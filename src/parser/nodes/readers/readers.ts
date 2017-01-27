@@ -11,8 +11,7 @@ export class Readers {
     }
 
     pickReader(reader: ReaderUtility): NodeReader {
-        for (let i = 0; i < this._readers.length; i++) {
-            const registeredReader = this._readers[i];
+        for (const registeredReader of this._readers) {
             const canRead = registeredReader.canRead(reader);
             if (canRead) {
                 return registeredReader;

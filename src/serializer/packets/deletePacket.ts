@@ -18,7 +18,7 @@ export class DeletePacket extends PacketBase {
 
     bytes(): Buffer {
         const buf = Buffer.allocUnsafe(this.size);
-        let offset = buf.writeUInt8(PacketType.delete, 0);
+        const offset = buf.writeUInt8(PacketType.delete, 0);
         BufferHelper.writeAsciiString(buf, offset, this._className);
         return buf;
     }

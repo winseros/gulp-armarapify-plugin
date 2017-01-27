@@ -19,7 +19,7 @@ export class ClassBodyPacket extends PacketBase {
 
     bytes(): Buffer {
         const buf = Buffer.allocUnsafe(this.size);
-        let offset = BufferHelper.writeAsciiString(buf, 0, this._inherits);
+        const offset = BufferHelper.writeAsciiString(buf, 0, this._inherits);
         BufferHelper.writeCompressedInt(buf, offset, this._noOfChildren);
         return buf;
     }

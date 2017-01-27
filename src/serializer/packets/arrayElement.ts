@@ -24,7 +24,7 @@ export class ArrayStruct implements ArrayElement {
         const buffers = this._elements.map(e => e.getBytes());
         const result = Buffer.allocUnsafe(this.size);
 
-        let dataOffset = BufferHelper.writeCompressedInt(result, 0, this._elements.length);
+        const dataOffset = BufferHelper.writeCompressedInt(result, 0, this._elements.length);
 
         buffers.reduce((offset, buffer) => {
             const copied = buffer.copy(result, offset);
@@ -46,7 +46,7 @@ export class ArrayElementString implements ArrayElement {
 
     getBytes(): Buffer {
         const buffer = Buffer.allocUnsafe(this.size);
-        let offset = buffer.writeUInt8(DataType.string, 0);
+        const offset = buffer.writeUInt8(DataType.string, 0);
         BufferHelper.writeAsciiString(buffer, offset, this._data);
         return buffer;
     }
@@ -62,7 +62,7 @@ export class ArrayElementFloat implements ArrayElement {
 
     getBytes(): Buffer {
         const buffer = Buffer.allocUnsafe(this.size);
-        let offset = buffer.writeUInt8(DataType.float, 0);
+        const offset = buffer.writeUInt8(DataType.float, 0);
         buffer.writeFloatLE(this._data, offset);
         return buffer;
     }
@@ -78,7 +78,7 @@ export class ArrayElementInteger implements ArrayElement {
 
     getBytes(): Buffer {
         const buffer = Buffer.allocUnsafe(this.size);
-        let offset = buffer.writeUInt8(DataType.float, 0);
+        const offset = buffer.writeUInt8(DataType.float, 0);
         buffer.writeInt32LE(this._data, offset);
         return buffer;
     }

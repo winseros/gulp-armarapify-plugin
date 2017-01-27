@@ -18,7 +18,7 @@ export class ExternPacket extends PacketBase {
 
     bytes(): Buffer {
         const buf = Buffer.allocUnsafe(this.size);
-        let offset = buf.writeUInt8(PacketType.extern, 0);
+        const offset = buf.writeUInt8(PacketType.extern, 0);
         BufferHelper.writeAsciiString(buf, offset, this._className);
         return buf;
     }

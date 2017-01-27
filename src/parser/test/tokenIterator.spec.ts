@@ -2,7 +2,7 @@ import { tokenTypes } from './../tokens/tokenTypes';
 import { TokenIterator } from '../tokenIterator';
 
 const expectNext = (iterator: TokenIterator, tokenType: string, tokenValue: string | number, lineNumber: number, colNumber: number) => {
-    let next = iterator.moveNext();
+    const next = iterator.moveNext();
     expect(next).toEqual(true);
     expect(iterator.current.tokenType).toEqual(tokenType);
     expect(iterator.current.tokenValue).toEqual(tokenValue);

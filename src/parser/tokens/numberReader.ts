@@ -40,10 +40,10 @@ export class NumberReader implements TokenReader<number> {
                 result += iterator.current;
             } else if (iterator.current === symbolDot) {
                 if (dot) {
-                    let msg = `Found a duplicating "${symbolDot}" symbol in a number`;
+                    const msg = `Found a duplicating "${symbolDot}" symbol in a number`;
                     throw new ParserError(msg, iterator.line, iterator.column);
                 } else if (e) {
-                    let msg = `A number can not contain a "${symbolDot}" after a "${symbolE}"`;
+                    const msg = `A number can not contain a "${symbolDot}" after a "${symbolE}"`;
                     throw new ParserError(msg, iterator.line, iterator.column);
                 } else {
                     dot = true;
@@ -51,7 +51,7 @@ export class NumberReader implements TokenReader<number> {
                 }
             } else if (iterator.current.toLowerCase() === symbolE) {
                 if (e) {
-                    let msg = `Found a duplicating "${symbolE}" symbol in a number`;
+                    const msg = `Found a duplicating "${symbolE}" symbol in a number`;
                     throw new ParserError(msg, iterator.line, iterator.column);
                 } else {
                     e = true;
@@ -61,7 +61,7 @@ export class NumberReader implements TokenReader<number> {
                 if (result.length && result[result.length - 1].toLowerCase() === symbolE) {
                     result += iterator.current;
                 } else {
-                    let msg = `A "${iterator.current}" sign allowed only after a "${symbolE}" sign in a number`;
+                    const msg = `A "${iterator.current}" sign allowed only after a "${symbolE}" sign in a number`;
                     throw new ParserError(msg, iterator.line, iterator.column);
                 }
             } else {
@@ -74,7 +74,7 @@ export class NumberReader implements TokenReader<number> {
         } else {
             const code = result.charCodeAt(result.length - 1);
             if (code < charCode0 || code > charCode9) {
-                let msg = `A number can not end with a "${result[result.length - 1]}" symbol`;
+                const msg = `A number can not end with a "${result[result.length - 1]}" symbol`;
                 throw new ParserError(msg, iterator.line, iterator.column);
             }
         }
