@@ -1,7 +1,7 @@
 import { ParserError } from './../parserError';
 import { TokenReader } from './tokenReader';
 import { Token } from './token';
-import { Iterator } from '../iterator';
+import { Iterator, Checkpoint } from '../iterator';
 import { tokenTypes } from './tokenTypes';
 
 const symbolMinus = '-';
@@ -13,14 +13,26 @@ const charCode9 = 57;
 
 export class NumberReader implements TokenReader<number> {
     canRead(iterator: Iterator<string>): boolean {
-        let isNumber = iterator.current === symbolMinus
+        const hasSpecialChar = iterator.current === symbolMinus
             || iterator.current === symbolPlus
             || iterator.current === symbolDot;
 
-        if (!isNumber) {
-            const charCode = iterator.current.charCodeAt(0);
-            isNumber = charCode >= charCode0 && charCode <= charCode9;
+        let checkpoint: Checkpoint<string> | undefined;
+        if (hasSpecialChar) {
+            checkpoint = iterator.createCheckpoint();
+            if (!iterator.moveNext()) {
+                checkpoint.restore();
+                return false;
+            }
         }
+
+        const charCode = iterator.current.charCodeAt(0);
+        const isNumber = charCode >= charCode0 && charCode <= charCode9;
+
+        if (checkpoint) {
+            checkpoint.restore();
+        }
+
         return isNumber;
     }
 
@@ -57,13 +69,8 @@ export class NumberReader implements TokenReader<number> {
                     e = true;
                     result += iterator.current;
                 }
-            } else if (iterator.current === symbolPlus || iterator.current === symbolMinus) {
-                if (result.length && result[result.length - 1].toLowerCase() === symbolE) {
-                    result += iterator.current;
-                } else {
-                    const msg = `A "${iterator.current}" sign allowed only after a "${symbolE}" sign in a number`;
-                    throw new ParserError(msg, iterator.line, iterator.column);
-                }
+            } else if ((iterator.current === symbolPlus || iterator.current === symbolMinus) && result.length && result[result.length - 1].toLowerCase() === symbolE) {
+                result += iterator.current;
             } else {
                 break;
             }

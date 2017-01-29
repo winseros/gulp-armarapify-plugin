@@ -26,7 +26,7 @@ describe('rapifyStream', () => {
         });
 
         it('should transform text into binary form', (done: Function) => {
-            const data = 'prop1=1;prop2=2;class Inner{cProp1=3;cProp2=4;};';
+            const data = 'prop1=1;prop2=2;class Inner{cProp1=3;cProp2=8 - 4;};';
             const file = new File({ contents: Buffer.from(data) });
 
             const stream = new Readable({ objectMode: true, read: () => 0 });
