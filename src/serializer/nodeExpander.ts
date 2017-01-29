@@ -6,6 +6,7 @@ import { PropertyNode } from '../parser/nodes/propertyNode';
 import { IntegerNode } from '../parser/nodes/integerNode';
 import { FloatNode } from '../parser/nodes/floatNode';
 import { StringNode } from '../parser/nodes/stringNode';
+import { WordNode } from '../parser/nodes/wordNode';
 import { ArrayNode } from '../parser/nodes/arrayNode';
 import { nodeTypes } from '../parser/nodes/nodeTypes';
 import { Packet } from './packets/packet';
@@ -25,7 +26,8 @@ import {
     ArrayStruct,
     ArrayElementString,
     ArrayElementInteger,
-    ArrayElementFloat
+    ArrayElementFloat,
+    ArrayElementWord
 } from './packets/arrayElement';
 import { ExpressionSerializer } from './expressionSerializer';
 import { TreeError } from './treeError';
@@ -155,6 +157,11 @@ export class NodeExpander {
             }
             case nodeTypes.array: {
                 element = this._expandArrayContents(node as ArrayNode);
+                break;
+            }
+            case nodeTypes.word: {
+                const strNode = node as WordNode;
+                element = new ArrayElementWord(strNode.value);
                 break;
             }
             case nodeTypes.mathGrp:

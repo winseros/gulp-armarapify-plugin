@@ -6,6 +6,7 @@ import { PropertyNode } from '../../parser/nodes/propertyNode';
 import { StringNode } from '../../parser/nodes/stringNode';
 import { IntegerNode } from '../../parser/nodes/integerNode';
 import { FloatNode } from '../../parser/nodes/floatNode';
+import { WordNode } from '../../parser/nodes/wordNode';
 import { ArrayNode } from '../../parser/nodes/arrayNode';
 import { MathOpNode } from '../../parser/nodes/mathOpNode';
 import { MathGrpNode } from '../../parser/nodes/mathGrpNode';
@@ -52,7 +53,8 @@ describe('serializer/nodeExpander', () => {
                     new StringNode('prop5string')
                 ]),
                 new MathOpNode(mathOperators.plus, new IntegerNode(1), new IntegerNode(2)),
-                new MathGrpNode(new StringNode('prop6string'))
+                new MathGrpNode(new StringNode('prop6string')),
+                new WordNode('prop7word')
             ])));
             root.children.push(new ExternNode('BaseClass'));
             root.children.push(new DeleteNode('NotAClass'));

@@ -5,7 +5,8 @@ import {
     ArrayStruct,
     ArrayElementString,
     ArrayElementFloat,
-    ArrayElementInteger
+    ArrayElementInteger,
+    ArrayElementWord
 } from '../arrayElement';
 
 class MockElement implements ArrayElement {
@@ -121,6 +122,18 @@ describe('serializer/packets/arrayElement', () => {
                 const bytes = element.getBytes();
 
                 const expected = [DataType.float, 0x0d, 0x0c, 0x0b, 0x0a];
+                expect(bytes).toEqual(Buffer.from(expected));
+            });
+        });
+    });
+
+    describe('ArrayElementWord', () => {
+        describe('getBytes', () => {
+            it('should return a fulfilled buffer', () => {
+                const element = new ArrayElementWord('some-text');
+                const bytes = element.getBytes();
+
+                const expected = [DataType.word, 0x73, 0x6f, 0x6d, 0x65, 0x2d, 0x74, 0x65, 0x78, 0x74, 0x00];
                 expect(bytes).toEqual(Buffer.from(expected));
             });
         });

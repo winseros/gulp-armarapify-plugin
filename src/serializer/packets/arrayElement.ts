@@ -44,9 +44,13 @@ export class ArrayElementString implements ArrayElement {
         return 1 + this._data.length + 1;
     }
 
+    get dataType(): number {
+        return DataType.string;
+    }
+
     getBytes(): Buffer {
         const buffer = Buffer.allocUnsafe(this.size);
-        const offset = buffer.writeUInt8(DataType.string, 0);
+        const offset = buffer.writeUInt8(this.dataType, 0);
         BufferHelper.writeAsciiString(buffer, offset, this._data);
         return buffer;
     }
@@ -81,5 +85,11 @@ export class ArrayElementInteger implements ArrayElement {
         const offset = buffer.writeUInt8(DataType.float, 0);
         buffer.writeInt32LE(this._data, offset);
         return buffer;
+    }
+}
+
+export class ArrayElementWord extends ArrayElementString {
+    get dataType(): number {
+        return DataType.word;
     }
 }

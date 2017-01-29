@@ -4,6 +4,7 @@ import { ReaderUtility } from '../readerUtility';
 import { nodeTypes } from '../../nodeTypes';
 import { StringNode } from '../../stringNode';
 import { IntegerNode } from '../../integerNode';
+import { WordNode } from '../../wordNode';
 import { ArrayNode } from '../../arrayNode';
 import { TokenIterator } from '../../../tokenIterator';
 import { Token } from '../../../tokens/token';
@@ -43,7 +44,7 @@ describe('parser/nodes/readers/arrayNodeReader', () => {
 
     describe('read', () => {
         it('should read an array', () => {
-            const str = ']\n=\n{\n"a", 1, {"b", \n 2\n}\n};';
+            const str = ']\n=\n{\n"a", 1, {"b", \n 2\n}\n,\n varName\n\n};';
 
             const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
 
@@ -53,15 +54,18 @@ describe('parser/nodes/readers/arrayNodeReader', () => {
             //main array
             expect(arrayNode).toBeDefined();
             expect(arrayNode.type).toEqual(nodeTypes.array);
-            expect(arrayNode.value.length).toEqual(3);
+            expect(arrayNode.value.length).toEqual(4);
 
-            //main array elements 0 and 1
+            //main array elements 0, 1, 3
             const arrayNode0 = arrayNode.value[0] as StringNode;
             const arrayNode1 = arrayNode.value[1] as IntegerNode;
+            const arrayNode3 = arrayNode.value[3] as WordNode;
             expect(arrayNode0.type).toEqual(nodeTypes.string);
             expect(arrayNode0.value).toEqual('a');
             expect(arrayNode1.type).toEqual(nodeTypes.integer);
             expect(arrayNode1.value).toEqual(1);
+            expect(arrayNode3.type).toEqual(nodeTypes.word);
+            expect(arrayNode3.value).toEqual('varName');
 
             //array element 2 - embedded array
             const embedArray = arrayNode.value[2] as ArrayNode;
