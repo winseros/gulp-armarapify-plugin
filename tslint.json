@@ -11,7 +11,6 @@
         "curly": true,
         "forin": true,
         "no-arg": true,
-        "no-bitwise": true,
         "no-conditional-assignment": true,
         "no-console": true,
         "no-construct": true,

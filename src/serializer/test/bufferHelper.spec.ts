@@ -12,19 +12,40 @@ describe('serializer/bufferHelper', () => {
     });
 
     describe('writeCompressedInt', () => {
-        it('should fullfill a buffer using data and offset', () => {
+        it('should write number 5', () => {
             const buffer = Buffer.alloc(5, 0);
-            BufferHelper.writeCompressedInt(buffer, 0, 257);
-
-            const expected = [0xff, 0xff, 0x03, 0x00, 0x00];
-            expect(buffer).toEqual(Buffer.from(expected));
+            [
+                { number: 5, expected: [0x05, 0x00, 0x00, 0x00, 0x00] },
+                { number: 127, expected: [0x7f, 0x00, 0x00, 0x00, 0x00] },
+                { number: 128, expected: [0x80, 0x01, 0x00, 0x00, 0x00] },
+                { number: 129, expected: [0x81, 0x01, 0x00, 0x00, 0x00] },
+                { number: 130, expected: [0x82, 0x01, 0x00, 0x00, 0x00] },
+                { number: 255, expected: [0xff, 0x01, 0x00, 0x00, 0x00] },
+                { number: 256, expected: [0x80, 0x02, 0x00, 0x00, 0x00] },
+                { number: 300, expected: [0xac, 0x02, 0x00, 0x00, 0x00] }
+            ].forEach(test => {
+                buffer.fill(0);
+                BufferHelper.writeCompressedInt(buffer, 0, test.number);
+                expect(buffer).toEqual(Buffer.from(test.expected));
+            });
         });
     });
 
     describe('getCompressedIntLength', () => {
         it('should fullfill a buffer using data and offset', () => {
-            const length = BufferHelper.getCompressedIntLength(257);
-            expect(length).toEqual(3);
+            [
+                { number: 5, expected: 1 },
+                { number: 127, expected: 1 },
+                { number: 128, expected: 2 },
+                { number: 129, expected: 2 },
+                { number: 130, expected: 2 },
+                { number: 255, expected: 2 },
+                { number: 256, expected: 2 },
+                { number: 300, expected: 2 }
+            ].forEach(test => {
+                const length = BufferHelper.getCompressedIntLength(test.number);
+                expect(length).toEqual(test.expected);
+            });
         });
     });
 });

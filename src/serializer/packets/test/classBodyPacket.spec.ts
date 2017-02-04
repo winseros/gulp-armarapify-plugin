@@ -5,7 +5,7 @@ describe('serializer/packets/classBodyPacket', () => {
     describe('size', () => {
         it('should return a valid packet size', () => {
             const packet = new ClassBodyPacket('inherits-class', 257, {} as Packet);
-            expect(packet.size).toEqual(18);
+            expect(packet.size).toEqual(17);
         });
     });
 
@@ -17,7 +17,7 @@ describe('serializer/packets/classBodyPacket', () => {
 
             const expected = [
                 0x69, 0x6e, 0x68, 0x65, 0x72, 0x69, 0x74, 0x73, 0x2d, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x00,
-                0xff, 0xff, 0x03];
+                0x81, 0x02];
             expect(bytes).toEqual(Buffer.from(expected));
         });
     });
