@@ -45,7 +45,11 @@ export class ClassNodeReader implements NodeReader {
             reader.skip(tokenTypes.whitespace, tokenTypes.newline).moveToNextToken();
 
             if (reader.iterator.current.tokenType === tokenTypes.codeBlockEnd) {
-                reader.skip(tokenTypes.whitespace).nextToken(';', tokenTypes.semicolon);
+                const checkpoint = reader.iterator.createCheckpoint();
+                const eof = reader.skip(tokenTypes.whitespace).moveToNextTokenOrEof();
+                if (eof || reader.iterator.current.tokenType !== tokenTypes.semicolon) {//optional ; at the end of class
+                    checkpoint.restore();
+                }
                 break;
             }
 

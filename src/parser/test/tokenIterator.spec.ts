@@ -101,11 +101,26 @@ describe('tokenIterator', () => {
     });
 
     describe('createCheckpoint', () => {
-        it('should throw an exception', () => {
-            const data = 'class';
+        it('should create a checkpoint', () => {
+            const data = 'aa bb cc dd';
             const iterator = new TokenIterator(new Buffer(data));
 
-            expect(() => iterator.createCheckpoint()).toThrowError('Not implemented');
+            iterator.moveNext();
+            const checkpoint = iterator.createCheckpoint();
+
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 2);
+            expectNext(iterator, tokenTypes.word, 'bb', 0, 3);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 5);
+            expectNext(iterator, tokenTypes.word, 'cc', 0, 6);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 8);
+            expectNext(iterator, tokenTypes.word, 'dd', 0, 9);
+
+            expect(iterator.moveNext()).toEqual(false);
+            expect(iterator.depleted).toEqual(true);
+
+            checkpoint.restore();
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 2);
+            expectNext(iterator, tokenTypes.word, 'bb', 0, 3);
         });
     });
 });

@@ -1,5 +1,6 @@
 import { ReadersCollection } from './tokens/readersCollection';
-import { Checkpoint, Iterator } from './iterator';
+import { Iterator } from './iterator';
+import { CheckpointParams, TokenIteratorCheckpoint } from './tokenIteratorCheckpoint';
 import { CharIterator } from './charIterator';
 import { Token } from './tokens/token';
 
@@ -53,7 +54,25 @@ export class TokenIterator implements Iterator<Token<string | number>> {
         return this._depleted;
     }
 
-    createCheckpoint(): Checkpoint<Token<string | number>> {
-        throw new Error('Not implemented');
+    createCheckpoint(): TokenIteratorCheckpoint {
+        const params = {
+            iterator: this,
+            checkpoint: this._iterator.createCheckpoint(),
+            current: this._current,
+            line: this._line,
+            column: this._column,
+            depleted: this._depleted
+        } as CheckpointParams;
+
+        return new TokenIteratorCheckpoint(params);
+    }
+
+    __rollbackCheckpoint(params: CheckpointParams): void {
+        params.checkpoint.restore();
+
+        this._current = params.current;
+        this._line = params.line;
+        this._column = params.column;
+        this._depleted = params.depleted;
     }
 }

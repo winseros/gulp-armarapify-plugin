@@ -101,6 +101,8 @@ describe('parser/nodes/readers/classNodeReader', () => {
             expect(child3.className).toEqual('MyClsInner');
             expect(child3.type).toEqual(nodeTypes.class);
             expect(child3.children.length).toEqual(1);
+
+            expect(readerUtility.iterator.current.tokenType).toEqual(tokenTypes.semicolon);
         });
 
         it('should read a class with inheritance', () => {
@@ -131,6 +133,38 @@ describe('parser/nodes/readers/classNodeReader', () => {
             expect(child3.name).toEqual('prop2');
             expect(child3.type).toEqual(nodeTypes.property);
             expect((child3.value as IntegerNode).value).toEqual(100500);
+
+            expect(readerUtility.iterator.current.tokenType).toEqual(tokenTypes.semicolon);
+        });
+
+        it('should read a class without a semicolon after', () => {
+            const str = 'class MyClass{}';
+            const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
+            readerUtility.moveToNextToken();
+
+            const reader = new ClassNodeReader();
+            const node = reader.read(readerUtility) as ClassNode;
+
+            expect(node.type).toEqual(nodeTypes.class);
+            expect(node.className).toEqual('MyClass');
+            expect(node.inherits).toEqual('');
+
+            expect(readerUtility.iterator.current.tokenType).toEqual(tokenTypes.codeBlockEnd);
+        });
+
+        it('should read a class without a next token after', () => {
+            const str = 'class MyClass{} prop1=1';
+            const readerUtility = new ReaderUtility(new TokenIterator(new Buffer(str)));
+            readerUtility.moveToNextToken();
+
+            const reader = new ClassNodeReader();
+            const node = reader.read(readerUtility) as ClassNode;
+
+            expect(node.type).toEqual(nodeTypes.class);
+            expect(node.className).toEqual('MyClass');
+            expect(node.inherits).toEqual('');
+
+            expect(readerUtility.iterator.current.tokenType).toEqual(tokenTypes.codeBlockEnd);
         });
     });
 });
