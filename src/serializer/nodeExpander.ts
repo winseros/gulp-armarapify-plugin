@@ -21,6 +21,7 @@ import { StringPacket } from './packets/stringPacket';
 import { FloatPacket } from './packets/floatPacket';
 import { IntegerPacket } from './packets/integerPacket';
 import { ArrayPacket } from './packets/arrayPacket';
+import { WordPacket } from './packets/wordPacket';
 import {
     ArrayElement,
     ArrayStruct,
@@ -117,6 +118,11 @@ export class NodeExpander {
             case nodeTypes.array: {
                 const arrayStruct = this._expandArrayContents(value as ArrayNode);
                 packet = packet.next = new ArrayPacket(name, arrayStruct, packet);
+                break;
+            }
+            case nodeTypes.word: {
+                const strNode = value as WordNode;
+                packet = packet.next = new WordPacket(name, strNode.value, packet);
                 break;
             }
             case nodeTypes.mathOp:
