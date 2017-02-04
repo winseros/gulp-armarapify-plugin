@@ -3,6 +3,7 @@ import { nodeTypes } from '../parser/nodes/nodeTypes';
 import { Node } from '../parser/nodes/node';
 import { MathOpNode } from '../parser/nodes/mathOpNode';
 import { MathGrpNode } from '../parser/nodes/mathGrpNode';
+import { MathNegNode } from '../parser/nodes/mathNegNode';
 import { ConstNode } from '../parser/nodes/constNode';
 import { StringNode } from '../parser/nodes/stringNode';
 import { TreeError } from './treeError';
@@ -12,10 +13,10 @@ export class ExpressionSerializer {
     private _resolver = new ExpressionResolver();
 
     serialize(expression: Node): Node {
-        if (expression.type === nodeTypes.mathOp || expression.type === nodeTypes.mathGrp) {
+        if (expression.type === nodeTypes.mathOp || expression.type === nodeTypes.mathGrp || expression.type === nodeTypes.mathNeg) {
             expression = this._resolver.resolve(expression);
 
-            if (expression.type === nodeTypes.mathOp || expression.type === nodeTypes.mathGrp) {
+            if (expression.type === nodeTypes.mathOp || expression.type === nodeTypes.mathGrp || expression.type === nodeTypes.mathNeg) {
                 const expressionBody = this._serializeExpr(expression);
                 expression = new StringNode(expressionBody);
             }
@@ -33,6 +34,10 @@ export class ExpressionSerializer {
             }
             case nodeTypes.mathOp: {
                 result = this._serializeOp(expression as MathOpNode);
+                break;
+            }
+            case nodeTypes.mathNeg: {
+                result = this._serializeNeg(expression as MathNegNode);
                 break;
             }
             case nodeTypes.integer:
@@ -87,6 +92,12 @@ export class ExpressionSerializer {
             }
         }
 
+        return result;
+    }
+
+    _serializeNeg(node: MathNegNode): string {
+        const body = this._serializeExpr(node.value);
+        const result = ` -${body}`;
         return result;
     }
 

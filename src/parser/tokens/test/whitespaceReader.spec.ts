@@ -4,13 +4,13 @@ import { CharIterator } from '../../charIterator';
 import { tokenTypes } from '../tokenTypes';
 
 describe('parser/tokens/whitespaceReader', () => {
-    describe('canRead', () => {
+    describe('_canRead', () => {
         it('should return true for a whitespace symbols', () => {
             const reader = new WhitespaceReader();
             const iterator = {} as Iterator<string>;
             [' ', '\t'].forEach(num => {
                 iterator.current = num;
-                const canRead = reader.canRead(iterator);
+                const canRead = reader._canRead(iterator);
                 expect(canRead).toEqual(true);
             });
         });
@@ -20,19 +20,19 @@ describe('parser/tokens/whitespaceReader', () => {
             const iterator = {} as Iterator<string>;
             ['\r', '\n', 'a', '1'].forEach(num => {
                 iterator.current = num;
-                const canRead = reader.canRead(iterator);
+                const canRead = reader._canRead(iterator);
                 expect(canRead).toEqual(false);
             });
         });
     });
 
-    describe('read', () => {
+    describe('_read', () => {
         it('should read the whitespace token', () => {
             const iterator = new CharIterator(new Buffer(' \t\t abc'));
             iterator.moveNext();
 
             const reader = new WhitespaceReader();
-            const whitespaceToken = reader.read(iterator);
+            const whitespaceToken = reader._read(iterator);
             expect(whitespaceToken).toBeDefined();
 
             expect(whitespaceToken.tokenType).toEqual(tokenTypes.whitespace);

@@ -4,13 +4,13 @@ import { CharIterator } from '../../charIterator';
 import { tokenTypes } from '../tokenTypes';
 
 describe('parser/tokens/newLineReader', () => {
-    describe('canRead', () => {
+    describe('_canRead', () => {
         it('should return true for a CR and LF symbols', () => {
             const reader = new NewLineReader();
             const iterator = {} as Iterator<string>;
             ['\r', '\n'].forEach(num => {
                 iterator.current = num;
-                const canRead = reader.canRead(iterator);
+                const canRead = reader._canRead(iterator);
                 expect(canRead).toEqual(true);
             });
         });
@@ -20,13 +20,13 @@ describe('parser/tokens/newLineReader', () => {
             const iterator = {} as Iterator<string>;
             [' ', '\t', 'a', '1'].forEach(num => {
                 iterator.current = num;
-                const canRead = reader.canRead(iterator);
+                const canRead = reader._canRead(iterator);
                 expect(canRead).toEqual(false);
             });
         });
     });
 
-    describe('read', () => {
+    describe('_read', () => {
         it('should read the CRLF tokens', () => {
             [
                 { str: '\rabc', exp: 'a' },
@@ -40,7 +40,7 @@ describe('parser/tokens/newLineReader', () => {
                 iterator.moveNext();
 
                 const reader = new NewLineReader();
-                const newLineToken = reader.read(iterator);
+                const newLineToken = reader._read(iterator);
                 expect(newLineToken).toBeDefined();
 
                 expect(newLineToken.tokenType).toEqual(tokenTypes.newline);
@@ -56,7 +56,7 @@ describe('parser/tokens/newLineReader', () => {
             const iterator = new CharIterator(new Buffer('a'));
             iterator.moveNext();
             const reader = new NewLineReader();
-            expect(() => reader.read(iterator)).toThrowError('Expected CR or LF bymbol but got "a", code: 97');
+            expect(() => reader._read(iterator)).toThrowError('Expected CR or LF bymbol but got "a", code: 97');
         });
     });
 });

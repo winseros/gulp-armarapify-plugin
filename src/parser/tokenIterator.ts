@@ -1,10 +1,10 @@
-import { TokenReaders } from './tokens/tokenReaders';
+import { ReadersCollection } from './tokens/readersCollection';
 import { Checkpoint, Iterator } from './iterator';
 import { CharIterator } from './charIterator';
 import { Token } from './tokens/token';
 
 export class TokenIterator implements Iterator<Token<string | number>> {
-    private _readerRegistry = TokenReaders.instance;
+    private _readersCollection = ReadersCollection.instance;
     private _iterator: CharIterator;
     private _current: Token<string | number>;
     private _line: number;
@@ -23,10 +23,9 @@ export class TokenIterator implements Iterator<Token<string | number>> {
         if (isDepleted) {
             return false;
         } else {
-            const token = this._readNextToken();
-            this._current = token;
-            this._line = token.lineNumber;
-            this._column = token.colNumber;
+            this._current = this._readersCollection.read(this._iterator);
+            this._line = this._current.lineNumber;
+            this._column = this._current.colNumber;
             return true;
         }
     }
@@ -52,12 +51,6 @@ export class TokenIterator implements Iterator<Token<string | number>> {
             this._depleted = true;
         }
         return this._depleted;
-    }
-
-    _readNextToken(): Token<string | number> {
-        const reader = this._readerRegistry.pickReader(this._iterator);
-        const token = reader.read(this._iterator);
-        return token;
     }
 
     createCheckpoint(): Checkpoint<Token<string | number>> {

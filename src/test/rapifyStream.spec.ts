@@ -27,7 +27,7 @@ describe('rapifyStream', () => {
 
         it('should transform text into binary form', (done: Function) => {
             const data = 'prop1=1;prop2=2;class Inner{cProp1=3;cProp2=8 - 4;};';
-            const file = new File({ contents: Buffer.from(data) });
+            const file = new File({ contents: Buffer.from(data), path: './file1.txt' });
 
             const stream = new Readable({ objectMode: true, read: () => 0 });
             stream.pipe(new RapifyStream()).pipe(new Writable({
@@ -68,6 +68,28 @@ describe('rapifyStream', () => {
                 });
 
             stream.push(file);
+        });
+
+        it('should not throw on transforming text', (done: Function) => {
+            const data = [
+                'prop=1 - 2;',
+                'prop=-1;',
+                'prop=10-5;',
+                'prop=10+-5;',
+                'class 123Class{};',
+                'class _$className1{};'
+            ];
+
+            let count = 0;
+            const stream = new Readable({
+                objectMode: true, read: () => {
+                    const file = count === data.length ? null : new File({ contents: Buffer.from(data[count]), path: './file1.txt' });
+                    count++;
+                    stream.push(file);
+                }
+            });
+            stream.pipe(new RapifyStream());
+            stream.on('end', done);
         });
     });
 

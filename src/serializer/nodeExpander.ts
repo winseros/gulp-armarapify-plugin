@@ -120,7 +120,8 @@ export class NodeExpander {
                 break;
             }
             case nodeTypes.mathOp:
-            case nodeTypes.mathGrp: {
+            case nodeTypes.mathGrp:
+            case nodeTypes.mathNeg: {
                 const resolved = this._serializer.serialize(value);
                 packet = this._expandProperty(packet, name, resolved);
                 break;
@@ -165,7 +166,8 @@ export class NodeExpander {
                 break;
             }
             case nodeTypes.mathGrp:
-            case nodeTypes.mathOp: {
+            case nodeTypes.mathOp:
+            case nodeTypes.mathNeg: {
                 const resolved = this._serializer.serialize(node);
                 element = this._expandArrayElement(resolved);
                 break;

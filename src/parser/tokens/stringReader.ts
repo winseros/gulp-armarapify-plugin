@@ -1,4 +1,4 @@
-import { TokenReader } from './tokenReader';
+import { ReaderBase } from './ReaderBase';
 import { Token } from './token';
 import { Iterator } from '../iterator';
 import { tokenTypes } from './tokenTypes';
@@ -8,13 +8,13 @@ const symbolQuote = '"';
 const symbolR = '\r';
 const symbolN = '\n';
 
-export class StringReader implements TokenReader<string>{
-    canRead(iterator: Iterator<string>): boolean {
+export class StringReader extends ReaderBase<string>{
+    _canRead(iterator: Iterator<string>): boolean {
         const isQuote = iterator.current === symbolQuote;
         return isQuote;
     }
 
-    read(iterator: Iterator<string>): Token<string> {
+    _read(iterator: Iterator<string>): Token<string> {
         const result = {
             tokenType: tokenTypes.string,
             tokenValue: '',

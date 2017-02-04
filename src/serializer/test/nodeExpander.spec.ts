@@ -10,6 +10,7 @@ import { WordNode } from '../../parser/nodes/wordNode';
 import { ArrayNode } from '../../parser/nodes/arrayNode';
 import { MathOpNode } from '../../parser/nodes/mathOpNode';
 import { MathGrpNode } from '../../parser/nodes/mathGrpNode';
+import { MathNegNode } from '../../parser/nodes/mathNegNode';
 import { mathOperators } from '../../mathOperators';
 import { Packet } from '../packets/packet';
 import { SignaturePacket } from '../packets/signaturePacket';
@@ -49,6 +50,7 @@ describe('serializer/nodeExpander', () => {
             root.children.push(new PropertyNode('prop6', new ArrayNode([
                 new IntegerNode(1),
                 new FloatNode(1.5),
+                new MathNegNode(new FloatNode(2.5)),
                 new ArrayNode([
                     new StringNode('prop5string')
                 ]),
@@ -58,6 +60,7 @@ describe('serializer/nodeExpander', () => {
             ])));
             root.children.push(new ExternNode('BaseClass'));
             root.children.push(new DeleteNode('NotAClass'));
+            root.children.push(new PropertyNode('prop8', new MathNegNode(new IntegerNode(10))));
 
             const expander = new NodeExpander();
             const signaturePacket = expander.expandClass(root);
@@ -111,6 +114,10 @@ describe('serializer/nodeExpander', () => {
             //NotAClass packet
             packet = packet.next!;
             expect(packet instanceof DeletePacket).toBeTruthy();
+
+            //prop8 packet
+            packet = packet.next!;
+            expect(packet instanceof IntegerPacket).toBeTruthy();
 
             //pointer to the next packet
             packet = packet.next!;

@@ -1,4 +1,5 @@
 import { tokenTypes } from './../tokens/tokenTypes';
+import { mathOperators } from './../../mathOperators';
 import { TokenIterator } from '../tokenIterator';
 
 const expectNext = (iterator: TokenIterator, tokenType: string, tokenValue: string | number, lineNumber: number, colNumber: number) => {
@@ -66,6 +67,33 @@ describe('tokenIterator', () => {
 
             //line 4
             expectNext(iterator, tokenTypes.whitespace, ' ', 4, 0);
+
+            expect(iterator.moveNext()).toEqual(false);
+            expect(iterator.depleted).toEqual(true);
+        });
+
+        it('should iterate through "-a" expression', () => {
+            const data = '-1';
+            const iterator = new TokenIterator(new Buffer(data));
+
+            //line 0
+            expectNext(iterator, tokenTypes.mathOp, mathOperators.minus, 0, 0);
+            expectNext(iterator, tokenTypes.integer, 1, 0, 1);
+
+            expect(iterator.moveNext()).toEqual(false);
+            expect(iterator.depleted).toEqual(true);
+        });
+
+        it('should iterate through "a + b" expression', () => {
+            const data = '1 + 2';
+            const iterator = new TokenIterator(new Buffer(data));
+
+            //line 0
+            expectNext(iterator, tokenTypes.integer, 1, 0, 0);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 1);
+            expectNext(iterator, tokenTypes.mathOp, mathOperators.plus, 0, 2);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 3);
+            expectNext(iterator, tokenTypes.integer, 2, 0, 4);
 
             expect(iterator.moveNext()).toEqual(false);
             expect(iterator.depleted).toEqual(true);

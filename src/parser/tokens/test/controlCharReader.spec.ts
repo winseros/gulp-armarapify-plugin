@@ -5,7 +5,7 @@ import { tokenTypes } from '../tokenTypes';
 
 describe('parser/tokens/controlCharReader', () => {
 
-    describe('canRead', () => {
+    describe('_canRead', () => {
         it('should recognize a special character', () => {
 
             const characters = ['{', '}', ';', ',', ':', '=', '(', ')', '[', ']', '+', '-', '*', '/', '%', '^'];
@@ -14,7 +14,7 @@ describe('parser/tokens/controlCharReader', () => {
             const reader = new ControlCharReader();
             characters.forEach((key: string) => {
                 iterator.current = key;
-                const canRead = reader.canRead(iterator);
+                const canRead = reader._canRead(iterator);
                 expect(canRead).toEqual(true);
             });
         });
@@ -22,12 +22,12 @@ describe('parser/tokens/controlCharReader', () => {
         it('should return false for the any other symbol', () => {
             const iterator = { current: '1' } as Iterator<string>;
             const reader = new ControlCharReader();
-            const canRead = reader.canRead(iterator);
+            const canRead = reader._canRead(iterator);
             expect(canRead).toEqual(false);
         });
     });
 
-    describe('read', () => {
+    describe('_read', () => {
         it('should read a special character char', () => {
             const characters = {
                 '{': tokenTypes.codeBlockStart,
@@ -54,7 +54,7 @@ describe('parser/tokens/controlCharReader', () => {
                 const iterator = new CharIterator(buffer);
                 iterator.moveNext();
 
-                const codeBlockToken = reader.read(iterator);
+                const codeBlockToken = reader._read(iterator);
                 expect(codeBlockToken).toBeDefined();
                 expect(codeBlockToken.tokenType).toEqual(characters[key]);
                 expect(codeBlockToken.tokenValue).toEqual(key);
@@ -71,7 +71,7 @@ describe('parser/tokens/controlCharReader', () => {
             const reader = new ControlCharReader();
 
             iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('Char "a" is not a control char');
+            expect(() => reader._read(iterator)).toThrowError('Char "a" is not a control char');
         });
     });
 });

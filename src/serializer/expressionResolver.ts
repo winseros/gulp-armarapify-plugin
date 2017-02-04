@@ -2,6 +2,7 @@ import { nodeTypes } from '../parser/nodes/nodeTypes';
 import { Node } from '../parser/nodes/node';
 import { MathOpNode } from '../parser/nodes/mathOpNode';
 import { MathGrpNode } from '../parser/nodes/mathGrpNode';
+import { MathNegNode } from '../parser/nodes/mathNegNode';
 import { IntegerNode } from '../parser/nodes/integerNode';
 import { FloatNode } from '../parser/nodes/floatNode';
 import { StringNode } from '../parser/nodes/stringNode';
@@ -22,6 +23,10 @@ export class ExpressionResolver {
             }
             case nodeTypes.mathOp: {
                 result = this._resolveOp(expression as MathOpNode);
+                break;
+            }
+            case nodeTypes.mathNeg: {
+                result = this._resolveNeg(expression as MathNegNode);
                 break;
             }
             case nodeTypes.integer: {
@@ -85,6 +90,23 @@ export class ExpressionResolver {
             default: {
                 throw new TreeError(`"${node.operator}" is not a known math operation`, node);
             }
+        }
+
+        return result;
+    }
+
+    _resolveNeg(node: MathNegNode): Node {
+        let result = this.resolve(node.value);
+        if (result.type === nodeTypes.integer) {
+            const int = result as IntegerNode;
+            result = new IntegerNode(-int.value);
+        } else if (result.type === nodeTypes.float) {
+            const flt = result as FloatNode;
+            result = new FloatNode(-flt.value);
+        } else if (result === node.value) {
+            result = node;
+        } else {
+            result = new MathNegNode(result);
         }
 
         return result;

@@ -1,17 +1,17 @@
-import { TokenReader } from './tokenReader';
+import { ReaderBase } from './ReaderBase';
 import { Iterator } from '../iterator';
 import { Token } from './token';
 import { tokenTypes } from './tokenTypes';
 
 const regexSpace = /[\s^\r\n]/;
 
-export class WhitespaceReader implements TokenReader<string> {
-    canRead(iterator: Iterator<string>): boolean {
+export class WhitespaceReader extends ReaderBase<string> {
+    _canRead(iterator: Iterator<string>): boolean {
         const result = this._isWhitespace(iterator.current);
         return result;
     }
 
-    read(iterator: Iterator<string>): Token<string> {
+    _read(iterator: Iterator<string>): Token<string> {
         const result = {
             tokenType: tokenTypes.whitespace,
             tokenValue: ' ',

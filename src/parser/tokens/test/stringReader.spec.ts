@@ -4,30 +4,30 @@ import { StringReader } from '../stringReader';
 import { tokenTypes } from '../tokenTypes';
 
 describe('parser/tokens/stringReader', () => {
-    describe('canRead', () => {
+    describe('_canRead', () => {
         it('should return true if current iterator char is a quote', () => {
             const reader = new StringReader();
             const iterator = { current: '"' } as Iterator<string>;
-            const canRead = reader.canRead(iterator);
+            const canRead = reader._canRead(iterator);
             expect(canRead).toEqual(true);
         });
 
         it('should return true if current iterator char is not a quote', () => {
             const reader = new StringReader();
             const iterator = { current: 'a' } as Iterator<string>;
-            const canRead = reader.canRead(iterator);
+            const canRead = reader._canRead(iterator);
             expect(canRead).toEqual(false);
         });
     });
 
-    describe('read', () => {
+    describe('_read', () => {
         it('should read a string', () => {
             const buffer = new Buffer('"some-string-text";');
             const iterator = new CharIterator(buffer);
             const reader = new StringReader();
 
             iterator.moveNext();
-            const commentToken = reader.read(iterator);
+            const commentToken = reader._read(iterator);
             expect(commentToken).toBeDefined();
 
             expect(commentToken.tokenType).toEqual(tokenTypes.string);
@@ -44,7 +44,7 @@ describe('parser/tokens/stringReader', () => {
             const reader = new StringReader();
 
             iterator.moveNext();
-            const commentToken = reader.read(iterator);
+            const commentToken = reader._read(iterator);
             expect(commentToken).toBeDefined();
 
             expect(commentToken.tokenType).toEqual(tokenTypes.string);
@@ -61,7 +61,7 @@ describe('parser/tokens/stringReader', () => {
             const reader = new StringReader();
 
             iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('Strings can not wrap on a new line');
+            expect(() => reader._read(iterator)).toThrowError('Strings can not wrap on a new line');
         });
 
         it('should throw if a string contains LF symbol', () => {
@@ -70,7 +70,7 @@ describe('parser/tokens/stringReader', () => {
             const reader = new StringReader();
 
             iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('Strings can not wrap on a new line');
+            expect(() => reader._read(iterator)).toThrowError('Strings can not wrap on a new line');
         });
 
         it('should throw if a string is missing an ending quote', () => {
@@ -79,7 +79,7 @@ describe('parser/tokens/stringReader', () => {
             const reader = new StringReader();
 
             iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('A string should end with a " sign');
+            expect(() => reader._read(iterator)).toThrowError('A string should end with a " sign');
         });
     });
 });

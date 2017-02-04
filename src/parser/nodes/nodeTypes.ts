@@ -9,5 +9,6 @@ export const nodeTypes = {
     float: 'node-type--float',
     array: 'node-type--array',
     mathGrp: 'node-type--math-group',
-    mathOp: 'node-type--math-operator'
+    mathOp: 'node-type--math-operator',
+    mathNeg: 'node-type--math-negate'
 };

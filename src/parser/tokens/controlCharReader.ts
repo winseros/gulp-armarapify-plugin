@@ -1,4 +1,4 @@
-import { TokenReader } from './tokenReader';
+import { ReaderBase } from './ReaderBase';
 import { Token } from './token';
 import { Iterator } from '../iterator';
 import { tokenTypes } from './tokenTypes';
@@ -23,13 +23,13 @@ symbols.set(mathOperators.div, tokenTypes.mathOp);
 symbols.set(mathOperators.pow, tokenTypes.mathOp);
 symbols.set(mathOperators.mod, tokenTypes.mathOp);
 
-export class ControlCharReader implements TokenReader<string> {
-    canRead(iterator: Iterator<string>): boolean {
+export class ControlCharReader extends ReaderBase<string> {
+    _canRead(iterator: Iterator<string>): boolean {
         const canRead = symbols.has(iterator.current);
         return canRead;
     }
 
-    read(iterator: Iterator<string>): Token<string> {
+    _read(iterator: Iterator<string>): Token<string> {
         const tokenType = symbols.get(iterator.current);
         if (tokenType) {
             const result = {

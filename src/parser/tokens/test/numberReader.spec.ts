@@ -3,257 +3,227 @@ import { NumberReader } from '../numberReader';
 import { tokenTypes } from '../tokenTypes';
 
 describe('parser/tokens/numberReader', () => {
-    describe('canRead', () => {
-        it('should return true if current iterator char is a number symbol', () => {
-            const reader = new NumberReader();
-            ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+1', '-1', '.1'].forEach(num => {
-                const iterator = new CharIterator(Buffer.from(num));
-                iterator.moveNext();
-
-                const canRead = reader.canRead(iterator);
-                expect(canRead).toEqual(true);
-            });
-        });
-
-        it('should return false if current iterator char is a non-numeric symbol', () => {
-            const reader = new NumberReader();
-            ['+ 1', '- 1', '+', '-', '.', 'a'].forEach(num => {
-                const iterator = new CharIterator(Buffer.from(num));
-                iterator.moveNext();
-
-                const canRead = reader.canRead(iterator);
-                expect(canRead).toEqual(false);
-            });
-        });
-    });
-
     describe('read', () => {
-        it('should read an integer number', () => {
-            const buffer = new Buffer('1234567890abc');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            const token = reader.read(iterator);
-            expect(token).toBeDefined();
-
-            expect(token.tokenType).toEqual(tokenTypes.integer);
-            expect(token.tokenValue).toEqual(1234567890);
-            expect(token.lineNumber).toEqual(0);
-            expect(token.colNumber).toEqual(0);
-
-            expect(iterator.current).toEqual('a');
-        });
-
-        it('should read an float number', () => {
-            const buffer = new Buffer('12340.56789abc');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            const token = reader.read(iterator);
-            expect(token).toBeDefined();
-
-            expect(token.tokenType).toEqual(tokenTypes.float);
-            expect(token.tokenValue).toEqual(12340.56789);
-            expect(token.lineNumber).toEqual(0);
-            expect(token.colNumber).toEqual(0);
-
-            expect(iterator.current).toEqual('a');
-        });
-
-        it('should read an float number starting from "."', () => {
-            const buffer = new Buffer('.56789abc');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            const token = reader.read(iterator);
-            expect(token).toBeDefined();
-
-            expect(token.tokenType).toEqual(tokenTypes.float);
-            expect(token.tokenValue).toEqual(0.56789);
-            expect(token.lineNumber).toEqual(0);
-            expect(token.colNumber).toEqual(0);
-
-            expect(iterator.current).toEqual('a');
-        });
-
-        it('should read an negative integer number', () => {
-            const buffer = new Buffer('-12340.56789abc');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            const token = reader.read(iterator);
-            expect(token).toBeDefined();
-
-            expect(token.tokenType).toEqual(tokenTypes.float);
-            expect(token.tokenValue).toEqual(-12340.56789);
-            expect(token.lineNumber).toEqual(0);
-            expect(token.colNumber).toEqual(0);
-
-            expect(iterator.current).toEqual('a');
-        });
-
-        it('should read an number in scientific notation with + sign', () => {
-            const buffer = new Buffer('1e+3abc');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            const token = reader.read(iterator);
-            expect(token).toBeDefined();
-
-            expect(token.tokenType).toEqual(tokenTypes.float);
-            expect(token.tokenValue).toEqual(1000);
-            expect(token.lineNumber).toEqual(0);
-            expect(token.colNumber).toEqual(0);
-
-            expect(iterator.current).toEqual('a');
-        });
-
-        it('should read an number in scientific notation with - sign', () => {
-            const buffer = new Buffer('1e-3abc');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            const token = reader.read(iterator);
-            expect(token).toBeDefined();
-
-            expect(token.tokenType).toEqual(tokenTypes.float);
-            expect(token.tokenValue).toEqual(0.001);
-            expect(token.lineNumber).toEqual(0);
-            expect(token.colNumber).toEqual(0);
-
-            expect(iterator.current).toEqual('a');
-        });
-
-        it('should read an float in scientific notation with + sign', () => {
-            const buffer = new Buffer('1.3e+3abc');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            const token = reader.read(iterator);
-            expect(token).toBeDefined();
-
-            expect(token.tokenType).toEqual(tokenTypes.float);
-            expect(token.tokenValue).toEqual(1300);
-            expect(token.lineNumber).toEqual(0);
-            expect(token.colNumber).toEqual(0);
-
-            expect(iterator.current).toEqual('a');
-        });
-
-        it('should read an number in scientific notation with uppercase E sign', () => {
-            const buffer = new Buffer('1E3abc');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            const token = reader.read(iterator);
-            expect(token).toBeDefined();
-
-            expect(token.tokenType).toEqual(tokenTypes.float);
-            expect(token.tokenValue).toEqual(1000);
-            expect(token.lineNumber).toEqual(0);
-            expect(token.colNumber).toEqual(0);
-
-            expect(iterator.current).toEqual('a');
-        });
-
-        it('should break on a "+" or "-" if number is not in scientific notation', () => {
-            const endings = ['+', '-'];
-            endings.forEach((sign) => {
-                const buffer = new Buffer(`12${sign}345`);
-
+        describe('read numbers', () => {
+            it('it should return undefined if trying to parse non-number', () => {
+                const buffer = new Buffer('abc1');
                 const iterator = new CharIterator(buffer);
                 const reader = new NumberReader();
 
                 iterator.moveNext();
                 const token = reader.read(iterator);
+                expect(token).not.toBeDefined();
+            });
+
+            it('should read an integer number with space after', () => {
+                const buffer = new Buffer('1234567890 ');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                const token = reader.read(iterator) !;
+                expect(token).toBeDefined();
 
                 expect(token.tokenType).toEqual(tokenTypes.integer);
-                expect(token.tokenValue).toEqual(12);
+                expect(token.tokenValue).toEqual(1234567890);
                 expect(token.lineNumber).toEqual(0);
                 expect(token.colNumber).toEqual(0);
 
-                expect(iterator.current).toEqual(sign);
+                expect(iterator.current).toEqual(' ');
             });
-        });
 
-        it('should throw if number contains a duplicating "." symbol', () => {
-            const buffer = new Buffer('123.456.012');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('Found a duplicating "." symbol in a number');
-        });
-
-        it('should throw if number contains a duplicating "e" symbol', () => {
-            const buffer = new Buffer('123e456e012');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('Found a duplicating "e" symbol in a number');
-        });
-
-        it('should throw if number contains a "." after "e" symbol', () => {
-            const buffer = new Buffer('123e456.012');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('A number can not contain a "." after a "e"');
-        });
-
-        it('should throw if number string contains no digits', () => {
-            const buffer = new Buffer('+');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
-
-            iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('Could not parse a number');
-        });
-
-        it('should throw if number string ends with a "." or "e"', () => {
-            const endings = ['.', 'e'];
-            endings.forEach((end) => {
-                const buffer = new Buffer(`12345${end}`);
-
+            it('should read an integer number with EOF after', () => {
+                const buffer = new Buffer('1234567890');
                 const iterator = new CharIterator(buffer);
                 const reader = new NumberReader();
 
                 iterator.moveNext();
-                expect(() => reader.read(iterator)).toThrowError(`A number can not end with a "${end}" symbol`);
+                const token = reader.read(iterator) !;
+                expect(token).toBeDefined();
+
+                expect(token.tokenType).toEqual(tokenTypes.integer);
+                expect(token.tokenValue).toEqual(1234567890);
+                expect(token.lineNumber).toEqual(0);
+                expect(token.colNumber).toEqual(0);
             });
-        });
 
-        it('should throw if number string ends with a "+" or "-"', () => {
-            const endings = ['+', '-'];
-            endings.forEach((end) => {
-                const buffer = new Buffer(`12345e${end}`);
-
+            it('should read a floating-point number with point in the middle', () => {
+                const buffer = new Buffer('12345.67890');
                 const iterator = new CharIterator(buffer);
                 const reader = new NumberReader();
 
                 iterator.moveNext();
-                expect(() => reader.read(iterator)).toThrowError(`A number can not end with a "${end}" symbol`);
+                const token = reader.read(iterator) !;
+                expect(token).toBeDefined();
+
+                expect(token.tokenType).toEqual(tokenTypes.float);
+                expect(token.tokenValue).toEqual(12345.67890);
+                expect(token.lineNumber).toEqual(0);
+                expect(token.colNumber).toEqual(0);
+            });
+
+            it('should read a floating-point number with point in the middle', () => {
+                const buffer = new Buffer('.67890');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                const token = reader.read(iterator) !;
+                expect(token).toBeDefined();
+
+                expect(token.tokenType).toEqual(tokenTypes.float);
+                expect(token.tokenValue).toEqual(0.67890);
+                expect(token.lineNumber).toEqual(0);
+                expect(token.colNumber).toEqual(0);
+            });
+
+            it('should read a number in scientific notation #1', () => {
+                const buffer = new Buffer('1.5e3');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                const token = reader.read(iterator) !;
+                expect(token).toBeDefined();
+
+                expect(token.tokenType).toEqual(tokenTypes.integer);
+                expect(token.tokenValue).toEqual(1500);
+                expect(token.lineNumber).toEqual(0);
+                expect(token.colNumber).toEqual(0);
+            });
+
+            it('should read a number in scientific notation #2', () => {
+                const buffer = new Buffer('1e+3');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                const token = reader.read(iterator) !;
+                expect(token).toBeDefined();
+
+                expect(token.tokenType).toEqual(tokenTypes.integer);
+                expect(token.tokenValue).toEqual(1000);
+                expect(token.lineNumber).toEqual(0);
+                expect(token.colNumber).toEqual(0);
+            });
+
+            it('should read a number in scientific notation #3', () => {
+                const buffer = new Buffer('1.5e-3');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                const token = reader.read(iterator) !;
+                expect(token).toBeDefined();
+
+                expect(token.tokenType).toEqual(tokenTypes.float);
+                expect(token.tokenValue).toEqual(0.0015);
+                expect(token.lineNumber).toEqual(0);
+                expect(token.colNumber).toEqual(0);
             });
         });
 
-        it('should throw if could not parse a number', () => {
-            const buffer = new Buffer('e+1');
-            const iterator = new CharIterator(buffer);
-            const reader = new NumberReader();
+        describe('throw errors', () => {
+            it('should throw if can not parse a number', () => {
+                const buffer = new Buffer('.');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
 
-            iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('Couldn\'t convert value "e+1" into a number');
+                iterator.moveNext();
+                expect(() => reader.read(iterator)).toThrowError(`Couldn't convert value "." into a number`);
+            });
+
+            it('should throw if number contains a duplicating "." symbol', () => {
+                const buffer = new Buffer('0.1.0');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                expect(() => reader.read(iterator)).toThrowError('Found a duplicating "." symbol in a number');
+            });
+
+            it('should throw if "." follows "e" symbol', () => {
+                const buffer = new Buffer('1e10.1');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                expect(() => reader.read(iterator)).toThrowError('A number can not contain a "." after a "e"');
+            });
+
+            it('should throw if number ends with "." symbol', () => {
+                const buffer = new Buffer('0.');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                expect(() => reader.read(iterator)).toThrowError('A digit expected but got EOF');
+            });
+
+            it('should throw if a number contains duplicating scitntific notation', () => {
+                const buffer = new Buffer('1e1e1');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                expect(() => reader.read(iterator)).toThrowError('Found a duplicating "e" symbol in a number');
+            });
+
+            it('should throw if a number in scientific notation ends with +', () => {
+                const buffer = new Buffer('1e+');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                expect(() => reader.read(iterator)).toThrowError('A digit expected but got EOF');
+            });
+
+            it('should throw if a number in scientific notation has no power', () => {
+                const buffer = new Buffer('1e-a');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                expect(() => reader.read(iterator)).toThrowError('A digit expected but got "a", code: 97');
+            });
+        });
+
+        describe('falls to read', () => {
+            it('should return undefined if numbers are followed by letters', () => {
+                const buffer = new Buffer('123a');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                const token = reader.read(iterator);
+                expect(token).not.toBeDefined();
+
+                expect(iterator.current).toEqual('1');
+            });
+
+            it('should return undefined if numbers are followed by eX', () => {
+                const buffer = new Buffer('123eA');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                const token = reader.read(iterator);
+                expect(token).not.toBeDefined();
+
+                expect(iterator.current).toEqual('1');
+            });
+
+            it('should return undefined if numbers are followed by e', () => {
+                const buffer = new Buffer('123e');
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                const token = reader.read(iterator);
+                expect(token).not.toBeDefined();
+
+                expect(iterator.current).toEqual('1');
+            });
         });
     });
-
 });

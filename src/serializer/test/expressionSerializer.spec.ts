@@ -8,11 +8,12 @@ import { IntegerNode } from '../../parser/nodes/integerNode';
 import { FloatNode } from '../../parser/nodes/floatNode';
 import { MathGrpNode } from '../../parser/nodes/mathGrpNode';
 import { MathOpNode } from '../../parser/nodes/mathOpNode';
+import { MathNegNode } from '../../parser/nodes/mathNegNode';
 import { mathOperators } from '../../mathOperators';
 
 describe('serializer/expressionSerializer', () => {
     describe('serialize', () => {
-        it('should do nothing if input node is a constNode', () => {
+        it('should do nothing if input node is not a mathOp/mathGrp/mathNeg', () => {
             const node = new StringNode('str-value');
             const serializer = new ExpressionSerializer();
             const serialized = serializer.serialize(node);
@@ -20,11 +21,28 @@ describe('serializer/expressionSerializer', () => {
             expect(serialized).toBe(node);
         });
 
-        it('should do nothing if input has been resolved to a constNode', () => {
+        it('should resolve mathOp return resolved result', () => {
+            const node = new IntegerNode(3);
+            const op = new MathOpNode(mathOperators.plus, new IntegerNode(1), new IntegerNode(2));
+
+            spyOn(ExpressionResolver.prototype, 'resolve').and.returnValue(node);//input has been resolved
+            spyOn(ExpressionSerializer.prototype, '_serializeExpr');
+
+            const serializer = new ExpressionSerializer();
+            const serialized = serializer.serialize(op);
+
+            expect(serialized).toBe(node);
+            expect(ExpressionResolver.prototype.resolve).toHaveBeenCalledTimes(1);
+            expect(ExpressionResolver.prototype.resolve).toHaveBeenCalledWith(op);
+            expect(ExpressionSerializer.prototype._serializeExpr).not.toHaveBeenCalled();
+        });
+
+        it('should resolve mathGrp return resolved result', () => {
             const node = new StringNode('str-value');
             const grp = new MathGrpNode(node);
 
             spyOn(ExpressionResolver.prototype, 'resolve').and.returnValue(node);//input has been resolved
+            spyOn(ExpressionSerializer.prototype, '_serializeExpr');
 
             const serializer = new ExpressionSerializer();
             const serialized = serializer.serialize(grp);
@@ -32,11 +50,65 @@ describe('serializer/expressionSerializer', () => {
             expect(serialized).toBe(node);
             expect(ExpressionResolver.prototype.resolve).toHaveBeenCalledTimes(1);
             expect(ExpressionResolver.prototype.resolve).toHaveBeenCalledWith(grp);
+            expect(ExpressionSerializer.prototype._serializeExpr).not.toHaveBeenCalled();
         });
 
-        it('should stringify expression if input could not be resolved to a constNode', () => {
+        it('should resolve mathNeg return resolved result', () => {
             const node = new StringNode('str-value');
-            const grp = new MathGrpNode(node);
+            const neg = new MathNegNode(node);
+
+            spyOn(ExpressionResolver.prototype, 'resolve').and.returnValue(node);//input has been resolved
+            spyOn(ExpressionSerializer.prototype, '_serializeExpr');
+
+            const serializer = new ExpressionSerializer();
+            const serialized = serializer.serialize(neg);
+
+            expect(serialized).toBe(node);
+            expect(ExpressionResolver.prototype.resolve).toHaveBeenCalledTimes(1);
+            expect(ExpressionResolver.prototype.resolve).toHaveBeenCalledWith(neg);
+            expect(ExpressionSerializer.prototype._serializeExpr).not.toHaveBeenCalled();
+        });
+
+        it('should stringify mathOp nodes', () => {
+            const op = new MathOpNode(mathOperators.plus, new IntegerNode(1), new IntegerNode(2));
+
+            spyOn(ExpressionResolver.prototype, 'resolve').and.returnValue(op);//input has not been resolved
+            spyOn(ExpressionSerializer.prototype, '_serializeExpr').and.returnValue('serialized-value');
+
+            const serializer = new ExpressionSerializer();
+            const serialized = serializer.serialize(op) as StringNode;
+
+            expect(serialized.type).toEqual(nodeTypes.string);
+            expect(serialized.value).toEqual('serialized-value');
+
+            expect(ExpressionResolver.prototype.resolve).toHaveBeenCalledTimes(1);
+            expect(ExpressionResolver.prototype.resolve).toHaveBeenCalledWith(op);
+
+            expect(ExpressionSerializer.prototype._serializeExpr).toHaveBeenCalledTimes(1);
+            expect(ExpressionSerializer.prototype._serializeExpr).toHaveBeenCalledWith(op);
+        });
+
+        it('should stringify mathGrp nodes', () => {
+            const grp = new MathGrpNode(new IntegerNode(1));
+
+            spyOn(ExpressionResolver.prototype, 'resolve').and.returnValue(grp);//input has not been resolved
+            spyOn(ExpressionSerializer.prototype, '_serializeExpr').and.returnValue('serialized-value');
+
+            const serializer = new ExpressionSerializer();
+            const serialized = serializer.serialize(grp) as StringNode;
+
+            expect(serialized.type).toEqual(nodeTypes.string);
+            expect(serialized.value).toEqual('serialized-value');
+
+            expect(ExpressionResolver.prototype.resolve).toHaveBeenCalledTimes(1);
+            expect(ExpressionResolver.prototype.resolve).toHaveBeenCalledWith(grp);
+
+            expect(ExpressionSerializer.prototype._serializeExpr).toHaveBeenCalledTimes(1);
+            expect(ExpressionSerializer.prototype._serializeExpr).toHaveBeenCalledWith(grp);
+        });
+
+        it('should stringify mathNeg nodes', () => {
+            const grp = new MathNegNode(new IntegerNode(1));
 
             spyOn(ExpressionResolver.prototype, 'resolve').and.returnValue(grp);//input has not been resolved
             spyOn(ExpressionSerializer.prototype, '_serializeExpr').and.returnValue('serialized-value');
@@ -106,6 +178,14 @@ describe('serializer/expressionSerializer', () => {
             const str = serializer._serializeExpr(op);
 
             expect(str).toEqual('10^a');
+        });
+
+        it('should serialize negation operations', () => {
+            const op = new MathNegNode(new IntegerNode(10));
+            const serializer = new ExpressionSerializer();
+            const str = serializer._serializeExpr(op);
+
+            expect(str).toEqual(' -10');
         });
 
         it('should serialize modulus operations', () => {

@@ -3,13 +3,13 @@ import { CommentReader } from '../commentReader';
 import { tokenTypes } from '../tokenTypes';
 
 describe('parser/tokens/commentReader', () => {
-    describe('canRead', () => {
+    describe('_canRead', () => {
         it('should return true if current iterator char is a single-line comment start', () => {
             const iterator = new CharIterator(new Buffer('//abc'));
             iterator.moveNext();
 
             const reader = new CommentReader();
-            const canRead = reader.canRead(iterator);
+            const canRead = reader._canRead(iterator);
             expect(canRead).toEqual(true);
 
             expect(iterator.current).toEqual('/');
@@ -21,7 +21,7 @@ describe('parser/tokens/commentReader', () => {
             iterator.moveNext();
 
             const reader = new CommentReader();
-            const canRead = reader.canRead(iterator);
+            const canRead = reader._canRead(iterator);
             expect(canRead).toEqual(true);
 
             expect(iterator.current).toEqual('/');
@@ -33,7 +33,7 @@ describe('parser/tokens/commentReader', () => {
             iterator.moveNext();
 
             const reader = new CommentReader();
-            const canRead = reader.canRead(iterator);
+            const canRead = reader._canRead(iterator);
             expect(canRead).toEqual(false);
 
             expect(iterator.current).toEqual('/');
@@ -41,14 +41,14 @@ describe('parser/tokens/commentReader', () => {
         });
     });
 
-    describe('read', () => {
+    describe('_read', () => {
         it('should read a single-line comment ending the reader', () => {
             const buffer = new Buffer('//this is a comment');
             const iterator = new CharIterator(buffer);
             const reader = new CommentReader();
 
             iterator.moveNext();
-            const commentToken = reader.read(iterator);
+            const commentToken = reader._read(iterator);
             expect(commentToken).toBeDefined();
 
             expect(commentToken.tokenType).toEqual(tokenTypes.comment);
@@ -65,7 +65,7 @@ describe('parser/tokens/commentReader', () => {
             const reader = new CommentReader();
 
             iterator.moveNext();
-            const commentToken = reader.read(iterator);
+            const commentToken = reader._read(iterator);
             expect(commentToken).toBeDefined();
 
             expect(commentToken.tokenType).toEqual(tokenTypes.comment);
@@ -82,7 +82,7 @@ describe('parser/tokens/commentReader', () => {
             const reader = new CommentReader();
 
             iterator.moveNext();
-            const commentToken = reader.read(iterator);
+            const commentToken = reader._read(iterator);
             expect(commentToken).toBeDefined();
 
             expect(commentToken.tokenType).toEqual(tokenTypes.comment);
@@ -99,7 +99,7 @@ describe('parser/tokens/commentReader', () => {
             const reader = new CommentReader();
 
             iterator.moveNext();
-            const commentToken = reader.read(iterator);
+            const commentToken = reader._read(iterator);
             expect(commentToken).toBeDefined();
 
             expect(commentToken.tokenType).toEqual(tokenTypes.comment);
@@ -116,7 +116,7 @@ describe('parser/tokens/commentReader', () => {
             const reader = new CommentReader();
 
             iterator.moveNext();
-            const commentToken = reader.read(iterator);
+            const commentToken = reader._read(iterator);
             expect(commentToken).toBeDefined();
 
             expect(commentToken.tokenType).toEqual(tokenTypes.comment);
@@ -133,7 +133,7 @@ describe('parser/tokens/commentReader', () => {
             const reader = new CommentReader();
 
             iterator.moveNext();
-            const commentToken = reader.read(iterator);
+            const commentToken = reader._read(iterator);
             expect(commentToken).toBeDefined();
 
             expect(commentToken.tokenType).toEqual(tokenTypes.comment);
@@ -150,7 +150,7 @@ describe('parser/tokens/commentReader', () => {
             const reader = new CommentReader();
 
             iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('Expected "/" or "*" but got "a"');
+            expect(() => reader._read(iterator)).toThrowError('Expected "/" or "*" but got "a"');
         });
 
         it('should throw if there are no symbols after the comment start', () => {
@@ -159,7 +159,7 @@ describe('parser/tokens/commentReader', () => {
             const reader = new CommentReader();
 
             iterator.moveNext();
-            expect(() => reader.read(iterator)).toThrowError('Expected "/" or "*" but got EOF');
+            expect(() => reader._read(iterator)).toThrowError('Expected "/" or "*" but got EOF');
         });
     });
 });

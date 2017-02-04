@@ -1,3 +1,4 @@
+import { Token } from './token';
 import { TokenReader } from './tokenReader';
 import { WhitespaceReader } from './whitespaceReader';
 import { NewLineReader } from './newLineReader';
@@ -9,40 +10,43 @@ import { WordReader } from './wordReader';
 import { Iterator } from '../iterator';
 import { ParserError } from '../parserError';
 
-export class TokenReaders {
-    private static _instance: TokenReaders;
-    static get instance(): TokenReaders {
-        if (!TokenReaders._instance) {
-            TokenReaders._instance = new TokenReaders();
-            TokenReaders._registerReaders(TokenReaders._instance);
+export class ReadersCollection {
+    private static _instance: ReadersCollection;
+    static get instance(): ReadersCollection {
+        if (!ReadersCollection._instance) {
+            ReadersCollection._instance = new ReadersCollection();
+            ReadersCollection._registerReaders(ReadersCollection._instance);
         }
-        return TokenReaders._instance;
+        return ReadersCollection._instance;
     }
 
-    static _registerReaders(registry: TokenReaders): void {
+    static _registerReaders(registry: ReadersCollection): void {
         registry.registerReader(new WhitespaceReader())
             .registerReader(new NewLineReader())
+            .registerReader(new ControlCharReader())
+            .registerReader(new StringReader())
             .registerReader(new CommentReader())
             .registerReader(new NumberReader())
-            .registerReader(new StringReader())
-            .registerReader(new ControlCharReader())
             .registerReader(new WordReader());
     }
 
     private _readers: TokenReader<any>[] = [];
 
-    registerReader(reader: TokenReader<any>): TokenReaders {
+    registerReader(reader: TokenReader<any>): ReadersCollection {
         this._readers.push(reader);
         return this;
     }
 
-    pickReader(iterator: Iterator<string>): TokenReader<any> {
+    read(iterator: Iterator<string>): Token<any> {
+        let result: Token<any> | undefined;
+
         for (const reader of this._readers) {
-            const canRead = reader.canRead(iterator);
-            if (canRead) {
-                return reader;
+            result = reader.read(iterator);
+            if (result) {
+                return result;
             }
         }
+
         const symbolCode = iterator.current.charCodeAt(0);
         const message = `Unexpected symbol: \"${iterator.current}\", code: ${symbolCode}`;
         throw new ParserError(message, iterator.line, iterator.column);

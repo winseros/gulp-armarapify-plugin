@@ -8,6 +8,7 @@ import { StringNode } from '../../parser/nodes/stringNode';
 import { WordNode } from '../../parser/nodes/wordNode';
 import { MathOpNode } from '../../parser/nodes/mathOpNode';
 import { MathGrpNode } from '../../parser/nodes/mathGrpNode';
+import { MathNegNode } from '../../parser/nodes/mathNegNode';
 
 describe('serializer/expressionResolver', () => {
     describe('resolve', () => {
@@ -234,6 +235,52 @@ describe('serializer/expressionResolver', () => {
             const resolved = resolver.resolve(grp1);
 
             expect(resolved).toBe(grp1);
+        });
+
+        describe('negations', () => {
+            it('should negate integer nodes', () => {
+                const num = new IntegerNode(1);
+                const neg = new MathNegNode(num);
+
+                const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(neg) as IntegerNode;
+
+                expect(resolved.type).toEqual(nodeTypes.integer);
+                expect(resolved.value).toEqual(-1);
+            });
+
+            it('should negate float nodes', () => {
+                const num = new FloatNode(1.0);
+                const neg = new MathNegNode(num);
+
+                const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(neg) as FloatNode;
+
+                expect(resolved.type).toEqual(nodeTypes.float);
+                expect(resolved.value).toEqual(-1.0);
+            });
+
+            it('should do nothing if negate node contents is resolved to itself', () => {
+                const str = new StringNode('abc');
+                const neg = new MathNegNode(str);
+
+                const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(neg) as StringNode;
+
+                expect(resolved).toBe(neg);
+            });
+
+            it('should return negate node if node contents could not be fully resolved', () => {
+                const op1 = new MathOpNode(mathOperators.plus, new IntegerNode(1), new IntegerNode(2));
+                const op2 = new MathOpNode(mathOperators.mul, op1, new StringNode('var'));
+                const neg = new MathNegNode(op2);
+
+                const resolver = new ExpressionResolver();
+                const resolved = resolver.resolve(neg) as MathNegNode;
+
+                expect(resolved.type).toEqual(nodeTypes.mathNeg);
+                expect(resolved).not.toBe(neg);
+            });
         });
     });
 });

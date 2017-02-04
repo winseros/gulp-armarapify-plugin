@@ -3,12 +3,14 @@ import { WordNode } from '../wordNode';
 import { StringNode } from '../stringNode';
 import { IntegerNode } from '../integerNode';
 import { FloatNode } from '../floatNode';
+import { MathNegNode } from '../mathNegNode';
 import { MathGrpNode } from '../mathGrpNode';
 import { MathOpNode } from '../mathOpNode';
 import { nodeTypes } from '../nodeTypes';
 import { tokenTypes } from '../../tokens/tokenTypes';
 import { ReaderUtility } from './readerUtility';
 import { NodeError } from '../../nodeError';
+import { mathOperators } from '../../../mathOperators';
 
 export class ExpressionReader {
     private _reader: ReaderUtility;
@@ -95,12 +97,28 @@ export class ExpressionReader {
                 node = new IntegerNode(token.tokenValue as number);
                 break;
             }
+            case tokenTypes.mathOp: {
+                node = this._readMathOp();
+                break;
+            }
             default: {
                 throw new NodeError(`Unexpected token "${token.tokenValue}" of type "${token.tokenType}"`, this._reader.iterator.line, this._reader.iterator.column);
             }
         }
 
         return node;
+    }
+
+    _readMathOp(): Node {
+        const token = this._reader.iterator.current;
+        if (token.tokenValue === mathOperators.plus || token.tokenValue === mathOperators.minus) {
+            this._reader.moveToNextToken();
+            const node = this._readNextNode();
+            const result = token.tokenValue === mathOperators.minus ? new MathNegNode(node) : node;
+            return result;
+        } else {
+            throw new NodeError(`Unexpected math operator "${token.tokenValue}" of type "${token.tokenType}"`, this._reader.iterator.line, this._reader.iterator.column);
+        }
     }
 
     _getMathOpWeight(op: string): number {
