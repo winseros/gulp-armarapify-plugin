@@ -16,7 +16,7 @@ const expectNext = (iterator: TokenIterator, tokenType: string, tokenValue: stri
 
 describe('tokenIterator', () => {
     describe('moveNext', () => {
-        it('should iterate through the tokens', () => {
+        it('should iterate through a class', () => {
             const data = 'class MyClass { myProperty1="string-value"; \r\n myProperty2=12345; \r myProperty3[] = {1,2};\n}; \r\n ';
             const iterator = new TokenIterator(new Buffer(data));
 
@@ -67,6 +67,34 @@ describe('tokenIterator', () => {
 
             //line 4
             expectNext(iterator, tokenTypes.whitespace, ' ', 4, 0);
+
+            expect(iterator.moveNext()).toEqual(false);
+            expect(iterator.depleted).toEqual(true);
+        });
+
+        it('should iterate through an array', () => {
+            const data = 'arr[]={"v1", "v2", 1, 1.01, abc}';
+            const iterator = new TokenIterator(new Buffer(data));
+
+            expectNext(iterator, tokenTypes.word, 'arr', 0, 0);
+            expectNext(iterator, tokenTypes.squareBracketOpen, '[', 0, 3);
+            expectNext(iterator, tokenTypes.squareBracketClose, ']', 0, 4);
+            expectNext(iterator, tokenTypes.equals, '=', 0, 5);
+            expectNext(iterator, tokenTypes.codeBlockStart, '{', 0, 6);
+            expectNext(iterator, tokenTypes.string, 'v1', 0, 7);
+            expectNext(iterator, tokenTypes.comma, ',', 0, 11);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 12);
+            expectNext(iterator, tokenTypes.string, 'v2', 0, 13);
+            expectNext(iterator, tokenTypes.comma, ',', 0, 17);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 18);
+            expectNext(iterator, tokenTypes.integer, 1, 0, 19);
+            expectNext(iterator, tokenTypes.comma, ',', 0, 20);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 21);
+            expectNext(iterator, tokenTypes.float, 1.01, 0, 22);
+            expectNext(iterator, tokenTypes.comma, ',', 0, 26);
+            expectNext(iterator, tokenTypes.whitespace, ' ', 0, 27);
+            expectNext(iterator, tokenTypes.word, 'abc', 0, 28);
+            expectNext(iterator, tokenTypes.codeBlockEnd, '}', 0, 31);
 
             expect(iterator.moveNext()).toEqual(false);
             expect(iterator.depleted).toEqual(true);

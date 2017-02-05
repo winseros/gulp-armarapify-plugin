@@ -21,14 +21,12 @@ import { StringPacket } from './packets/stringPacket';
 import { FloatPacket } from './packets/floatPacket';
 import { IntegerPacket } from './packets/integerPacket';
 import { ArrayPacket } from './packets/arrayPacket';
-import { WordPacket } from './packets/wordPacket';
 import {
     ArrayElement,
     ArrayStruct,
     ArrayElementString,
     ArrayElementInteger,
-    ArrayElementFloat,
-    ArrayElementWord
+    ArrayElementFloat
 } from './packets/arrayElement';
 import { ExpressionSerializer } from './expressionSerializer';
 import { TreeError } from './treeError';
@@ -122,7 +120,7 @@ export class NodeExpander {
             }
             case nodeTypes.word: {
                 const strNode = value as WordNode;
-                packet = packet.next = new WordPacket(name, strNode.value, packet);
+                packet = packet.next = new StringPacket(name, strNode.value, packet);
                 break;
             }
             case nodeTypes.mathOp:
@@ -168,7 +166,7 @@ export class NodeExpander {
             }
             case nodeTypes.word: {
                 const strNode = node as WordNode;
-                element = new ArrayElementWord(strNode.value);
+                element = new ArrayElementString(strNode.value);
                 break;
             }
             case nodeTypes.mathGrp:

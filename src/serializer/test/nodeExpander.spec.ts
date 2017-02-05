@@ -23,7 +23,6 @@ import { StringPacket } from '../packets/stringPacket';
 import { FloatPacket } from '../packets/floatPacket';
 import { IntegerPacket } from '../packets/integerPacket';
 import { ArrayPacket } from '../packets/arrayPacket';
-import { WordPacket } from '../packets/wordPacket';
 import { EnumsPacket } from '../packets/enumsPacket';
 
 describe('serializer/nodeExpander', () => {
@@ -123,7 +122,7 @@ describe('serializer/nodeExpander', () => {
 
             //prop9 packet
             packet = packet.next!;
-            expect(packet instanceof WordPacket).toBeTruthy();
+            expect(packet instanceof StringPacket).toBeTruthy();
 
             //pointer to the next packet
             packet = packet.next!;
