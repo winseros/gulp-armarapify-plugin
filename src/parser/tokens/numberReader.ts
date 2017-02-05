@@ -17,6 +17,8 @@ interface ReaderContext {
 }
 
 export class NumberReader implements TokenReader<number> {
+    static readonly intMax = 2147483647;
+
     public read(iterator: Iterator<string>): Token<number> | undefined {
         const looksLikeANumber = iterator.current === symbolDot || regexp.digit.test(iterator.current);
         if (!looksLikeANumber) {
@@ -41,7 +43,10 @@ export class NumberReader implements TokenReader<number> {
             throw new ParserError(`Couldn't convert value "${context.value}" into a number`, token.lineNumber, token.colNumber);
         }
 
-        token.tokenType = (context.float || context.scientific) && token.tokenValue.toString().includes(symbolDot) ? tokenTypes.float : tokenTypes.integer;
+        const float = token.tokenValue > NumberReader.intMax
+            || ((context.float || context.scientific) && token.tokenValue.toString().includes(symbolDot));
+
+        token.tokenType = float ? tokenTypes.float : tokenTypes.integer;
 
         return token;
     }

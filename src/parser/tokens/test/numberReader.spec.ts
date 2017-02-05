@@ -121,6 +121,22 @@ describe('parser/tokens/numberReader', () => {
                 expect(token.lineNumber).toEqual(0);
                 expect(token.colNumber).toEqual(0);
             });
+
+            it('should threat int as float if it is greater than maxInt', () => {
+                const value = NumberReader.intMax + 1;
+                const buffer = new Buffer(value.toString());
+                const iterator = new CharIterator(buffer);
+                const reader = new NumberReader();
+
+                iterator.moveNext();
+                const token = reader.read(iterator) !;
+                expect(token).toBeDefined();
+
+                expect(token.tokenType).toEqual(tokenTypes.float);
+                expect(token.tokenValue).toEqual(value);
+                expect(token.lineNumber).toEqual(0);
+                expect(token.colNumber).toEqual(0);
+            });
         });
 
         describe('throw errors', () => {
