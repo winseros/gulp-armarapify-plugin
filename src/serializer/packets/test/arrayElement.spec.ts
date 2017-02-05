@@ -121,7 +121,7 @@ describe('serializer/packets/arrayElement', () => {
                 const element = new ArrayElementInteger(168496141);
                 const bytes = element.getBytes();
 
-                const expected = [DataType.float, 0x0d, 0x0c, 0x0b, 0x0a];
+                const expected = [DataType.integer, 0x0d, 0x0c, 0x0b, 0x0a];
                 expect(bytes).toEqual(Buffer.from(expected));
             });
         });

@@ -82,7 +82,7 @@ export class ArrayElementInteger implements ArrayElement {
 
     getBytes(): Buffer {
         const buffer = Buffer.allocUnsafe(this.size);
-        const offset = buffer.writeUInt8(DataType.float, 0);
+        const offset = buffer.writeUInt8(DataType.integer, 0);
         buffer.writeInt32LE(this._data, offset);
         return buffer;
     }
