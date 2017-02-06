@@ -1,5 +1,5 @@
 import { RapifyStream } from '../rapifyStream';
-import { Readable, Writable } from 'stream';
+import { Readable, Writable, Duplex } from 'stream';
 import * as path from 'path';
 import File = require('vinyl');
 import { PluginError } from 'gulp-util';
@@ -10,7 +10,7 @@ import { TreeParser } from '../parser/treeParser';
 describe('rapifyStream', () => {
     describe('_transform', () => {
         it('should throw in case of streaming input', (done: Function) => {
-            const file = new File({ base: './src', path: path.normalize('/src/file.js') });
+            const file = new File({ base: './src', path: path.normalize('/src/file.js'), contents: new Duplex() });
             spyOn(file, 'isStream').and.returnValue(true);
 
             const stream = new Readable({ objectMode: true, read: () => 0 });
@@ -22,6 +22,19 @@ describe('rapifyStream', () => {
                     done();
                 });
 
+            stream.push(file);
+        });
+
+        it('should not throw if file has no content', (done: Function) => {
+            const file = new File({ path: './file1.txt' });
+            const stream = new Readable({ objectMode: true, read: () => 0 });
+            stream.pipe(new RapifyStream()).pipe(new Writable({
+                objectMode: true,
+                write: (chunk: any, encoding: string, callback: Function) => {
+                    expect(chunk).toBe(file);
+                    done();
+                }
+            }));
             stream.push(file);
         });
 
@@ -56,7 +69,7 @@ describe('rapifyStream', () => {
             const thrownError = new ParserError('some error', 100, 500);
             spyOn(TreeParser.prototype, 'parseFile').and.callFake(() => { throw thrownError; });
 
-            const file = new File();
+            const file = new File({ contents: Buffer.allocUnsafe(0) });
             const stream = new Readable({ objectMode: true, read: () => 0 });
             stream
                 .pipe(new RapifyStream())

@@ -19,19 +19,24 @@ export class RapifyStream extends Transform {
     }
 
     _transform(file: File, encoding: string, callback: TransformCallback): void {
-        if (file.isStream()) {
-            callback(new PluginError(constants.pluginName, 'Streaming input is not supported', { fileName: file.relative }));
-            return;
+        if (file.isNull()) {
+            return callback(undefined, file);
         }
 
+        if (!file.isBuffer()) {
+            const err = new PluginError(constants.pluginName, 'Streaming input is not supported', { fileName: file.relative });
+            return callback(err);
+        }
+
+        let err;
         try {
             const tree = this._treeParser.parseFile(file.contents as Buffer);
             file.contents = this._serializer.serialize(tree);
-            callback(undefined, file);
         } catch (ex) {
-            const err = this._convertError(ex as Error, file);
-            callback(err);
+            err = this._convertError(ex as Error, file);
         }
+
+        callback(err, file);
     }
 
     _convertError(error: Error, file: File): PluginError {
