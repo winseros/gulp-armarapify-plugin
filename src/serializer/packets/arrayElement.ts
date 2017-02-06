@@ -87,9 +87,3 @@ export class ArrayElementInteger implements ArrayElement {
         return buffer;
     }
 }
-
-export class ArrayElementWord extends ArrayElementString {
-    get dataType(): number {
-        return DataType.word;
-    }
-}
