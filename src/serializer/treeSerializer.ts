@@ -8,7 +8,7 @@ export class TreeSerizlizer {
 
     serialize(root: ClassNode): Buffer {
         const signaturePacket = this._expander.expandClass(root);
-        const bufferSize = signaturePacket.last.offset + signaturePacket.last.size;
+        const bufferSize = this._inflateOffsets(signaturePacket);
 
         const buf = Buffer.allocUnsafe(bufferSize);
         const writer = new PacketWriter(buf);
@@ -25,5 +25,16 @@ export class TreeSerizlizer {
         }
 
         return buf;
+    }
+
+    _inflateOffsets(firstPacket: Packet): number {
+        let offset = 0;
+        let packet: Packet | undefined = firstPacket;
+        while (packet) {
+            packet.offset = offset;
+            offset += packet.size;
+            packet = packet.next;
+        }
+        return offset;
     }
 }

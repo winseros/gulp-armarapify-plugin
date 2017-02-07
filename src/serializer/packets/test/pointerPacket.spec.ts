@@ -4,14 +4,14 @@ import { PointerPacket } from '../pointerPacket';
 describe('serializer/packets/pointerPacket', () => {
     describe('size', () => {
         it('should return a valid packet size', () => {
-            const packet = new PointerPacket({} as Packet);
+            const packet = new PointerPacket();
             expect(packet.size).toEqual(4);
         });
     });
 
     describe('bytes', () => {
         it('should return a fulfilled buffer', () => {
-            const packet = new PointerPacket({} as Packet);
+            const packet = new PointerPacket();
             packet.next = { offset: 0x00bbccdd } as Packet;
 
             const bytes = packet.bytes();

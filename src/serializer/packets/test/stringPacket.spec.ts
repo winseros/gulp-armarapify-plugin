@@ -1,4 +1,3 @@
-import { Packet } from '../packet';
 import { StringPacket } from '../stringPacket';
 import { PacketType } from '../packetType';
 import { DataType } from '../dataType';
@@ -6,14 +5,14 @@ import { DataType } from '../dataType';
 describe('serializer/packets/stringPacket', () => {
     describe('size', () => {
         it('should return a valid packet size', () => {
-            const packet = new StringPacket('some-name', 'some-value', {} as Packet);
+            const packet = new StringPacket('some-name', 'some-value');
             expect(packet.size).toEqual(23);
         });
     });
 
     describe('bytes', () => {
         it('should return a fulfilled buffer', () => {
-            const packet = new StringPacket('some-name', 'some-value', {} as Packet);
+            const packet = new StringPacket('some-name', 'some-value');
 
             const bytes = packet.bytes();
 

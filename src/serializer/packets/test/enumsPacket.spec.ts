@@ -1,17 +1,16 @@
-import { Packet } from '../packet';
 import { EnumsPacket } from '../enumsPacket';
 
 describe('serializer/packets/enumsPacket', () => {
     describe('size', () => {
         it('should return a valid packet size', () => {
-            const packet = new EnumsPacket({} as Packet);
+            const packet = new EnumsPacket();
             expect(packet.size).toEqual(4);
         });
     });
 
     describe('bytes', () => {
         it('should return a fulfilled buffer', () => {
-            const packet = new EnumsPacket({} as Packet);
+            const packet = new EnumsPacket();
 
             const bytes = packet.bytes();
 

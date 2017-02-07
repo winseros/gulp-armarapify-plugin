@@ -1,4 +1,3 @@
-import { Packet } from '../packet';
 import { IntegerPacket } from '../integerPacket';
 import { PacketType } from '../packetType';
 import { DataType } from '../dataType';
@@ -6,14 +5,14 @@ import { DataType } from '../dataType';
 describe('serializer/packets/integerPacket', () => {
     describe('size', () => {
         it('should return a valid packet size', () => {
-            const packet = new IntegerPacket('some-name', 1, {} as Packet);
+            const packet = new IntegerPacket('some-name', 1);
             expect(packet.size).toEqual(16);
         });
     });
 
     describe('bytes', () => {
         it('should return a fulfilled buffer', () => {
-            const packet = new IntegerPacket('some-name', 168496141, {} as Packet);
+            const packet = new IntegerPacket('some-name', 168496141);
 
             const bytes = packet.bytes();
 

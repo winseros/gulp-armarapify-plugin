@@ -1,4 +1,3 @@
-import { Packet } from './packet';
 import { PacketBase } from './packetBase';
 import { PacketType } from './packetType';
 import { BufferHelper } from '../bufferHelper';
@@ -6,8 +5,8 @@ import { BufferHelper } from '../bufferHelper';
 export class DeletePacket extends PacketBase {
     private _className: string;
 
-    constructor(className: string, prev: Packet) {
-        super(prev);
+    constructor(className: string) {
+        super();
         this._className = className;
     }
 

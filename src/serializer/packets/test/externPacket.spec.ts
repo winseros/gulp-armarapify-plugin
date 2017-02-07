@@ -1,18 +1,17 @@
-import { Packet } from '../packet';
 import { ExternPacket } from '../externPacket';
 import { PacketType } from '../packetType';
 
 describe('serializer/packets/externPacket', () => {
     describe('size', () => {
         it('should return a valid packet size', () => {
-            const packet = new ExternPacket('a-class-name', {} as Packet);
+            const packet = new ExternPacket('a-class-name');
             expect(packet.size).toEqual(14);
         });
     });
 
     describe('bytes', () => {
         it('should return a fulfilled buffer', () => {
-            const packet = new ExternPacket('a-class-name', {} as Packet);
+            const packet = new ExternPacket('a-class-name');
 
             const bytes = packet.bytes();
 

@@ -1,15 +1,11 @@
 import { Packet } from './packet';
+import { PacketBase } from './packetBase';
 
-export class SignaturePacket implements Packet{
-    next: Packet;
+export class SignaturePacket extends PacketBase {
     last: Packet;
 
     get size(): number {
         return 16;
-    }
-
-    get offset(): number {
-        return 0;
     }
 
     bytes(): Buffer {

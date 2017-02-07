@@ -1,4 +1,3 @@
-import { Packet } from './packet';
 import { PacketBase } from './packetBase';
 import { PacketType } from './packetType';
 import { ArrayStruct } from './arrayElement';
@@ -8,8 +7,8 @@ export class ArrayPacket extends PacketBase {
     private _tokenName: string;
     private _data: ArrayStruct;
 
-    constructor(tokenName: string, data: ArrayStruct, prev: Packet) {
-        super(prev);
+    constructor(tokenName: string, data: ArrayStruct) {
+        super();
         this._tokenName = tokenName;
         this._data = data;
     }

@@ -35,6 +35,7 @@ describe('serializer/treeSerializer', () => {
             p2.next = p1.last = { offset: 12, size: 1, bytes: () => Buffer.from([0x03]) } as Packet;//offset is wrong here
 
             spyOn(NodeExpander.prototype, 'expandClass').and.returnValue(p1);
+            spyOn(TreeSerizlizer.prototype, '_inflateOffsets').and.returnValue(p1.last.offset + p1.last.size);
 
             const root = new ClassNode('a-class-name', []);
 

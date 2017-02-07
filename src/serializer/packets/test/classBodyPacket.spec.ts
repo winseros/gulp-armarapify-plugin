@@ -1,17 +1,16 @@
-import { Packet } from '../packet';
 import { ClassBodyPacket } from '../classBodyPacket';
 
 describe('serializer/packets/classBodyPacket', () => {
     describe('size', () => {
         it('should return a valid packet size', () => {
-            const packet = new ClassBodyPacket('inherits-class', 257, {} as Packet);
+            const packet = new ClassBodyPacket('inherits-class', 257);
             expect(packet.size).toEqual(17);
         });
     });
 
     describe('bytes', () => {
         it('should return a fulfilled buffer', () => {
-            const packet = new ClassBodyPacket('inherits-class', 257, {} as Packet);
+            const packet = new ClassBodyPacket('inherits-class', 257);
 
             const bytes = packet.bytes();
 

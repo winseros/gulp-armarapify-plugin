@@ -1,11 +1,6 @@
-import { Packet } from './packet';
 import { PacketBase } from './packetBase';
 
 export class PointerPacket extends PacketBase {
-    constructor(prev: Packet) {
-        super(prev);
-    }
-
     get size(): number {
         return 4;
     }

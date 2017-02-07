@@ -1,10 +1,9 @@
-import { Packet } from './packet';
 import { NumberPacket } from './numberPacket';
 import { DataType } from './dataType';
 
 export class IntegerPacket extends NumberPacket {
-    constructor(tokenName: string, data: number, prev: Packet) {
-        super(tokenName, data, prev);
+    constructor(tokenName: string, data: number) {
+        super(tokenName, data);
     }
 
     get _dataSize(): number {

@@ -9,13 +9,6 @@ describe('serializer/packets/signaturePacket', () => {
         });
     });
 
-    describe('offset', () => {
-        it('should return a valid size', () => {
-            const packet = new SignaturePacket();
-            expect(packet.offset).toEqual(0);
-        });
-    });
-
     describe('bytes', () => {
         it('should return a fulfilled buffer', () => {
             const packet = new SignaturePacket();

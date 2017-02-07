@@ -1,4 +1,3 @@
-import { Packet } from './packet';
 import { PacketBase } from './packetBase';
 import { BufferHelper } from '../bufferHelper';
 
@@ -6,8 +5,8 @@ export class ClassBodyPacket extends PacketBase {
     private _inherits: string;
     private _noOfChildren: number;
 
-    constructor(inherits: string, noOfChildren: number, prev: Packet) {
-        super(prev);
+    constructor(inherits: string, noOfChildren: number) {
+        super();
         this._inherits = inherits;
         this._noOfChildren = noOfChildren;
     }

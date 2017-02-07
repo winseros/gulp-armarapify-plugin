@@ -1,4 +1,3 @@
-import { Packet } from './packet';
 import { PacketBase } from './packetBase';
 import { PacketType } from './packetType';
 import { DataType } from './dataType';
@@ -8,8 +7,8 @@ export class StringPacket extends PacketBase {
     protected readonly _tokenName: string;
     protected readonly _data: string;
 
-    constructor(tokenName: string, data: string, prev: Packet) {
-        super(prev);
+    constructor(tokenName: string, data: string) {
+        super();
         this._tokenName = tokenName;
         this._data = data;
     }

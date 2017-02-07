@@ -8,8 +8,8 @@ export class ClassPacket extends PacketBase {
     private _inherits: string;
     public firstChild?: Packet;
 
-    constructor(className: string, inherits: string, prev: Packet) {
-        super(prev);
+    constructor(className: string, inherits: string) {
+        super();
         this._className = className;
         this._inherits = inherits;
     }

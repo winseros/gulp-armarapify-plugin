@@ -37,7 +37,7 @@ export class NodeExpander {
     expandClass(node: ClassNode): SignaturePacket {
         const startPacket = new SignaturePacket();
         const lastDataPacket = this._expandClassBody(startPacket, node);
-        lastDataPacket.next = startPacket.last = new EnumsPacket(lastDataPacket);
+        lastDataPacket.next = startPacket.last = new EnumsPacket();
         return startPacket;
     }
 
@@ -49,7 +49,7 @@ export class NodeExpander {
             const tupple = pool.shift() !;
 
             const children = tupple.node.children;
-            packet.next = packet = tupple.packet.firstChild = new ClassBodyPacket(tupple.node.inherits, children.length, packet);
+            packet.next = packet = tupple.packet.firstChild = new ClassBodyPacket(tupple.node.inherits, children.length);
             for (const child of children) {
                 switch (child.type) {
                     case nodeTypes.class: {
@@ -75,24 +75,24 @@ export class NodeExpander {
                     }
                 }
             }
-            packet.next = packet = new PointerPacket(packet);
+            packet.next = packet = new PointerPacket();
         }
 
         return packet;
     }
 
     _expandClass(packet: Packet, node: ClassNode): Packet {
-        packet.next = packet = new ClassPacket(node.className, node.inherits, packet);
+        packet.next = packet = new ClassPacket(node.className, node.inherits);
         return packet;
     }
 
     _expandExtern(packet: Packet, node: ExternNode): Packet {
-        packet.next = packet = new ExternPacket(node.className, packet);
+        packet.next = packet = new ExternPacket(node.className);
         return packet;
     }
 
     _expandDelete(packet: Packet, node: DeleteNode): Packet {
-        packet.next = packet = new DeletePacket(node.className, packet);
+        packet.next = packet = new DeletePacket(node.className);
         return packet;
     }
 
@@ -100,27 +100,27 @@ export class NodeExpander {
         switch (value.type) {
             case nodeTypes.integer: {
                 const intNode = value as IntegerNode;
-                packet = packet.next = new IntegerPacket(name, intNode.value, packet);
+                packet = packet.next = new IntegerPacket(name, intNode.value);
                 break;
             }
             case nodeTypes.float: {
                 const floatNode = value as FloatNode;
-                packet = packet.next = new FloatPacket(name, floatNode.value, packet);
+                packet = packet.next = new FloatPacket(name, floatNode.value);
                 break;
             }
             case nodeTypes.string: {
                 const strNode = value as StringNode;
-                packet = packet.next = new StringPacket(name, strNode.value, packet);
+                packet = packet.next = new StringPacket(name, strNode.value);
                 break;
             }
             case nodeTypes.array: {
                 const arrayStruct = this._expandArrayContents(value as ArrayNode);
-                packet = packet.next = new ArrayPacket(name, arrayStruct, packet);
+                packet = packet.next = new ArrayPacket(name, arrayStruct);
                 break;
             }
             case nodeTypes.word: {
                 const strNode = value as WordNode;
-                packet = packet.next = new StringPacket(name, strNode.value, packet);
+                packet = packet.next = new StringPacket(name, strNode.value);
                 break;
             }
             case nodeTypes.mathOp:

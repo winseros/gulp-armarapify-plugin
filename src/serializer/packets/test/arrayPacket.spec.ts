@@ -1,4 +1,3 @@
-import { Packet } from '../packet';
 import { ArrayPacket } from '../arrayPacket';
 import { PacketType } from '../packetType';
 import { BufferHelper } from '../../bufferHelper';
@@ -9,7 +8,7 @@ describe('serializer/packets/arrayPacket', () => {
             const e1 = jasmine.createSpyObj('ArrayStruct', ['a']);
             e1.size = 3;
 
-            const packet = new ArrayPacket('arrayName', e1, {} as Packet);
+            const packet = new ArrayPacket('arrayName', e1);
             expect(packet.size).toEqual(14);
         });
     });
@@ -26,7 +25,7 @@ describe('serializer/packets/arrayPacket', () => {
             const getBytes = e1.getBytes as jasmine.Spy;
             getBytes.and.returnValue(bytes);
 
-            const packet = new ArrayPacket('arrayName', e1, {} as Packet);
+            const packet = new ArrayPacket('arrayName', e1);
             const packetBytes = packet.bytes();
 
             const expected = [

@@ -24,9 +24,9 @@ export class ReadersCollection {
     static _registerReaders(registry: ReadersCollection): void {
         registry.registerReader(new WhitespaceReader())
             .registerReader(new NewLineReader())
+            .registerReader(new CommentReader())
             .registerReader(new ControlCharReader())
             .registerReader(new StringReader())
-            .registerReader(new CommentReader())
             .registerReader(new NumberReader())
             .registerReader(new HexReader())
             .registerReader(new WordReader());

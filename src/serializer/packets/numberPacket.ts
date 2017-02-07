@@ -1,4 +1,3 @@
-import { Packet } from './packet';
 import { PacketBase } from './packetBase';
 import { PacketType } from './packetType';
 import { BufferHelper } from '../bufferHelper';
@@ -7,8 +6,8 @@ export abstract class NumberPacket extends PacketBase {
     private _tokenName: string;
     readonly _data: number;
 
-    constructor(tokenName: string, data: number, prev: Packet) {
-        super(prev);
+    constructor(tokenName: string, data: number) {
+        super();
         this._tokenName = tokenName;
         this._data = data;
     }
