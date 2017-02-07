@@ -6,6 +6,7 @@ import { CommentReader } from './commentReader';
 import { ControlCharReader } from './controlCharReader';
 import { StringReader } from './stringReader';
 import { NumberReader } from './numberReader';
+import { HexReader } from './hexReader';
 import { WordReader } from './wordReader';
 import { Iterator } from '../iterator';
 import { ParserError } from '../parserError';
@@ -27,6 +28,7 @@ export class ReadersCollection {
             .registerReader(new StringReader())
             .registerReader(new CommentReader())
             .registerReader(new NumberReader())
+            .registerReader(new HexReader())
             .registerReader(new WordReader());
     }
 

@@ -1,5 +1,7 @@
 export const regexp = {
-    letter: /[a-zA-Z_\$]/,
+    letter: /[a-z_\$]/i,
     letterOrDigit: /[\w\d_\$]/,
-    digit: /\d/
+    digit: /\d/,
+    hex: /[a-f\d]/i,
+    space: /[\s]/,
 };

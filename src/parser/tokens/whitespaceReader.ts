@@ -2,8 +2,7 @@ import { ReaderBase } from './ReaderBase';
 import { Iterator } from '../iterator';
 import { Token } from './token';
 import { tokenTypes } from './tokenTypes';
-
-const regexSpace = /[\s^\r\n]/;
+import { regexp } from './regexp';
 
 export class WhitespaceReader extends ReaderBase<string> {
     _canRead(iterator: Iterator<string>): boolean {
@@ -28,7 +27,7 @@ export class WhitespaceReader extends ReaderBase<string> {
     }
 
     _isWhitespace(symbol: string): boolean {
-        const result = symbol !== '\r' && symbol !== '\n' && regexSpace.test(symbol);
+        const result = symbol !== '\r' && symbol !== '\n' && regexp.space.test(symbol);
         return result;
     }
 }

@@ -113,7 +113,7 @@ describe('tokenIterator', () => {
         });
 
         it('should iterate through "a + b" expression', () => {
-            const data = '1 + 2';
+            const data = '1 + 0x02';
             const iterator = new TokenIterator(new Buffer(data));
 
             //line 0
