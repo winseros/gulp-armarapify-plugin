@@ -37,11 +37,6 @@ describe('serializer/nodeExpander', () => {
                 new IntegerNode(1),
                 new IntegerNode(1)
             )));
-            root.children.push(new PropertyNode('prop5', new MathOpNode(
-                mathOperators.plus,
-                new FloatNode(1.5),
-                new FloatNode(1.5)
-            )));
             root.children.push(new ClassNode('InnerClass', [
                 new PropertyNode('innerProp1', new StringNode('innerProp1val')),
                 new PropertyNode('innerProp2', new StringNode('innerProp2val')),
@@ -88,11 +83,7 @@ describe('serializer/nodeExpander', () => {
 
             //prop4 packet
             packet = packet.next!;
-            expect(packet instanceof IntegerPacket).toBeTruthy();
-
-            //prop5 packet
-            packet = packet.next!;
-            expect(packet instanceof FloatPacket).toBeTruthy();
+            expect(packet instanceof StringPacket).toBeTruthy();
 
             //InnerClass packet
             packet = packet.next!;
@@ -118,7 +109,7 @@ describe('serializer/nodeExpander', () => {
 
             //prop8 packet
             packet = packet.next!;
-            expect(packet instanceof IntegerPacket).toBeTruthy();
+            expect(packet instanceof StringPacket).toBeTruthy();
 
             //prop9 packet
             packet = packet.next!;

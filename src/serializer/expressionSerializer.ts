@@ -1,4 +1,3 @@
-import { ExpressionResolver } from './expressionResolver';
 import { nodeTypes } from '../parser/nodes/nodeTypes';
 import { Node } from '../parser/nodes/node';
 import { MathOpNode } from '../parser/nodes/mathOpNode';
@@ -10,18 +9,11 @@ import { TreeError } from './treeError';
 import { mathOperators } from '../mathOperators';
 
 export class ExpressionSerializer {
-    private _resolver = new ExpressionResolver();
-
     serialize(expression: Node): Node {
         if (expression.type === nodeTypes.mathOp || expression.type === nodeTypes.mathGrp || expression.type === nodeTypes.mathNeg) {
-            expression = this._resolver.resolve(expression);
-
-            if (expression.type === nodeTypes.mathOp || expression.type === nodeTypes.mathGrp || expression.type === nodeTypes.mathNeg) {
-                const expressionBody = this._serializeExpr(expression);
-                expression = new StringNode(expressionBody);
-            }
+            const expressionBody = this._serializeExpr(expression);
+            expression = new StringNode(expressionBody);
         }
-
         return expression;
     }
 

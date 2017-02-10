@@ -13,7 +13,7 @@ export class ExpressionNodeReader implements NodeReader {
     read(reader: ReaderUtility): Node {
         reader.skip(tokenTypes.whitespace, tokenTypes.newline).moveToNextToken();
         const expressionReader = new ExpressionReader(reader);
-        const expression = expressionReader.readExpression(';', tokenTypes.semicolon);
+        const expression = expressionReader.readExpression(tokenTypes.semicolon);
         return expression;
     }
 }

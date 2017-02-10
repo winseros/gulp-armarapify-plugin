@@ -24,11 +24,6 @@ const implementFakeIterator = (iteratorMock: any, calls: Token<any>[]): any => {
 
 describe('parser/nodes/readers/expressionReader', () => {
     describe('readExpression', () => {
-        it('should throw if no stopAt tokens specified', () => {
-            const reader = new ExpressionReader({} as ReaderUtility);
-            expect(() => reader.readExpression('something')).toThrowError('A set of tokens to stop at must be specified');
-        });
-
         it('should throw if a ; is missing at the end of the line', () => {
             const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
@@ -40,7 +35,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError('; expected at the end of the line');
+            expect(() => reader.readExpression(tokenTypes.semicolon)).toThrowError('; expected at the end of the line');
         });
 
         it('should throw if a math operator is missing', () => {
@@ -54,7 +49,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError(`Math operator expected but was "2" of type "${tokenTypes.integer}"`);
+            expect(() => reader.readExpression(tokenTypes.semicolon)).toThrowError(`Math operator expected but was "2" of type "${tokenTypes.integer}"`);
         });
 
         it('should throw if next token is unexpected', () => {
@@ -67,7 +62,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError(`Unexpected token "=" of type "${tokenTypes.equals}"`);
+            expect(() => reader.readExpression(tokenTypes.semicolon)).toThrowError(`Unexpected token "=" of type "${tokenTypes.equals}"`);
         });
 
         it('should throw if math operator is unexpected', () => {
@@ -80,7 +75,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError(`Unexpected math operator "*" of type "${tokenTypes.mathOp}"`);
+            expect(() => reader.readExpression(tokenTypes.semicolon)).toThrowError(`Unexpected math operator "*" of type "${tokenTypes.mathOp}"`);
         });
 
         it('should throw if math operator is followed by a space', () => {
@@ -94,7 +89,26 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            expect(() => reader.readExpression('not-matter', tokenTypes.semicolon)).toThrowError(`Unexpected token " " of type "${tokenTypes.whitespace}"`);
+            expect(() => reader.readExpression(tokenTypes.semicolon)).toThrowError(`Unexpected token " " of type "${tokenTypes.whitespace}"`);
+        });
+
+        it('should read an expression until a file ends', () => {
+            const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
+            const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
+
+            spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
+                { tokenType: tokenTypes.string, tokenValue: 'abc', lineNumber: 0, colNumber: 0 }
+            ]));
+
+            tokenIterator.moveNext();
+            const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
+            const expression = reader.readExpression();
+
+            expect(expression).toBeDefined();
+
+            const str = expression as StringNode;
+            expect(str.type).toEqual(nodeTypes.string);
+            expect(str.value).toEqual('abc');
         });
 
         it('should read "string" expression', () => {
@@ -108,7 +122,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
+            const expression = reader.readExpression(tokenTypes.semicolon);
 
             expect(expression).toBeDefined();
 
@@ -130,7 +144,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
+            const expression = reader.readExpression(tokenTypes.semicolon);
 
             expect(expression).toBeDefined();
 
@@ -162,7 +176,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
+            const expression = reader.readExpression(tokenTypes.semicolon);
 
             expect(expression).toBeDefined();
 
@@ -202,7 +216,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
+            const expression = reader.readExpression(tokenTypes.semicolon);
 
             expect(expression).toBeDefined();
 
@@ -242,7 +256,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
+            const expression = reader.readExpression(tokenTypes.semicolon);
 
             expect(expression).toBeDefined();
 
@@ -284,7 +298,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
+            const expression = reader.readExpression(tokenTypes.semicolon);
 
             expect(expression).toBeDefined();
 
@@ -329,7 +343,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
+            const expression = reader.readExpression(tokenTypes.semicolon);
 
             expect(expression).toBeDefined();
 
@@ -364,7 +378,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
+            const expression = reader.readExpression(tokenTypes.semicolon);
 
             expect(expression).toBeDefined();
 
@@ -388,7 +402,7 @@ describe('parser/nodes/readers/expressionReader', () => {
 
             tokenIterator.moveNext();
             const reader = new ExpressionReader(new ReaderUtility(tokenIterator));
-            const expression = reader.readExpression('not-matter', tokenTypes.semicolon);
+            const expression = reader.readExpression(tokenTypes.semicolon);
 
             expect(expression).toBeDefined();
 

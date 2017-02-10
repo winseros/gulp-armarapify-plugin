@@ -19,21 +19,14 @@ export class ExpressionReader {
         this._reader = reader;
     }
 
-    readExpression(errorMesage: string, ...stopAt: string[]): Node {
-        if (!stopAt.length) {
-            throw new Error('A set of tokens to stop at must be specified');
-        }
-
+    readExpression(...stopAt: string[]): Node {
         let node = this._readNextNode();
 
         const iterator = this._reader.iterator;
 
         while (true) {
-            this._reader.skip(tokenTypes.whitespace).moveToNextToken();
-
-            if (stopAt.indexOf(iterator.current.tokenType) >= 0) {
-                break;
-            }
+            const halt = this._shouldStop(stopAt);
+            if (halt) { break; }
 
             if (iterator.current.tokenType === tokenTypes.newline) {
                 throw new NodeError(`; expected at the end of the line`, iterator.line, iterator.column);
@@ -50,6 +43,21 @@ export class ExpressionReader {
         }
 
         return node;
+    }
+
+    _shouldStop(stopAt: string[]): boolean {
+        let result = false;
+        this._reader.skip(tokenTypes.whitespace);
+
+        if (stopAt.length) {
+            this._reader.moveToNextToken();
+            const iterator = this._reader.iterator;
+            result = stopAt.indexOf(iterator.current.tokenType) >= 0;
+        } else {
+            result = this._reader.moveToNextTokenOrEof();
+        }
+
+        return result;
     }
 
     _combineNodes(node1: Node, node2: Node, mathOperator: string): Node {
@@ -77,7 +85,7 @@ export class ExpressionReader {
         switch (token.tokenType) {
             case tokenTypes.bracketOpen: {
                 this._reader.skip(tokenTypes.whitespace).moveToNextToken();
-                const body = this.readExpression(')', tokenTypes.bracketClose);
+                const body = this.readExpression(tokenTypes.bracketClose);
                 node = new MathGrpNode(body);
                 break;
             }

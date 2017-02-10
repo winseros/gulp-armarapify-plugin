@@ -10,7 +10,7 @@ import { MathOpNode } from '../../parser/nodes/mathOpNode';
 import { MathGrpNode } from '../../parser/nodes/mathGrpNode';
 import { MathNegNode } from '../../parser/nodes/mathNegNode';
 
-describe('serializer/expressionResolver', () => {
+describe('optmizer/expressionResolver', () => {
     describe('resolve', () => {
         it('should throw in case of non-resolvable nodes', () => {
             const resolver = new ExpressionResolver();

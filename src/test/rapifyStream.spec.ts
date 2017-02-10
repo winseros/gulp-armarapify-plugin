@@ -90,7 +90,11 @@ describe('rapifyStream', () => {
                 'prop=10-5;',
                 'prop=10+-5;',
                 'class 123Class{};',
-                'class _$className1{}'
+                'class _$className1{}',
+                'prop="1+2";',
+                'prop="1 + 2";',
+                'prop="1 + abc";',
+                'prop[]={1, "abc", "2 + 3"};'
             ];
 
             let count = 0;

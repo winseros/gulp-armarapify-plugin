@@ -45,7 +45,7 @@ export class ArrayNodeReader implements NodeReader {
                 node = this._readArray(reader);
                 reader.skip(tokenTypes.whitespace, tokenTypes.newline).moveToNextToken();
             } else {
-                node = expressionReader.readExpression('comma, } or newline', tokenTypes.comma, tokenTypes.codeBlockEnd, tokenTypes.newline);
+                node = expressionReader.readExpression(tokenTypes.comma, tokenTypes.codeBlockEnd, tokenTypes.newline);
             }
 
             result.push(node);

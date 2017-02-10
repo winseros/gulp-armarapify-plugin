@@ -8,7 +8,7 @@ import { FloatNode } from '../parser/nodes/floatNode';
 import { StringNode } from '../parser/nodes/stringNode';
 import { WordNode } from '../parser/nodes/wordNode';
 import { ConstNode } from '../parser/nodes/constNode';
-import { TreeError } from './treeError';
+import { TreeError } from '../serializer/treeError';
 import { mathOperators } from '../mathOperators';
 
 const numberTypes = [nodeTypes.integer, nodeTypes.float];

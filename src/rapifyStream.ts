@@ -3,6 +3,7 @@ import { PluginError } from 'gulp-util';
 import { Transform } from 'stream';
 import File = require('vinyl');
 import { TreeParser } from './parser/treeParser';
+import { TreeOptimizer } from './optimizer/treeOptimizer';
 import { TreeSerizlizer } from './serializer/treeSerializer';
 import { ParserError } from './parser/parserError';
 import { NodeError } from './parser/nodeError';
@@ -13,6 +14,7 @@ export type ErrorWithLineNumber = ParserError | NodeError;
 export class RapifyStream extends Transform {
     private _treeParser = new TreeParser();
     private _serializer = new TreeSerizlizer();
+    private _optimizer = new TreeOptimizer();
 
     constructor() {
         super({ objectMode: true });
@@ -31,6 +33,7 @@ export class RapifyStream extends Transform {
         let err;
         try {
             const tree = this._treeParser.parseFile(file.contents as Buffer);
+            this._optimizer.optimize(tree);
             file.contents = this._serializer.serialize(tree);
         } catch (ex) {
             err = this._convertError(ex as Error, file);
