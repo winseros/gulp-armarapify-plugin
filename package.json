@@ -7,7 +7,7 @@
     "install:typings": "./node_modules/.bin/typings install",
     "install:dev": "npm install && npm run install:typings",
     "test": "./node_modules/.bin/gulp test:run",
-    "cover": "./node_modules/.bin/gulp cover:run",
+    "cover": "./node_modules/.bin/gulp cover:report",
     "coveralls": "./node_modules/.bin/gulp cover:coveralls",
     "assemble": "./node_modules/.bin/gulp assemble",
     "watch": "./node_modules/.bin/gulp watch"

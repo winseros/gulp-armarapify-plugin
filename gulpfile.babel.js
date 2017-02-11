@@ -60,21 +60,23 @@ gulp.task('cover:instrument', ['assemble'], () => {
         .pipe(istanbul.hookRequire());
 });
 
-gulp.task('cover:run', ['cover:instrument'], (done) => {
-    const task = gulp.src(testSpecs)
+gulp.task('cover:run', ['cover:instrument'], () => {
+    return gulp.src(testSpecs)
         .pipe(jasmine())
         .pipe(istanbul.writeReports({
             dir: dist,
             reporters: ['json']
-        })).on('finish', () => {
-            gulp.src(path.join(dist, 'coverage-final.json'))
-                .pipe(remapIstanbul({
-                    reports: { html: coverageDir, lcovonly: lcovFile }
-                })).on('finish', done);
-        });
+        }));
 });
 
-gulp.task('cover:coveralls', ['cover:run'], () => {
+gulp.task('cover:report', ['cover:run'], () => {
+    return gulp.src(path.join(dist, 'coverage-final.json'))
+        .pipe(remapIstanbul({
+            reports: { html: coverageDir, lcovonly: lcovFile }
+        }));
+});
+
+gulp.task('cover:coveralls', ['cover:report'], () => {
     return gulp.src(lcovFile)
         .pipe(coveralls());
 });
