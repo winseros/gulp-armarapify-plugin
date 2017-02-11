@@ -1,4 +1,4 @@
-import { CharIterator } from '../CharIterator';
+import { CharIterator } from '../charIterator';
 
 describe('parser/charIterator', () => {
 

@@ -2,7 +2,7 @@ import { ReaderBase } from './readerBase';
 import { Token } from './token';
 import { Iterator } from '../iterator';
 import { tokenTypes } from './tokenTypes';
-import { ParserError } from '../ParserError';
+import { ParserError } from '../parserError';
 import { mathOperators } from '../../mathOperators';
 
 const symbols = new Map();
