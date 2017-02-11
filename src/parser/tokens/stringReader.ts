@@ -1,4 +1,4 @@
-import { ReaderBase } from './ReaderBase';
+import { ReaderBase } from './readerBase';
 import { Token } from './token';
 import { Iterator } from '../iterator';
 import { tokenTypes } from './tokenTypes';
