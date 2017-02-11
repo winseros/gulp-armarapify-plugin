@@ -1,3 +1,5 @@
+[![npm][npm-image]][npm-url] [![Travis branch][travis-image]][travis-url] [![Coveralls branch][coveralls-image]][coveralls-url] [![Dependencies][david-image]][david-url]
+
 # Gulp Arma Rapify plugin
 
 The plugin's goal is to [rapify (binarize)](https://community.bistudio.com/wiki/raP_File_Format_-_OFP) Arma2/Arma3 configuration files using [Gulp](http://gulpjs.com).
@@ -24,3 +26,15 @@ If your files contain [preprocesor instructions](https://community.bistudio.com/
 
 ## Plugin API
 rapify()
+
+[npm-url]: https://www.npmjs.com/package/gulp-armarapify
+[npm-image]: https://img.shields.io/npm/v/gulp-armarapify.svg
+
+[travis-url]: https://travis-ci.org/winseros/gulp-armarapify-plugin
+[travis-image]: https://img.shields.io/travis/winseros/gulp-armarapify-plugin/master.svg
+
+[coveralls-url]: https://coveralls.io/github/winseros/gulp-armarapify-plugin
+[coveralls-image]: https://img.shields.io/coveralls/winseros/gulp-armarapify-plugin/master.svg
+
+[david-url]: https://david-dm.org/winseros/gulp-armarapify-plugin
+[david-image]: https://david-dm.org/winseros/gulp-armarapify-plugin/master.svg
