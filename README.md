@@ -1,4 +1,4 @@
-[![npm][npm-image]][npm-url] [![Travis branch][travis-image]][travis-url] [![Coveralls branch][coveralls-image]][coveralls-url] [![Dependencies][david-image]][david-url]
+[![node][node-image]][node-url] [![npm][npm-image]][npm-url] [![Travis branch][travis-image]][travis-url] [![Coveralls branch][coveralls-image]][coveralls-url] [![Dependencies][david-image]][david-url]
 
 # Gulp Arma Rapify plugin
 
@@ -26,6 +26,9 @@ If your files contain [preprocesor instructions](https://community.bistudio.com/
 
 ## Plugin API
 rapify()
+
+[node-url]: https://nodejs.org
+[node-image]: https://img.shields.io/node/v/gulp-armarapify.svg
 
 [npm-url]: https://www.npmjs.com/package/gulp-armarapify
 [npm-image]: https://img.shields.io/npm/v/gulp-armarapify.svg
