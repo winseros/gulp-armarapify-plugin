@@ -6,6 +6,7 @@ import jasmine from 'gulp-jasmine';
 import cached from 'gulp-cached';
 import consoleReporter from 'jasmine-console-reporter';
 import istanbul from 'gulp-istanbul'
+import coveralls from 'gulp-coveralls';
 import remapIstanbul from 'remap-istanbul/lib/gulpRemapIstanbul';
 import del from 'del';
 import path from 'path';
@@ -63,7 +64,7 @@ gulp.task('cover:run', ['cover:instrument'], () => {
         .pipe(jasmine())
         .pipe(istanbul.writeReports({
             dir: dist,
-            reporters: ['json']
+            reporters: ['json', 'lcov']
         }));
 
     task.on('end', () => gulp.src(path.join(dist, 'coverage-final.json'))
@@ -72,6 +73,11 @@ gulp.task('cover:run', ['cover:instrument'], () => {
         })));
 
     return task;
+});
+
+gulp.task('cover:coveralls', ['cover:run'], () => {
+    return gulp.src(path.join(dist, 'lcov.info'))
+        .pipe(coveralls());
 });
 
 gulp.task('watch', ['assemble'], () => {
