@@ -17,6 +17,7 @@ const typingFiles = './typings/**/index.d.ts';
 const testSpecs = './dist/**/*.spec.js';
 const testSources = ['./dist/**/*.js', `!${testSpecs}`];
 const coverageDir = './.coverage'
+const lcovFile = path.join(coverageDir, 'lcov.info');
 
 gulp.task('clean', () => {
     return del([`${dist}/*`]);
@@ -64,19 +65,19 @@ gulp.task('cover:run', ['cover:instrument'], () => {
         .pipe(jasmine())
         .pipe(istanbul.writeReports({
             dir: dist,
-            reporters: ['json', 'lcov']
+            reporters: ['json']
         }));
 
     task.on('end', () => gulp.src(path.join(dist, 'coverage-final.json'))
         .pipe(remapIstanbul({
-            reports: { html: coverageDir }
+            reports: { html: coverageDir, lcovonly: lcovFile }
         })));
 
     return task;
 });
 
 gulp.task('cover:coveralls', ['cover:run'], () => {
-    return gulp.src(path.join(dist, 'lcov.info'))
+    return gulp.src(lcovFile)
         .pipe(coveralls());
 });
 
