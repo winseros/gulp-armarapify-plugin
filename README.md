@@ -2,6 +2,8 @@
 
 # Gulp Arma Rapify plugin
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/winseros/gulp-armarapify-plugin.svg)](https://greenkeeper.io/)
+
 The plugin's goal is to [rapify (binarize)](https://community.bistudio.com/wiki/raP_File_Format_-_OFP) Arma2/Arma3 configuration files using [Gulp](http://gulpjs.com).
 
 ## Installation
