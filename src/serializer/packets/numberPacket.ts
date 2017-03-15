@@ -15,7 +15,7 @@ export abstract class NumberPacket extends PacketBase {
     get size(): number {
         return 1//packet type byte
             + 1//data type byte
-            + this._tokenName.length + 1//token name + 0-terminator
+            + Buffer.byteLength(this._tokenName) + 1//token name + 0-terminator
             + this._dataSize;
     }
 

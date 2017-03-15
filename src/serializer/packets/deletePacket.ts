@@ -12,7 +12,7 @@ export class DeletePacket extends PacketBase {
 
     get size(): number {
         return 1//packet type byte
-            + this._className.length + 1;//class name + 0-terminator
+            + Buffer.byteLength(this._className) + 1;//class name + 0-terminator
     }
 
     bytes(): Buffer {

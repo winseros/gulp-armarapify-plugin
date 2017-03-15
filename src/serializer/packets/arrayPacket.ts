@@ -15,7 +15,7 @@ export class ArrayPacket extends PacketBase {
 
     get size(): number {
         return 1//packet type byte
-            + this._tokenName.length + 1//class name + 0-terminator
+            + Buffer.byteLength(this._tokenName) + 1//class name + 0-terminator
             + this._data.size;
     }
 

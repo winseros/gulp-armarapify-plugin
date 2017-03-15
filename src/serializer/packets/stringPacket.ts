@@ -16,8 +16,8 @@ export class StringPacket extends PacketBase {
     get size(): number {
         return 1//packet type byte
             + 1//data type byte
-            + this._tokenName.length + 1//class name + 0-terminator
-            + this._data.length + 1;//data + 0-terminator
+            + Buffer.byteLength(this._tokenName) + 1//class name + 0-terminator
+            + Buffer.byteLength(this._data) + 1;//data + 0-terminator
     }
 
     bytes(): Buffer {

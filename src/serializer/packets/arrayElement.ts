@@ -41,7 +41,7 @@ export class ArrayElementString implements ArrayElement {
     }
 
     get size(): number {
-        return 1 + this._data.length + 1;
+        return 1 + Buffer.byteLength(this._data) + 1;
     }
 
     get dataType(): number {

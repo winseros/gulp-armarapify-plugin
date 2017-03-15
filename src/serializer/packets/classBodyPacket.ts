@@ -12,7 +12,7 @@ export class ClassBodyPacket extends PacketBase {
     }
 
     get size(): number {
-        return this._inherits.length + 1
+        return Buffer.byteLength(this._inherits) + 1
             + BufferHelper.getCompressedIntLength(this._noOfChildren);
     }
 
