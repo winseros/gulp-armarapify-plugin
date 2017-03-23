@@ -50,7 +50,7 @@
     "gulp-jasmine": "^2.4.2",
     "gulp-sourcemaps": "^2.4.1",
     "gulp-tslint": "^7.1.0",
-    "gulp-typescript": "^3.1.5",
+    "gulp-typescript": "^3.1.6",
     "istanbul": "^0.4.5",
     "jasmine": "^2.5.2",
     "jasmine-console-reporter": "^1.2.7",
