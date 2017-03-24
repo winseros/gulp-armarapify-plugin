@@ -15,11 +15,12 @@ export class HexReader implements TokenReader<number> {
         let result;
         const line = iterator.line;
         const column = iterator.column;
+        const index = iterator.index;
         if (iterator.current === symbol0) {
             const checkpoint = iterator.createCheckpoint();
             if (iterator.moveNext() && iterator.current.toLowerCase() === symbolX) {
                 const value = this._readHex(iterator);
-                result = this._formatToken(value, line, column);
+                result = this._formatToken(value, line, column, index);
             }
             if (!result) {
                 checkpoint.restore();
@@ -45,7 +46,7 @@ export class HexReader implements TokenReader<number> {
         return value;
     }
 
-    _formatToken(value: string | undefined, line: number, column: number): Token<number> | undefined {
+    _formatToken(value: string | undefined, line: number, column: number, index: number): Token<number> | undefined {
         let result;
         const num = parseInt(value!, 16);
         if (!isNaN(num)) {
@@ -54,7 +55,8 @@ export class HexReader implements TokenReader<number> {
                 tokenType: tokenType,
                 tokenValue: num,
                 lineNumber: line,
-                colNumber: column
+                colNumber: column,
+                index: index
             } as Token<number>;
         }
         return result;

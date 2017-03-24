@@ -112,6 +112,20 @@ describe('parser/charIterator', () => {
             expect(iterator.column).toEqual(1);
             expect(iterator.line).toEqual(3);//h
         });
+
+        it('should update index', () => {
+            const input = new Buffer('abc');
+            const iterator = new CharIterator(input);
+
+            iterator.moveNext();
+            expect(iterator.index).toEqual(0);
+
+            iterator.moveNext();
+            expect(iterator.index).toEqual(1);
+
+            iterator.moveNext();
+            expect(iterator.index).toEqual(2);
+        });
     });
 
     describe('createCheckpoint', () => {

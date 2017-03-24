@@ -42,6 +42,10 @@ export class CharIteratorCheckpoint implements Checkpoint<string> {
         return this._params.iterator.column;
     }
 
+    get index(): number {
+        return this._params.iterator.index;
+    }
+
     get depleted(): boolean {
         return this._params.iterator.depleted;
     }

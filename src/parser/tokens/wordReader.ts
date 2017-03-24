@@ -15,7 +15,8 @@ export class WordReader extends ReaderBase<string>{
             tokenType: tokenTypes.word,
             tokenValue: iterator.current,
             lineNumber: iterator.line,
-            colNumber: iterator.column
+            colNumber: iterator.column,
+            index: iterator.index
         } as Token<string>;
 
         while (iterator.moveNext()) {

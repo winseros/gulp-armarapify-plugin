@@ -47,6 +47,7 @@ describe('parser/tokens/newLineReader', () => {
                 expect(newLineToken.tokenValue).toEqual('\r\n');
                 expect(newLineToken.lineNumber).toEqual(0);
                 expect(newLineToken.colNumber).toEqual(0);
+                expect(newLineToken.index).toEqual(0);
 
                 expect(iterator.current).toEqual(p.exp);
             });

@@ -34,6 +34,7 @@ describe('parser/tokens/stringReader', () => {
             expect(commentToken.tokenValue).toEqual('some-string-text');
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
+            expect(commentToken.index).toEqual(0);
 
             expect(iterator.current).toEqual(';');
         });
@@ -51,6 +52,7 @@ describe('parser/tokens/stringReader', () => {
             expect(commentToken.tokenValue).toEqual('some-string-text ""with inner quotes"" ');
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
+            expect(commentToken.index).toEqual(0);
 
             expect(iterator.current).toEqual(';');
         });

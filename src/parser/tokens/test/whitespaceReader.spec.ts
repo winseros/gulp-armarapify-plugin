@@ -39,6 +39,7 @@ describe('parser/tokens/whitespaceReader', () => {
             expect(whitespaceToken.tokenValue).toEqual(' ');
             expect(whitespaceToken.lineNumber).toEqual(0);
             expect(whitespaceToken.colNumber).toEqual(0);
+            expect(whitespaceToken.index).toEqual(0);
 
             expect(iterator.current).toEqual('a');
         });

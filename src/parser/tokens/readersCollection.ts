@@ -51,6 +51,6 @@ export class ReadersCollection {
 
         const symbolCode = iterator.current.charCodeAt(0);
         const message = `Unexpected symbol: \"${iterator.current}\", code: ${symbolCode}`;
-        throw new ParserError(message, iterator.line, iterator.column);
+        throw new ParserError(message, iterator.line, iterator.column, iterator.index);
     }
 }

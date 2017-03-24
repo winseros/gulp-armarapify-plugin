@@ -169,7 +169,7 @@ describe('optimizer/treeOptimizer', () => {
         it('should try to parse string nodes and catch ParserErrors', () => {
             const value = new StringNode('str1');
 
-            spyOn(ExpressionParser.prototype, 'parseExpression').and.callFake(() => { throw new ParserError('msg', 0, 0); });
+            spyOn(ExpressionParser.prototype, 'parseExpression').and.callFake(() => { throw new ParserError('msg', 0, 0, 0); });
             spyOn(ExpressionResolver.prototype, 'resolve').and.callThrough();
 
             const optimizer = new TreeOptimizer();
@@ -184,7 +184,7 @@ describe('optimizer/treeOptimizer', () => {
         it('should try to parse string nodes and catch NodeErrors', () => {
             const value = new StringNode('str1');
 
-            spyOn(ExpressionParser.prototype, 'parseExpression').and.callFake(() => { throw new NodeError('msg', 0, 0); });
+            spyOn(ExpressionParser.prototype, 'parseExpression').and.callFake(() => { throw new NodeError('msg', 0, 0, 0); });
             spyOn(ExpressionResolver.prototype, 'resolve').and.callThrough();
 
             const optimizer = new TreeOptimizer();

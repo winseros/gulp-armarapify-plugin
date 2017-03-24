@@ -55,6 +55,7 @@ describe('parser/tokens/wordReader', () => {
             expect(commentToken.tokenValue).toEqual('class');
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
+            expect(commentToken.index).toEqual(0);
 
             expect(iterator.current).toEqual(' ');
         });
@@ -71,7 +72,7 @@ describe('parser/tokens/wordReader', () => {
             expect(commentToken.tokenType).toEqual(tokenTypes.word);
             expect(commentToken.tokenValue).toEqual('class');
             expect(commentToken.lineNumber).toEqual(0);
-            expect(commentToken.colNumber).toEqual(0);
+            expect(commentToken.index).toEqual(0);
         });
     });
 });

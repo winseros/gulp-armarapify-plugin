@@ -9,6 +9,8 @@ export interface Iterator<T> {
 
     column: number;
 
+    index: number;
+
     createCheckpoint(): Checkpoint<T>;
 }
 

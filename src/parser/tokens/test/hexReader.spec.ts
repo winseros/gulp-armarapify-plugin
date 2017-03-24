@@ -51,6 +51,7 @@ describe('parser/tokens/hexReader', () => {
             expect(token.tokenValue).toEqual(10);
             expect(token.lineNumber).toEqual(0);
             expect(token.colNumber).toEqual(0);
+            expect(token.index).toEqual(0);
 
             expect(iterator.current).toEqual(' ');
         });
@@ -67,6 +68,7 @@ describe('parser/tokens/hexReader', () => {
             expect(token.tokenValue).toEqual(68719476730);
             expect(token.lineNumber).toEqual(0);
             expect(token.colNumber).toEqual(0);
+            expect(token.index).toEqual(0);
 
             expect(iterator.current).toEqual(';');
         });

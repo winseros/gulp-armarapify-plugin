@@ -55,6 +55,7 @@ describe('parser/tokens/commentReader', () => {
             expect(commentToken.tokenValue).toEqual('this is a comment');
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
+            expect(commentToken.index).toEqual(0);
 
             expect(iterator.moveNext()).toEqual(false);
         });
@@ -72,6 +73,7 @@ describe('parser/tokens/commentReader', () => {
             expect(commentToken.tokenValue).toEqual('this is a comment');
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
+            expect(commentToken.index).toEqual(0);
 
             expect(iterator.current).toEqual('\r');
         });
@@ -89,6 +91,7 @@ describe('parser/tokens/commentReader', () => {
             expect(commentToken.tokenValue).toEqual('this is a comment');
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
+            expect(commentToken.index).toEqual(0);
 
             expect(iterator.current).toEqual('\n');
         });
@@ -106,6 +109,7 @@ describe('parser/tokens/commentReader', () => {
             expect(commentToken.tokenValue).toEqual('this is a comment');
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
+            expect(commentToken.index).toEqual(0);
 
             expect(iterator.moveNext()).toEqual(false);
         });
@@ -123,6 +127,7 @@ describe('parser/tokens/commentReader', () => {
             expect(commentToken.tokenValue).toEqual('this is a comment*');
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
+            expect(commentToken.index).toEqual(0);
 
             expect(iterator.moveNext()).toEqual(false);
         });
@@ -140,6 +145,7 @@ describe('parser/tokens/commentReader', () => {
             expect(commentToken.tokenValue).toEqual('this is * a comment');
             expect(commentToken.lineNumber).toEqual(0);
             expect(commentToken.colNumber).toEqual(0);
+            expect(commentToken.index).toEqual(0);
 
             expect(iterator.current).toEqual('s');
         });

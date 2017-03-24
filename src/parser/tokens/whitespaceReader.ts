@@ -15,7 +15,8 @@ export class WhitespaceReader extends ReaderBase<string> {
             tokenType: tokenTypes.whitespace,
             tokenValue: ' ',
             lineNumber: iterator.line,
-            colNumber: iterator.column
+            colNumber: iterator.column,
+            index: iterator.index
         } as Token<string>;
 
         let next: boolean;

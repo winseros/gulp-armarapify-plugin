@@ -19,13 +19,14 @@ export class StringReader extends ReaderBase<string>{
             tokenType: tokenTypes.string,
             tokenValue: '',
             lineNumber: iterator.line,
-            colNumber: iterator.column
+            colNumber: iterator.column,
+            index: iterator.index
         } as Token<string>;
 
         let complete = false;
         while (iterator.moveNext()) {
             if (iterator.current === symbolR || iterator.current === symbolN) {
-                throw new ParserError('Strings can not wrap on a new line', iterator.line, iterator.column);
+                throw new ParserError('Strings can not wrap on a new line', iterator.line, iterator.column, iterator.index);
             } else if (iterator.current === symbolQuote) {
                 iterator.moveNext();
                 if (iterator.current === symbolQuote) {
@@ -41,7 +42,7 @@ export class StringReader extends ReaderBase<string>{
         }
 
         if (!complete) {
-            throw new ParserError(`A string should end with a ${symbolQuote} sign`, iterator.line, iterator.column);
+            throw new ParserError(`A string should end with a ${symbolQuote} sign`, iterator.line, iterator.column, iterator.index);
         }
 
         return result;

@@ -60,6 +60,7 @@ describe('parser/tokens/controlCharReader', () => {
                 expect(codeBlockToken.tokenValue).toEqual(key);
                 expect(codeBlockToken.lineNumber).toEqual(0);
                 expect(codeBlockToken.colNumber).toEqual(0);
+                expect(codeBlockToken.index).toEqual(0);
 
                 expect(iterator.current).toEqual('a');
             });

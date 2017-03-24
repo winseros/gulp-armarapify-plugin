@@ -3,4 +3,5 @@ export interface Token<T> {
     tokenValue: T;
     lineNumber: number;
     colNumber: number;
+    index: number;
 }

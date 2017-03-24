@@ -36,14 +36,15 @@ export class ControlCharReader extends ReaderBase<string> {
                 tokenType: tokenType,
                 tokenValue: iterator.current,
                 lineNumber: iterator.line,
-                colNumber: iterator.column
+                colNumber: iterator.column,
+                index: iterator.index
             } as Token<string>;
 
             iterator.moveNext();
 
             return result;
         } else {
-            throw new ParserError(`Char \"${iterator.current}\" is not a control char`, iterator.line, iterator.column);
+            throw new ParserError(`Char \"${iterator.current}\" is not a control char`, iterator.line, iterator.column, iterator.index);
         }
     }
 }

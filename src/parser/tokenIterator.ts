@@ -10,6 +10,7 @@ export class TokenIterator implements Iterator<Token<string | number>> {
     private _current: Token<string | number>;
     private _line: number;
     private _column: number;
+    private _index: number;
     private _depleted = false;
 
     constructor(buffer: Buffer) {
@@ -27,6 +28,7 @@ export class TokenIterator implements Iterator<Token<string | number>> {
             this._current = this._readersCollection.read(this._iterator);
             this._line = this._current.lineNumber;
             this._column = this._current.colNumber;
+            this._index = this._current.index;
             return true;
         }
     }
@@ -45,6 +47,10 @@ export class TokenIterator implements Iterator<Token<string | number>> {
 
     get column(): number {
         return this._column;
+    }
+
+    get index(): number {
+        return this._index;
     }
 
     _updateDepleted(): boolean {

@@ -28,6 +28,7 @@ describe('parser/tokens/numberReader', () => {
                 expect(token.tokenValue).toEqual(1234567890);
                 expect(token.lineNumber).toEqual(0);
                 expect(token.colNumber).toEqual(0);
+                expect(token.index).toEqual(0);
 
                 expect(iterator.current).toEqual(' ');
             });
@@ -45,6 +46,7 @@ describe('parser/tokens/numberReader', () => {
                 expect(token.tokenValue).toEqual(1234567890);
                 expect(token.lineNumber).toEqual(0);
                 expect(token.colNumber).toEqual(0);
+                expect(token.index).toEqual(0);
             });
 
             it('should read a floating-point number with point in the middle', () => {
@@ -60,6 +62,7 @@ describe('parser/tokens/numberReader', () => {
                 expect(token.tokenValue).toEqual(12345.67890);
                 expect(token.lineNumber).toEqual(0);
                 expect(token.colNumber).toEqual(0);
+                expect(token.index).toEqual(0);
             });
 
             it('should read a floating-point number with point in the middle', () => {
@@ -75,6 +78,7 @@ describe('parser/tokens/numberReader', () => {
                 expect(token.tokenValue).toEqual(0.67890);
                 expect(token.lineNumber).toEqual(0);
                 expect(token.colNumber).toEqual(0);
+                expect(token.index).toEqual(0);
             });
 
             it('should read a number in scientific notation #1', () => {
@@ -90,6 +94,7 @@ describe('parser/tokens/numberReader', () => {
                 expect(token.tokenValue).toEqual(1500);
                 expect(token.lineNumber).toEqual(0);
                 expect(token.colNumber).toEqual(0);
+                expect(token.index).toEqual(0);
             });
 
             it('should read a number in scientific notation #2', () => {
@@ -105,6 +110,7 @@ describe('parser/tokens/numberReader', () => {
                 expect(token.tokenValue).toEqual(1000);
                 expect(token.lineNumber).toEqual(0);
                 expect(token.colNumber).toEqual(0);
+                expect(token.index).toEqual(0);
             });
 
             it('should read a number in scientific notation #3', () => {
@@ -120,6 +126,7 @@ describe('parser/tokens/numberReader', () => {
                 expect(token.tokenValue).toEqual(0.0015);
                 expect(token.lineNumber).toEqual(0);
                 expect(token.colNumber).toEqual(0);
+                expect(token.index).toEqual(0);
             });
 
             it('should threat int as float if it is greater than maxInt', () => {
@@ -136,6 +143,7 @@ describe('parser/tokens/numberReader', () => {
                 expect(token.tokenValue).toEqual(value);
                 expect(token.lineNumber).toEqual(0);
                 expect(token.colNumber).toEqual(0);
+                expect(token.index).toEqual(0);
             });
         });
 

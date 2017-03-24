@@ -29,9 +29,9 @@ export class ExpressionReader {
             if (halt) { break; }
 
             if (iterator.current.tokenType === tokenTypes.newline) {
-                throw new NodeError(`; expected at the end of the line`, iterator.line, iterator.column);
+                throw new NodeError(`; expected at the end of the line`, iterator.line, iterator.column, iterator.index);
             } else if (iterator.current.tokenType !== tokenTypes.mathOp) {
-                throw new NodeError(`Math operator expected but was "${iterator.current.tokenValue}" of type "${iterator.current.tokenType}"`, iterator.line, iterator.column);
+                throw new NodeError(`Math operator expected but was "${iterator.current.tokenValue}" of type "${iterator.current.tokenType}"`, iterator.line, iterator.column, iterator.index);
             }
 
             const operator = iterator.current;
@@ -110,7 +110,7 @@ export class ExpressionReader {
                 break;
             }
             default: {
-                throw new NodeError(`Unexpected token "${token.tokenValue}" of type "${token.tokenType}"`, this._reader.iterator.line, this._reader.iterator.column);
+                throw new NodeError(`Unexpected token "${token.tokenValue}" of type "${token.tokenType}"`, this._reader.iterator.line, this._reader.iterator.column, this._reader.iterator.index);
             }
         }
 
@@ -125,7 +125,7 @@ export class ExpressionReader {
             const result = token.tokenValue === mathOperators.minus ? new MathNegNode(node) : node;
             return result;
         } else {
-            throw new NodeError(`Unexpected math operator "${token.tokenValue}" of type "${token.tokenType}"`, this._reader.iterator.line, this._reader.iterator.column);
+            throw new NodeError(`Unexpected math operator "${token.tokenValue}" of type "${token.tokenType}"`, this._reader.iterator.line, this._reader.iterator.column, this._reader.iterator.index);
         }
     }
 

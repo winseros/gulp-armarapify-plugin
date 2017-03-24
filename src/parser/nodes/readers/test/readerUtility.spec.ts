@@ -28,9 +28,9 @@ describe('parser/nodes/readers/readerUtility', () => {
             const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
-            const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8 };
+            const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8, index: 0 };
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
+                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2, index: 0 },
                 expected
             ]));
 
@@ -48,11 +48,11 @@ describe('parser/nodes/readers/readerUtility', () => {
             const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
-            const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8 };
+            const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8, index: 0 };
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
-                { tokenType: tokenTypes.newline, tokenValue: '\r', lineNumber: 3, colNumber: 4 },
-                { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 5, colNumber: 6 },
+                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2, index: 0 },
+                { tokenType: tokenTypes.newline, tokenValue: '\r', lineNumber: 3, colNumber: 4, index: 0 },
+                { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 5, colNumber: 6, index: 0 },
                 expected
             ]));
 
@@ -86,9 +86,9 @@ describe('parser/nodes/readers/readerUtility', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 1, colNumber: 2 },
-                { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 3, colNumber: 4 },
-                { tokenType: tokenTypes.integer, tokenValue: 12345, lineNumber: 5, colNumber: 6 }
+                { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 1, colNumber: 2, index: 0 },
+                { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 3, colNumber: 4, index: 0 },
+                { tokenType: tokenTypes.integer, tokenValue: 12345, lineNumber: 5, colNumber: 6, index: 0 }
             ]));
 
             const utility = new ReaderUtility(tokenIterator);
@@ -110,9 +110,9 @@ describe('parser/nodes/readers/readerUtility', () => {
             const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
-            const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8 };
+            const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8, index: 0 };
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
+                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2, index: 0 },
                 expected
             ]));
 
@@ -129,11 +129,11 @@ describe('parser/nodes/readers/readerUtility', () => {
             const tokenIterator = jasmine.createSpyObj('tokenIteratorSpy', ['moveNext']) as TokenIterator;
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
-            const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8 };
+            const expected = { tokenType: tokenTypes.string, tokenValue: 'some-value', lineNumber: 7, colNumber: 8, index: 0 };
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 },
-                { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 3, colNumber: 4 },
-                { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 7, colNumber: 8 },
+                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2, index: 0 },
+                { tokenType: tokenTypes.newline, tokenValue: '\r\n', lineNumber: 3, colNumber: 4, index: 0 },
+                { tokenType: tokenTypes.whitespace, tokenValue: ' ', lineNumber: 7, colNumber: 8, index: 0 },
                 expected
             ]));
 
@@ -151,7 +151,7 @@ describe('parser/nodes/readers/readerUtility', () => {
             const spyMoveNext = tokenIterator.moveNext as jasmine.Spy;
 
             spyMoveNext.and.callFake(implementFakeIterator(tokenIterator, [
-                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2 }
+                { tokenType: tokenTypes.comment, tokenValue: '', lineNumber: 1, colNumber: 2, index: 0 }
             ]));
 
             const utility = new ReaderUtility(tokenIterator);

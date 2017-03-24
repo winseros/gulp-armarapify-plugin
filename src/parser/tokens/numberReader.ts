@@ -27,7 +27,8 @@ export class NumberReader implements TokenReader<number> {
 
         const token = {
             lineNumber: iterator.line,
-            colNumber: iterator.column
+            colNumber: iterator.column,
+            index: iterator.index
         } as Token<number>;
 
         const checkpoint = iterator.createCheckpoint();
@@ -40,7 +41,7 @@ export class NumberReader implements TokenReader<number> {
 
         token.tokenValue = parseFloat(context.value);
         if (isNaN(token.tokenValue)) {
-            throw new ParserError(`Couldn't convert value "${context.value}" into a number`, token.lineNumber, token.colNumber);
+            throw new ParserError(`Couldn't convert value "${context.value}" into a number`, token.lineNumber, token.colNumber, token.index);
         }
 
         const float = token.tokenValue > NumberReader.intMax
@@ -80,11 +81,11 @@ export class NumberReader implements TokenReader<number> {
     private _inflateFloatPart(iterator: Iterator<string>, context: ReaderContext): void {
         if (context.float) {
             const msg = `Found a duplicating "${symbolDot}" symbol in a number`;
-            throw new ParserError(msg, iterator.line, iterator.column);
+            throw new ParserError(msg, iterator.line, iterator.column, iterator.index);
         }
         if (context.scientific) {
             const msg = `A number can not contain a "${symbolDot}" after a "${symbolE}"`;
-            throw new ParserError(msg, iterator.line, iterator.column);
+            throw new ParserError(msg, iterator.line, iterator.column, iterator.index);
         }
 
         context.float = true;
@@ -96,7 +97,7 @@ export class NumberReader implements TokenReader<number> {
     private _inflateScientificPart(iterator: Iterator<string>, context: ReaderContext): boolean {
         if (context.scientific) {
             const msg = `Found a duplicating "${symbolE}" symbol in a number`;
-            throw new ParserError(msg, iterator.line, iterator.column);
+            throw new ParserError(msg, iterator.line, iterator.column, iterator.index);
         }
 
         context.scientific = true;
@@ -120,13 +121,13 @@ export class NumberReader implements TokenReader<number> {
 
     private _inflateDigit(iterator: Iterator<string>, context: ReaderContext): void {
         if (!iterator.moveNext()) {
-            throw new ParserError('A digit expected but got EOF', iterator.line, iterator.column);
+            throw new ParserError('A digit expected but got EOF', iterator.line, iterator.column, iterator.index);
         }
 
         if (!regexp.digit.test(iterator.current)) {
             const symbolCode = iterator.current.charCodeAt(0);
             const msg = `A digit expected but got "${iterator.current}", code: ${symbolCode}`;
-            throw new ParserError(msg, iterator.line, iterator.column);
+            throw new ParserError(msg, iterator.line, iterator.column, iterator.index);
         }
 
         context.value += iterator.current;

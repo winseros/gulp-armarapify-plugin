@@ -29,7 +29,7 @@ export class ReaderUtility {
         const eof = this.moveToNextTokenOrEof();
         if (eof) {
             this._resetDefaults();
-            throw new NodeError(`${errorDescription} expected but got EOF`, this._iterator.line, this._iterator.column);
+            throw new NodeError(`${errorDescription} expected but got EOF`, this._iterator.line, this._iterator.column, this._iterator.index);
         }
 
         const current = this._iterator.current;
@@ -37,7 +37,7 @@ export class ReaderUtility {
             this._resetDefaults();
 
             const value = this._getTokenValue(current);
-            throw new NodeError(`${errorDescription} expected but got "${value}"`, this._iterator.line, this._iterator.column);
+            throw new NodeError(`${errorDescription} expected but got "${value}"`, this._iterator.line, this._iterator.column, this._iterator.index);
         }
 
         this._resetDefaults();
@@ -76,7 +76,7 @@ export class ReaderUtility {
         const eof = this.moveToNextTokenOrEof();
         if (eof) {
             this._resetDefaults();
-            throw new NodeError(`Any token expected but got EOF`, this._iterator.line, this._iterator.column);
+            throw new NodeError(`Any token expected but got EOF`, this._iterator.line, this._iterator.column, this._iterator.index);
         }
     }
 }

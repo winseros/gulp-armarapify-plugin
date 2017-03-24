@@ -6,6 +6,8 @@ import { PluginError } from 'gulp-util';
 import { ParserError } from '../parser/parserError';
 import { NodeError } from '../parser/nodeError';
 import { TreeParser } from '../parser/treeParser';
+import { EOL } from 'os';
+import * as chalk from 'chalk';
 
 describe('rapifyStream', () => {
     describe('_transform', () => {
@@ -66,7 +68,7 @@ describe('rapifyStream', () => {
             const handledError = new PluginError('some-plugin', 'some-error-message');
             spyOn(RapifyStream.prototype, '_convertError').and.returnValue(handledError);
 
-            const thrownError = new ParserError('some error', 100, 500);
+            const thrownError = new ParserError('some error', 100, 500, 101);
             spyOn(TreeParser.prototype, 'parseFile').and.callFake(() => { throw thrownError; });
 
             const file = new File({ contents: Buffer.allocUnsafe(0) });
@@ -112,33 +114,39 @@ describe('rapifyStream', () => {
 
     describe('_convertError', () => {
         it('should handle ParserErrors', () => {
+            spyOn(RapifyStream.prototype, '_getParserContext').and.returnValue('parser-context-value');
+
             const file = new File({ base: './src', path: path.normalize('/src/file.js') });
-            const err = new ParserError('error-msg', 100, 500);
+            const err = new ParserError('error-msg', 100, 500, 105);
 
             const stream = new RapifyStream();
             const converted = stream._convertError(err, file);
 
             expect(converted instanceof PluginError).toEqual(true);
-            expect(converted.message).toEqual(`${file.relative}(101:501): error-msg`);
-            expect(converted.fileName).toEqual(file.relative);
+            expect(converted.message).toEqual(`${file.relative}(101:501): error-msg${EOL}at parser-context-value`);
             expect(converted.name).toEqual(err.name);
-            expect(converted.lineNumber).toEqual(101);
             expect(converted.stack).toBeFalsy();
+
+            expect(RapifyStream.prototype._getParserContext).toHaveBeenCalledTimes(1);
+            expect(RapifyStream.prototype._getParserContext).toHaveBeenCalledWith(file, 105);
         });
 
         it('should handle NodeErrors', () => {
+            spyOn(RapifyStream.prototype, '_getParserContext').and.returnValue('parser-context-value');
+
             const file = new File({ base: './src', path: path.normalize('/src/file.js') });
-            const err = new NodeError('error-msg', 100, 500);
+            const err = new NodeError('error-msg', 100, 500, 105);
 
             const stream = new RapifyStream();
             const converted = stream._convertError(err, file);
 
             expect(converted instanceof PluginError).toEqual(true);
-            expect(converted.message).toEqual(`${file.relative}(101:501): error-msg`);
-            expect(converted.fileName).toEqual(file.relative);
+            expect(converted.message).toEqual(`${file.relative}(101:501): error-msg${EOL}at parser-context-value`);
             expect(converted.name).toEqual(err.name);
-            expect(converted.lineNumber).toEqual(101);
             expect(converted.stack).toBeFalsy();
+
+            expect(RapifyStream.prototype._getParserContext).toHaveBeenCalledTimes(1);
+            expect(RapifyStream.prototype._getParserContext).toHaveBeenCalledWith(file, 105);
         });
 
         it('should handle other errors', () => {
@@ -152,6 +160,44 @@ describe('rapifyStream', () => {
             expect(converted.message).toEqual('error-msg');
             expect(converted.fileName).toEqual(file.relative);
             expect(converted.stack).toBeTruthy();
+        });
+    });
+
+    describe('_getParserContext', () => {
+        it('should get context at the begining of file', () => {
+            const contents = Buffer.from('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore');
+            const file = new File({ contents });
+
+            const stream = new RapifyStream();
+            const context = stream._getParserContext(file, RapifyStream.errorContextLength);
+            expect(context).toEqual(chalk.yellow('\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor in...\"'));
+        });
+
+        it('should get context at the end of the file', () => {
+            const contents = Buffer.from('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore');
+            const file = new File({ contents });
+
+            const stream = new RapifyStream();
+            const context = stream._getParserContext(file, contents.length - 1 - RapifyStream.errorContextLength);
+            expect(context).toEqual(chalk.yellow('\"...sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore\"'));
+        });
+
+        it('should get context at the middle of the file', () => {
+            const contents = Buffer.from('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore');
+            const file = new File({ contents });
+
+            const stream = new RapifyStream();
+            const context = stream._getParserContext(file, contents.length / 2);
+            expect(context).toEqual(chalk.yellow('"...um dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ..."'));
+        });
+
+        it('should get context when the line is short', () => {
+            const contents = Buffer.from('Lorem ipsum dolor sit amet');
+            const file = new File({ contents });
+
+            const stream = new RapifyStream();
+            const context = stream._getParserContext(file, 10);
+            expect(context).toEqual(chalk.yellow('\"Lorem ipsum dolor sit amet\"'));
         });
     });
 });

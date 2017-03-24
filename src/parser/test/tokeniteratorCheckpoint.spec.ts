@@ -50,6 +50,7 @@ describe('parser/tokenIteratorCheckpoint', () => {
                     current: '12345' as any,
                     line: 123,
                     column: 456,
+                    index: 789,
                     depleted: 'abc' as any
                 } as TokenIterator
             } as CheckpointParams;
@@ -59,6 +60,7 @@ describe('parser/tokenIteratorCheckpoint', () => {
             expect(checkpoint.current).toEqual('12345');
             expect(checkpoint.line).toEqual(123);
             expect(checkpoint.column).toEqual(456);
+            expect(checkpoint.index).toEqual(789);
             expect(checkpoint.depleted).toEqual('abc');
         });
     });

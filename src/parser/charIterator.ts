@@ -83,4 +83,8 @@ export class CharIterator implements Iterator<string> {
     get column(): number {
         return this._column;
     }
+
+    get index(): number {
+        return this._bufferIndex - 1;
+    }
 }

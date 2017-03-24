@@ -19,7 +19,8 @@ export class NewLineReader extends ReaderBase<string> {
             tokenType: tokenTypes.newline,
             tokenValue: '\r\n',
             lineNumber: iterator.line,
-            colNumber: iterator.column
+            colNumber: iterator.column,
+            index: iterator.index
         } as Token<string>;
 
         if (iterator.current === lf) {
@@ -32,7 +33,7 @@ export class NewLineReader extends ReaderBase<string> {
         } else {
             const symbolCode = iterator.current.charCodeAt(0);
             const message = `Expected CR or LF bymbol but got \"${iterator.current}\", code: ${symbolCode}`;
-            throw new ParserError(message, iterator.line, iterator.column);
+            throw new ParserError(message, iterator.line, iterator.column, iterator.index);
         }
 
         return result;

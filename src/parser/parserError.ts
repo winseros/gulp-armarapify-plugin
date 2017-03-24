@@ -1,16 +1,19 @@
 import '../error';
 
 export class ParserError extends Error {
-    constructor(message: string, line: number, column: number) {
+    constructor(message: string, line: number, column: number, index: number) {
         super(message);
         Error.captureStackTrace(this, ParserError);
 
         this.line = line;
         this.comumn = column;
+        this.index = index;
         this.name = 'ParserError';
     }
 
-    line: number;
+    readonly line: number;
 
-    comumn: number;
+    readonly comumn: number;
+
+    readonly index: number;
 }

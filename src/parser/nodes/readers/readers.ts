@@ -20,6 +20,6 @@ export class Readers {
 
         const iterator = reader.iterator;
         const message = `Unexpected token: \"${iterator.current.tokenValue}\", type: ${iterator.current.tokenType}`;
-        throw new NodeError(message, iterator.line, iterator.column);
+        throw new NodeError(message, iterator.line, iterator.column, iterator.index);
     }
 }
