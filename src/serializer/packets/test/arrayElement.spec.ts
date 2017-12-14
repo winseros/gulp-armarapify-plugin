@@ -5,8 +5,10 @@ import {
     ArrayStruct,
     ArrayElementString,
     ArrayElementFloat,
-    ArrayElementInteger
+    ArrayElementInteger,
+    ArrayElementArray
 } from '../arrayElement';
+import { Buffer } from 'buffer';
 
 class MockElement implements ArrayElement {
     constructor(private data: Buffer) { }
@@ -121,6 +123,29 @@ describe('serializer/packets/arrayElement', () => {
                 const bytes = element.getBytes();
 
                 const expected = [DataType.integer, 0x0d, 0x0c, 0x0b, 0x0a];
+                expect(bytes).toEqual(Buffer.from(expected));
+            });
+        });
+    });
+
+    describe('ArrayElementArray', () => {
+        describe('size', () => {
+            it('should return a correct element size', () => {
+                const element = new ArrayElementArray({size: 100500} as any);
+                expect(element.size).toEqual(100501);
+            });
+        });
+
+        describe('getBytes', () => {
+            it('should return a fulfilled buffer', () => {
+                const contents = Buffer.from([0x0d, 0x0c, 0x0b, 0x0a]);
+                spyOn(ArrayStruct.prototype, 'getBytes').and.returnValue(contents);
+                spyOnProperty(ArrayStruct.prototype, 'size', 'get').and.returnValue(contents.length);
+
+                const element = new ArrayElementArray(new ArrayStruct([]));
+                const bytes = element.getBytes();
+
+                const expected = [DataType.array, 0x0d, 0x0c, 0x0b, 0x0a];
                 expect(bytes).toEqual(Buffer.from(expected));
             });
         });

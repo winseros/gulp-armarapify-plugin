@@ -26,7 +26,8 @@ import {
     ArrayStruct,
     ArrayElementString,
     ArrayElementInteger,
-    ArrayElementFloat
+    ArrayElementFloat,
+    ArrayElementArray
 } from './packets/arrayElement';
 import { ExpressionSerializer } from './expressionSerializer';
 import { TreeError } from './treeError';
@@ -82,7 +83,7 @@ export class NodeExpander {
     }
 
     _expandClass(packet: Packet, node: ClassNode): Packet {
-        packet.next = packet = new ClassPacket(node.className, node.inherits);
+        packet.next = packet = new ClassPacket(node.className);
         return packet;
     }
 
@@ -142,6 +143,11 @@ export class NodeExpander {
         return new ArrayStruct(elements);
     }
 
+    _expandSubarrayContents(node: ArrayNode): ArrayElement {
+        const elements = node.value.map(this._expandArrayElement, this);
+        return new ArrayElementArray(new ArrayStruct(elements));
+    }
+
     _expandArrayElement(node: Node): ArrayElement {
         let element: ArrayElement;
         switch (node.type) {
@@ -161,7 +167,7 @@ export class NodeExpander {
                 break;
             }
             case nodeTypes.array: {
-                element = this._expandArrayContents(node as ArrayNode);
+                element = this._expandSubarrayContents(node as ArrayNode);
                 break;
             }
             case nodeTypes.word: {
