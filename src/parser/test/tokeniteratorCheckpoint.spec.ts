@@ -37,7 +37,7 @@ describe('parser/tokenIteratorCheckpoint', () => {
             const checkpoint = new TokenIteratorCheckpoint(params);
 
             const result = checkpoint.moveNext();
-            expect(result).toEqual('12345');
+            expect(result).toEqual('12345' as any);
 
             expect(params.iterator.moveNext).toHaveBeenCalledTimes(1);
         });
@@ -57,11 +57,11 @@ describe('parser/tokenIteratorCheckpoint', () => {
 
             const checkpoint = new TokenIteratorCheckpoint(params);
 
-            expect(checkpoint.current).toEqual('12345');
+            expect(checkpoint.current).toEqual('12345' as any);
             expect(checkpoint.line).toEqual(123);
             expect(checkpoint.column).toEqual(456);
             expect(checkpoint.index).toEqual(789);
-            expect(checkpoint.depleted).toEqual('abc');
+            expect(checkpoint.depleted).toEqual('abc' as any);
         });
     });
 });

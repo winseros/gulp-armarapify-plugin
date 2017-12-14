@@ -23,11 +23,11 @@ export class NewLineReader extends ReaderBase<string> {
             index: iterator.index
         } as Token<string>;
 
-        if (iterator.current === lf) {
+        if (lf === iterator.current) {
             iterator.moveNext();
-        } else if (iterator.current === cr) {
+        } else if (cr === iterator.current) {
             iterator.moveNext();
-            if (iterator.current === lf) {
+            if (lf === iterator.current as any) {
                 iterator.moveNext();
             }
         } else {

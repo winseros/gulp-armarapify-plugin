@@ -12,7 +12,7 @@ describe('parser/tokens/readersCollection', () => {
             const r2read = r2.read as jasmine.Spy;
             const r3read = r3.read as jasmine.Spy;
 
-            const token = { prop: 'value' };
+            const token = { prop: 'value' } as any;
             r2read.and.returnValue(token);
 
             const collection = new ReadersCollection();

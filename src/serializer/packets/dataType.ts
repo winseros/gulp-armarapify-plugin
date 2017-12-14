@@ -3,4 +3,4 @@ export enum DataType {
     float = 0x01,
     integer = 0x02,
     array = 0x03
-};
+}

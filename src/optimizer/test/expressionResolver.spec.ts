@@ -265,7 +265,7 @@ describe('optmizer/expressionResolver', () => {
                 const neg = new MathNegNode(str);
 
                 const resolver = new ExpressionResolver();
-                const resolved = resolver.resolve(neg) as StringNode;
+                const resolved = resolver.resolve(neg);
 
                 expect(resolved).toBe(neg);
             });

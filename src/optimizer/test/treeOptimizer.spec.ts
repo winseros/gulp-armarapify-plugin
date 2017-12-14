@@ -43,7 +43,7 @@ describe('optimizer/treeOptimizer', () => {
             const child1 = new PropertyNode('c1', new StringNode('v1'));
             const node = new ClassNode('', [child1]);
 
-            const fakeNode = { prop: 'fake' };
+            const fakeNode = { prop: 'fake' } as any;
             spyOn(TreeOptimizer.prototype, '_optimizeProperty').and.returnValue(fakeNode);
 
             const optimizer = new TreeOptimizer();

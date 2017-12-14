@@ -5,14 +5,14 @@ import { PacketType } from '../packetType';
 describe('serializer/packets/classPacket', () => {
     describe('size', () => {
         it('should return a valid packet size', () => {
-            const packet = new ClassPacket('a-class-name', 'nothing');
+            const packet = new ClassPacket('a-class-name');
             expect(packet.size).toEqual(18);
         });
     });
 
     describe('bytes', () => {
         it('should return a fulfilled buffer with some class children', () => {
-            const packet = new ClassPacket('a-class-name', 'nothing');
+            const packet = new ClassPacket('a-class-name');
             packet.firstChild = { offset: 100500 } as Packet;
 
             const bytes = packet.bytes();
@@ -27,7 +27,7 @@ describe('serializer/packets/classPacket', () => {
         });
 
         it('should return a fulfilled buffer with no class children', () => {
-            const packet = new ClassPacket('a-class-name', 'nothing');
+            const packet = new ClassPacket('a-class-name');
 
             const bytes = packet.bytes();
 

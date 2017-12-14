@@ -29,7 +29,7 @@ export class ArrayNodeReader implements NodeReader {
     }
 
     _readArrayChildren(reader: ReaderUtility): Node[] {
-        const result = [] as Array<Node>;
+        const result = [] as Node[];
         const expressionReader = new ExpressionReader(reader);
 
         while (true) {

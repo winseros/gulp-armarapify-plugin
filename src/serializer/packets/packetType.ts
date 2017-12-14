@@ -4,4 +4,4 @@ export enum PacketType {
     array = 0x02,
     extern = 0x03,
     delete = 0x04
-};
+}

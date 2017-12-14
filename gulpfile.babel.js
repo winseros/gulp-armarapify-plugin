@@ -13,7 +13,6 @@ import path from 'path';
 
 const dist = './dist';
 const sourceFiles = './src/**/*.ts';
-const typingFiles = './typings/**/index.d.ts';
 const testSpecs = './dist/**/*.spec.js';
 const testSources = ['./dist/**/*.js', `!${testSpecs}`];
 const coverageDir = './.coverage'
@@ -36,7 +35,7 @@ gulp.task('tslint', () => {
 gulp.task('assemble', ['clean', 'tslint'], () => {
     const tsproject = tsc.createProject('tsconfig.json');
 
-    return gulp.src([typingFiles, sourceFiles])
+    return gulp.src(sourceFiles)
         .pipe(sourcemaps.init())
         .pipe(tsproject()).js
         .pipe(sourcemaps.write('./', {

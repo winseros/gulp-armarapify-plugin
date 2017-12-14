@@ -6,7 +6,7 @@ describe('parser/nodes/externNode', () => {
         it('should initialize the object fields', () => {
             const node = new ExternNode('clsName');
 
-            expect(node.className).toEqual('clsName');;
+            expect(node.className).toEqual('clsName');
             expect(node.type).toEqual(nodeTypes.extern);
         });
     });

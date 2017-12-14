@@ -71,7 +71,7 @@ export class CommentReader extends ReaderBase<string> {
             if (iterator.current === commentMultiline) {
                 const prev = iterator.current;
                 if (iterator.moveNext()) {
-                    if (iterator.current === commentStart) {
+                    if (commentStart === iterator.current as any) {
                         iterator.moveNext();
                         break;
                     } else {

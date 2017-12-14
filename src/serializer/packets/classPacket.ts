@@ -5,13 +5,11 @@ import { BufferHelper } from '../bufferHelper';
 
 export class ClassPacket extends PacketBase {
     private _className: string;
-    private _inherits: string;
     public firstChild?: Packet;
 
-    constructor(className: string, inherits: string) {
+    constructor(className: string) {
         super();
         this._className = className;
-        this._inherits = inherits;
     }
 
     get size(): number {

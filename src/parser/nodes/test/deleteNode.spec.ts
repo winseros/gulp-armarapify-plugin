@@ -6,7 +6,7 @@ describe('parser/nodes/deleteNode', () => {
         it('should initialize the object fields', () => {
             const node = new DeleteNode('clsName');
 
-            expect(node.className).toEqual('clsName');;
+            expect(node.className).toEqual('clsName');
             expect(node.type).toEqual(nodeTypes.delete);
         });
     });

@@ -85,7 +85,7 @@ describe('rapifyStream', () => {
             stream.push(file);
         });
 
-        it('should not throw on transforming text', (done: Function) => {
+        it('should not throw on transforming text', (done: () => void) => {
             const data = [
                 'prop=1 - 2;',
                 'prop=-1;',
