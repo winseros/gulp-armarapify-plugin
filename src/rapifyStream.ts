@@ -8,7 +8,7 @@ import { TreeSerizlizer } from './serializer/treeSerializer';
 import { ParserError } from './parser/parserError';
 import { NodeError } from './parser/nodeError';
 import { EOL } from 'os';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 
 export type TransformCallback = (err?: Error, file?: File) => void;
 export type ErrorWithLineNumber = ParserError | NodeError;
@@ -21,7 +21,7 @@ export class RapifyStream extends Transform {
     private _optimizer = new TreeOptimizer();
 
     constructor() {
-        super({ objectMode: true });
+        super({objectMode: true});
     }
 
     _transform(file: File, encoding: string, callback: TransformCallback): void {
@@ -31,7 +31,7 @@ export class RapifyStream extends Transform {
 
         let err;
         if (!file.isBuffer()) {
-            err = new PluginError(constants.pluginName, 'Streaming input is not supported', { fileName: file.relative });
+            err = new PluginError(constants.pluginName, 'Streaming input is not supported', {fileName: file.relative});
             return callback(err);
         }
 

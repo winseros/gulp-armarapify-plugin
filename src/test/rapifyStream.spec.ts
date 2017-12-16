@@ -7,7 +7,7 @@ import { ParserError } from '../parser/parserError';
 import { NodeError } from '../parser/nodeError';
 import { TreeParser } from '../parser/treeParser';
 import { EOL } from 'os';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 
 describe('rapifyStream', () => {
     describe('_transform', () => {

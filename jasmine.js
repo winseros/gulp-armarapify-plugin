@@ -1,8 +1,6 @@
-'use strict';
-
-var Reporter = require('jasmine-console-reporter');
-var Jasmine = require('jasmine');
-var jasmine = new Jasmine();
+const Reporter = require('jasmine-console-reporter');
+const Jasmine = require('jasmine');
+const jasmine = new Jasmine();
 
 jasmine.loadConfig({
     spec_dir: 'dist',

@@ -39,8 +39,10 @@
     "gulp-util": "^3.0.7"
   },
   "devDependencies": {
+    "@types/chalk": "^2.2.0",
     "@types/gulp-util": "^3.0.34",
     "@types/jasmine": "^2.8.2",
+    "@types/node": "^6.0.94",
     "@types/through2": "^2.0.33",
     "@types/vinyl": "^2.0.1",
     "babel-core": "^6.26.0",
